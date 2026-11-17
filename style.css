@@ -453,3 +453,17 @@ html:not(.js) .viewer { grid-template-columns: 1fr; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0s !important; transition-duration: 0.01ms !important; transition-delay: 0s !important; }
 }
+
+/* ---------- cards (promo images) ---------- */
+.hero__card { position: absolute; right: var(--pad); bottom: 90px; width: min(38vw, 560px); display: block; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45); }
+.hero__card img, .card img { display: block; width: 100%; height: auto; }
+.hero__card:hover, .card:hover { border-color: var(--accent); }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); margin: 0 0 clamp(40px, 7vh, 80px); }
+.card { display: block; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; transition: border-color 0.25s; }
+.card--wide { grid-column: 1 / -1; }
+.card:focus-visible, .hero__card:focus-visible { outline-offset: 3px; }
+@media (max-width: 700px), (max-aspect-ratio: 1/1) {
+  .hero { flex-direction: column; align-items: stretch; justify-content: flex-end; }
+  .hero__card { position: relative; right: auto; bottom: auto; width: 100%; margin-top: 28px; }
+}
+@media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
