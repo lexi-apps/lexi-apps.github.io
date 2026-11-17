@@ -455,15 +455,15 @@ html:not(.js) .viewer { grid-template-columns: 1fr; }
 }
 
 /* ---------- cards (promo images) ---------- */
-.hero__card { position: absolute; right: var(--pad); bottom: 90px; width: min(38vw, 560px); display: block; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45); }
-.hero__card img, .card img { display: block; width: 100%; height: auto; }
-.hero__card:hover, .card:hover { border-color: var(--accent); }
+.card img { display: block; width: 100%; height: auto; }
+.card:hover { border-color: var(--accent); }
 .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); margin: 0 0 clamp(40px, 7vh, 80px); }
 .card { display: block; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; transition: border-color 0.25s; }
 .card--wide { grid-column: 1 / -1; }
-.card:focus-visible, .hero__card:focus-visible { outline-offset: 3px; }
-@media (max-width: 700px), (max-aspect-ratio: 1/1) {
-  .hero { flex-direction: column; align-items: stretch; justify-content: flex-end; }
-  .hero__card { position: relative; right: auto; bottom: auto; width: 100%; margin-top: 28px; }
-}
+.card:focus-visible { outline-offset: 3px; }
 @media (max-width: 760px) { .cards { grid-template-columns: 1fr; } }
+.lb { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: clamp(12px, 3vw, 40px); background: color-mix(in srgb, var(--bg) 88%, transparent); cursor: zoom-out; }
+.lb[hidden] { display: none; }
+.lb img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6); }
+.lb__close { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 50%; background: var(--bg); color: var(--ice); font: 24px/1 var(--body); cursor: pointer; }
+.lb__close:hover, .lb__close:focus-visible { border-color: var(--accent); color: var(--accent); }

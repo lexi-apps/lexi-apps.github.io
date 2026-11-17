@@ -338,4 +338,73 @@ async function boot() {
   }, wait);
 }
 
+/* Lightbox: kart gorsellerini sayfadan ayrilmadan buyutur (kendi icinde kapali). */
+function setupLightbox() {
+  const links = document.querySelectorAll('.cards a.card');
+  if (!links.length) return;
+  const box = document.createElement('div');
+  box.className = 'lb';
+  box.hidden = true;
+  box.setAttribute('role', 'dialog');
+  box.setAttribute('aria-modal', 'true');
+  box.setAttribute('data-lenis-prevent', '');
+  const img = document.createElement('img');
+  const x = document.createElement('button');
+  x.type = 'button';
+  x.className = 'lb__close';
+  x.setAttribute('aria-label', 'Close');
+  x.textContent = '×';
+  box.append(img, x);
+  document.body.appendChild(box);
+  let opener = null;
+  let prevOverflow = '';
+  const close = () => {
+    if (box.hidden) return;
+    box.hidden = true;
+    img.removeAttribute('src');
+    document.body.style.overflow = prevOverflow;
+    if (opener) opener.focus({ preventScroll: true });
+    opener = null;
+  };
+  links.forEach((a) => {
+    a.addEventListener('click', (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      opener = a;
+      const thumb = a.querySelector('img');
+      img.alt = thumb ? thumb.alt : '';
+      img.src = a.getAttribute('href');
+      prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      box.hidden = false;
+      x.focus({ preventScroll: true });
+    });
+  });
+  box.addEventListener('click', (e) => {
+    e.stopPropagation();
+    close();
+  });
+  box.addEventListener('wheel', (e) => e.preventDefault(), { passive: false });
+  box.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+  document.addEventListener(
+    'keydown',
+    (e) => {
+      if (box.hidden) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        close();
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        x.focus({ preventScroll: true });
+      } else if (e.key === ' ' || e.key.startsWith('Arrow') || e.key.startsWith('Page') || e.key === 'Home' || e.key === 'End') {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
+    true
+  );
+}
+setupLightbox();
+
 boot();
