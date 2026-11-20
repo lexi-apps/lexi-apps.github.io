@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lexi Apps — Lexi Ren'Py Translator and Lexi Download Manager for Windows</title>
-<meta name="description" content="Lexi Apps makes focused Windows software: Lexi Ren'Py Translator, which translates Ren'Py visual novels, and Lexi Download Manager, free with no ads and no account.">
+<title>Lexi Apps — Focused Desktop Software for Windows</title>
+<meta name="description" content="Lexi Apps builds focused desktop software for Windows 10 &amp; 11: Lexi Ren'Py Translator, Lexi Download Manager, and LexiDictate.">
 <meta name="theme-color" content="#05070a">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lexi Apps">
 <meta property="og:title" content="Lexi Apps — Words, set in motion">
-<meta property="og:description" content="Two focused tools for Windows: a translator for Ren'Py visual novels, and a download manager with no ads and no account.">
+<meta property="og:description" content="Three focused desktop tools for Windows: Lexi Ren'Py Translator, Lexi Download Manager, and LexiDictate.">
 <meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://lexi-apps.github.io/">
 <meta property="og:image" content="https://lexi-apps.github.io/img/share.jpg">
@@ -24,7 +24,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anybody:wdth,wght@50..150,100..900&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="style.css">
 <script>
-  // accent is applied before first paint; main.js reads the same table
   (function () {
     var A = {
       ember:  ['#ff5a36', '#0a0605'],
@@ -58,7 +57,7 @@
       <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
       <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
     </svg>
-    <div class="loader__label"><span>Lexi Apps</span><span>Assembling lexicon</span></div>
+    <div class="loader__label" lang="en"><span>LEXI APPS</span><span>ASSEMBLING LEXICON</span></div>
     <div class="loader__bar"><i></i></div>
   </div>
 </div>
@@ -68,31 +67,88 @@
 <div class="vignette" aria-hidden="true"></div>
 
 <header class="top">
-  <a class="brand" href="#top" aria-label="Lexi Apps, back to top">
+  <a class="brand" href="#top" aria-label="Lexi Apps, back to top" lang="en">
     <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
       <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
       <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
     </svg>
-    <span>Lexi Apps</span>
+    <span>LEXI APPS</span>
   </a>
   <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-btn__icon" aria-hidden="true"></span><span class="menu-btn__label">Menu</span></button>
   <div class="top__panel" id="menu">
     <nav aria-label="Primary">
-      <a href="#apps">Apps</a>
-      <a href="#translator">Translator</a>
-      <a href="#plans">Plans</a>
-      <a href="#download-manager">Download Manager</a>
-      <a href="#faq">FAQ</a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span data-lang="en">Apps</span><span data-lang="tr">Uygulamalar</span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="https://lexi-apps.github.io/lexi-renpy-translator/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI REN'PY TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="https://lexi-apps.github.io/lexi-download-manager/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="https://lexi-apps.github.io/lexi-dictate/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a href="#principles"><span data-lang="en">Principles</span><span data-lang="tr">İlkeler</span></a>
+      <a href="#faq"><span data-lang="en">FAQ</span><span data-lang="tr">SSS</span></a>
     </nav>
-    <div class="accent" role="radiogroup" aria-labelledby="accent-label">
-      <span class="accent__label" id="accent-label">Accent</span>
-      <label title="Ember"><input type="radio" name="accent" value="ember" checked><i style="--c:#ff5a36"></i><span class="vh">Ember accent</span></label>
-      <label title="Acid"><input type="radio" name="accent" value="acid"><i style="--c:#c8ff2e"></i><span class="vh">Acid accent</span></label>
-      <label title="Amber"><input type="radio" name="accent" value="amber"><i style="--c:#ffb224"></i><span class="vh">Amber accent</span></label>
-      <label title="Ice"><input type="radio" name="accent" value="ice"><i style="--c:#5ad8ff"></i><span class="vh">Ice accent</span></label>
-      <label title="Signal"><input type="radio" name="accent" value="signal"><i style="--c:#ff2e4d"></i><span class="vh">Signal accent</span></label>
-      <label title="Mono"><input type="radio" name="accent" value="mono"><i style="--c:#f2f5f7"></i><span class="vh">Mono accent</span></label>
-      <output class="accent__name" id="accent-name" aria-hidden="true">Ember</output>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Buy Me a Coffee">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span>Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Support on Patreon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span>Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Language">
+        <span id="lang-cur">EN</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" id="lang-en" onclick="setLang('en', true)" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">EN</span><span>English</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="dd__item" id="lang-tr" onclick="setLang('tr', true)" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">TR</span><span>Türkçe</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Accent color">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -106,60 +162,163 @@
 <main id="top">
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero__inner">
-      <p class="eyebrow r" style="--i:0">Lexi Apps <span>/</span> Software for Windows</p>
+      <p class="eyebrow r" style="--i:0">
+        <span data-lang="en">LEXI APPS <span>/</span> SOFTWARE FOR WINDOWS</span>
+        <span data-lang="tr">LEXI APPS <span>/</span> WINDOWS YAZILIMLARI</span>
+      </p>
       <h1 id="hero-title">
-        <span class="line"><span class="r" style="--i:1">Words,</span></span>
-        <span class="line"><span class="r" style="--i:2">set in</span></span>
-        <span class="line"><span class="r" style="--i:3">motion<em>.</em></span></span>
+        <span class="line"><span class="r" style="--i:1"><span data-lang="en">Words,</span><span data-lang="tr">Odaklı,</span></span></span>
+        <span class="line"><span class="r" style="--i:2"><span data-lang="en">set in</span><span data-lang="tr">hızlı ve</span></span></span>
+        <span class="line"><span class="r" style="--i:3"><span data-lang="en">motion<em>.</em></span><span data-lang="tr">yerel<em>.</em></span></span></span>
       </h1>
-      <p class="lede r" style="--i:4">Lexi comes from <em>lexicon</em>. We build two focused tools: a translator for Ren'Py visual novels, and a download manager with no ads and no account.</p>
+      <p class="lede r" style="--i:4" data-lang="en">Lexi comes from <em>lexicon</em>. We build three focused Windows instruments: a translator for Ren'Py visual novels, a fast download manager, and system-wide voice dictation.</p>
+      <p class="lede r" style="--i:4" data-lang="tr">Lexi adı <em>lexicon</em> (sözlük) kelimesinden gelir. Windows için üç odaklı masaüstü aracı geliştiriyoruz: Ren'Py görsel roman çevirmeni, hızlı indirme yöneticisi ve sistem genelinde sesli dikte.</p>
       <div class="cta r" style="--i:5">
-        <a class="btn btn--solid" href="#apps">Explore the apps <span aria-hidden="true">&darr;</span></a>
+        <a class="btn btn--solid" href="#apps">
+          <span data-lang="en">Explore the 3 apps</span>
+          <span data-lang="tr">3 uygulamayı incele</span>
+          <span aria-hidden="true">&darr;</span>
+        </a>
       </div>
     </div>
-    <p class="hero__scroll r" style="--i:6" aria-hidden="true">Scroll to enter the core</p>
+    <p class="hero__scroll r" style="--i:6" aria-hidden="true">
+      <span data-lang="en">Scroll to enter the core</span>
+      <span data-lang="tr">Aşağı kaydır</span>
+    </p>
   </section>
 
   <section class="flight" aria-label="Transition">
-    <p class="flight__caption">One core <span>—</span> two tools</p>
+    <p class="flight__caption">
+      <span data-lang="en">One core <span>—</span> three instruments</span>
+      <span data-lang="tr">Tek çekirdek <span>—</span> üç araç</span>
+    </p>
   </section>
 
+  <!-- ============ A. Three Apps Showcase ============ -->
   <section class="apps" id="apps" aria-labelledby="apps-title">
     <header class="apps__head reveal">
-      <p class="eyebrow">The apps <span>/</span> Free to start</p>
-      <h2 id="apps-title">Pick your instrument<em>.</em></h2>
+      <p class="eyebrow">
+        <span data-lang="en">THE APPS <span>/</span> WINDOWS 10 &amp; 11 (64-BIT)</span>
+        <span data-lang="tr">UYGULAMALAR <span>/</span> WINDOWS 10 VE 11 (64-BIT)</span>
+      </p>
+      <h2 id="apps-title">
+        <span data-lang="en">Pick your instrument<em>.</em></span>
+        <span data-lang="tr">Aracınızı seçin<em>.</em></span>
+      </h2>
     </header>
 
-    <div class="apps__grid">
+    <div class="apps__grid apps__grid--three">
+      <!-- 01: Lexi Ren'Py Translator -->
       <article class="app reveal" aria-labelledby="app-1">
-        <div class="app__meta"><span>01</span><span>Windows</span></div>
-        <h3 id="app-1">Lexi Ren'Py Translator</h3>
-        <p class="app__lede">Translates Ren'Py visual novels into other languages. It writes translations into the game's <code>tl/</code> folder, and makes a backup first.</p>
+        <div class="app__meta"><span>01</span><span lang="en">v0.4.1 &middot; Windows</span></div>
+        <h3 id="app-1" lang="en">LEXI REN'PY TRANSLATOR</h3>
+        <p class="app__lede" data-lang="en">Translates Ren'Py visual novels into other languages. Makes an automatic backup first, protects character names and tags, and writes directly to the game's <code>tl/</code> folder.</p>
+        <p class="app__lede" data-lang="tr">Ren'Py görsel romanlarını başka dillere çevirir. Önce otomatik yedek alır, karakter adlarını ve etiketleri korur ve çeviriyi doğrudan oyunun <code>tl/</code> klasörüne yazar.</p>
         <dl class="spec">
-          <div><dt>Basic</dt><dd>Free. No account, no sign-in.</dd></div>
-          <div><dt>Plus</dt><dd>$7 / month. Bring your own AI key for AI translation.</dd></div>
-          <div><dt>Pro</dt><dd>$12 / month. Credits feature coming soon.</dd></div>
-          <div><dt>License</dt><dd>One license, one computer.</dd></div>
-          <div><dt>Interface</dt><dd>Available in 11 languages.</dd></div>
+          <div>
+            <dt>BASIC</dt>
+            <dd><span data-lang="en">Free. Machine translation engines, no account.</span><span data-lang="tr">Ücretsiz. Makine çevirisi motorları, hesapsız.</span></dd>
+          </div>
+          <div>
+            <dt>PLUS / PRO</dt>
+            <dd><span data-lang="en">$7 / $12 mo. Bring your own AI API key.</span><span data-lang="tr">$7 / $12 ay. Kendi AI anahtarınızla çeviri.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">TOOLS</span><span data-lang="tr">ARAÇLAR</span></dt>
+            <dd><span data-lang="en">Glossary, translation memory, editor, auto-fonts.</span><span data-lang="tr">Sözlük, çeviri belleği, editör, otomatik font.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">INTERFACE</span><span data-lang="tr">ARAYÜZ</span></dt>
+            <dd><span data-lang="en">11 languages, 12 color themes.</span><span data-lang="tr">11 arayüz dili, 12 renk teması.</span></dd>
+          </div>
         </dl>
         <div class="app__actions">
-          <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator" rel="noopener">Download on GitHub <span aria-hidden="true">&nearr;</span></a>
-          <a class="more" href="#translator">How it works <span aria-hidden="true">&darr;</span></a>
+          <a class="btn btn--solid" href="https://lexi-apps.github.io/lexi-renpy-translator/">
+            <span data-lang="en">Explore Page</span>
+            <span data-lang="tr">Sayfayı İncele</span>
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a class="more" href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
+            <span data-lang="en">Download v0.4.1</span>
+            <span data-lang="tr">v0.4.1 İndir</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
         </div>
       </article>
 
+      <!-- 02: Lexi Download Manager -->
       <article class="app reveal" aria-labelledby="app-2">
-        <div class="app__meta"><span>02</span><span>v0.2.4 &middot; Windows</span></div>
-        <h3 id="app-2">Lexi Download Manager</h3>
-        <p class="app__lede">A download manager for Windows. Free, with no ads and no account.</p>
+        <div class="app__meta"><span>02</span><span lang="en">v0.2.4 &middot; Windows</span></div>
+        <h3 id="app-2" lang="en">LEXI DOWNLOAD MANAGER</h3>
+        <p class="app__lede" data-lang="en">Multi-part download accelerator for Windows. Captures browser downloads, 1000+ video sites, live HLS streams, torrents, and cloud file hosts with zero ads.</p>
+        <p class="app__lede" data-lang="tr">Windows için çok parçalı indirme hızlandırıcısı. Tarayıcı indirmelerini, 1000+ video sitesini, canlı HLS yayınlarını, torrentleri ve bulut dosya sitelerini reklamsız indirir.</p>
         <dl class="spec">
-          <div><dt>Price</dt><dd>Free.</dd></div>
-          <div><dt>Ads</dt><dd>None.</dd></div>
-          <div><dt>Account</dt><dd>Not needed.</dd></div>
+          <div>
+            <dt><span data-lang="en">PRICE</span><span data-lang="tr">FİYAT</span></dt>
+            <dd><span data-lang="en">100% Free. No ads, no account.</span><span data-lang="tr">%100 Ücretsiz. Reklam yok, hesap yok.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">ENGINES</span><span data-lang="tr">MOTORLAR</span></dt>
+            <dd><span data-lang="en">Multi-part aria2c, yt-dlp, HLS, BitTorrent.</span><span data-lang="tr">Çok parçalı aria2c, yt-dlp, HLS, BitTorrent.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">HOSTS</span><span data-lang="tr">SİTELER</span></dt>
+            <dd><span data-lang="en">Mega, Gofile, Pixeldrain, MediaFire &amp; video sites.</span><span data-lang="tr">Mega, Gofile, Pixeldrain, MediaFire ve video siteleri.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">PACKAGES</span><span data-lang="tr">PAKETLER</span></dt>
+            <dd><span data-lang="en">Installer, Portable ZIP &amp; Browser Extension.</span><span data-lang="tr">Kurulum, Taşınabilir ZIP ve Tarayıcı Eklentisi.</span></dd>
+          </div>
         </dl>
         <div class="app__actions">
-          <a class="btn btn--solid" href="https://lexi-apps.github.io/lexi-download-manager/">Explore Download Manager <span aria-hidden="true">&rarr;</span></a>
-          <a class="more" href="https://github.com/lexi-apps/lexi-download-manager/releases/latest" rel="noopener">Download v0.2.4 <span aria-hidden="true">&nearr;</span></a>
+          <a class="btn btn--solid" href="https://lexi-apps.github.io/lexi-download-manager/">
+            <span data-lang="en">Explore Page</span>
+            <span data-lang="tr">Sayfayı İncele</span>
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a class="more" href="https://github.com/lexi-apps/lexi-download-manager/releases/latest" rel="noopener">
+            <span data-lang="en">Download v0.2.4</span>
+            <span data-lang="tr">v0.2.4 İndir</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- 03: LexiDictate -->
+      <article class="app reveal" aria-labelledby="app-3">
+        <div class="app__meta"><span>03</span><span lang="en">v0.6.0 &middot; Windows</span></div>
+        <h3 id="app-3" lang="en">LEXIDICTATE</h3>
+        <p class="app__lede" data-lang="en">System-wide voice dictation for any Windows text field powered by Gemini Live streaming and full-audio Gemini Flash verification, using your own API key.</p>
+        <p class="app__lede" data-lang="tr">Herhangi bir Windows metin kutusuna kendi API anahtarınızla Gemini Live canlı akışı ve tam ses Gemini Flash doğrulamasıyla sesli dikte ve çeviri yapar.</p>
+        <dl class="spec">
+          <div>
+            <dt><span data-lang="en">PRICE</span><span data-lang="tr">FİYAT</span></dt>
+            <dd><span data-lang="en">Freeware. Bring your own Google AI Studio key.</span><span data-lang="tr">Ücretsiz. Kendi Google AI Studio anahtarınızla.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">ACCURACY</span><span data-lang="tr">DOĞRULUK</span></dt>
+            <dd><span data-lang="en">Live stream + full recorded audio verification.</span><span data-lang="tr">Canlı akış + kaydedilen tam ses doğrulaması.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">MODES</span><span data-lang="tr">MODLAR</span></dt>
+            <dd><span data-lang="en">Smart Polish, Verbatim &amp; 14-language translation.</span><span data-lang="tr">Akıllı düzeltme, birebir yazım ve 14 dilde çeviri.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">DESKTOP</span><span data-lang="tr">MASAÜSTÜ</span></dt>
+            <dd><span data-lang="en">Focus-aware capsule, multi-key pool, Game Mode.</span><span data-lang="tr">Odak duyarlı kapsül, çoklu anahtar, Oyun Modu.</span></dd>
+          </div>
+        </dl>
+        <div class="app__actions">
+          <a class="btn btn--solid" href="https://lexi-apps.github.io/lexi-dictate/">
+            <span data-lang="en">Explore Page</span>
+            <span data-lang="tr">Sayfayı İncele</span>
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+          <a class="more" href="https://github.com/lexi-apps/lexi-dictate/releases/latest" rel="noopener">
+            <span data-lang="en">Download v0.6.0</span>
+            <span data-lang="tr">v0.6.0 İndir</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
         </div>
       </article>
     </div>
@@ -167,259 +326,122 @@
 
   <div class="deep">
 
-  <!-- ============ A. Translator deep dive ============ -->
-  <section class="sec tr" id="translator" aria-labelledby="tr-title">
+  <!-- ============ B. Brand Principles ============ -->
+  <section class="sec" id="principles" aria-labelledby="pr-title">
     <div class="wrap">
       <header class="sec__head reveal">
-        <p class="eyebrow">01 <span>/</span> Lexi Ren'Py Translator <span>/</span> Windows</p>
-        <h2 id="tr-title">Point. Choose. Translate<em>.</em></h2>
-        <p class="sec__lede">Lexi Ren'Py Translator takes a Ren'Py visual novel and writes it out in another language. The whole job is three steps.</p>
+        <p class="eyebrow">
+          <span data-lang="en">STUDIO PRINCIPLES <span>/</span> LEXI APPS</span>
+          <span data-lang="tr">TASARIM İLKELERİ <span>/</span> LEXI APPS</span>
+        </p>
+        <h2 id="pr-title">
+          <span data-lang="en">Built for your machine<em>.</em></span>
+          <span data-lang="tr">Bilgisayarınız için üretildi<em>.</em></span>
+        </h2>
+        <p class="sec__lede" data-lang="en">Every Lexi instrument follows the same engineering rules on Windows: fast startup, local data ownership, and zero visual noise.</p>
+        <p class="sec__lede" data-lang="tr">Her Lexi aracı Windows üzerinde aynı mühendislik kurallarını izler: hızlı açılış, yerel veri sahipliği ve sıfır görsel gürültü.</p>
       </header>
 
-      <h3 class="label" id="tr-how">How it works</h3>
-      <ol class="steps" data-progress aria-labelledby="tr-how">
-        <li class="step">
-          <span class="step__n" aria-hidden="true">01</span>
-          <h4>Pick the game folder</h4>
-          <p>Point the app at the folder of your Ren'Py game.</p>
-        </li>
-        <li class="step">
-          <span class="step__n" aria-hidden="true">02</span>
-          <h4>Choose a language and an engine</h4>
-          <p>Pick the language you want and how to get there: the free machine translation engines in Basic, or AI translation with your own API key in Plus.</p>
-        </li>
-        <li class="step">
-          <span class="step__n" aria-hidden="true">03</span>
-          <h4>Translate</h4>
-          <p>A backup is made first. Then the translations are written to the game's <code>tl/</code> folder. If the run stops, it can be resumed where it left off.</p>
-        </li>
-      </ol>
-
-      <h3 class="label" id="tr-screens">The app, screen by screen</h3>
-      <div class="viewer reveal" data-viewer>
-        <div class="viewer__tabs" role="tablist" aria-labelledby="tr-screens">
-          <button type="button" role="tab" id="shot-tab-1" aria-controls="shot-1" aria-selected="true"><span>01</span>Overview</button>
-          <button type="button" role="tab" id="shot-tab-2" aria-controls="shot-2" aria-selected="false" tabindex="-1"><span>02</span>Game scan</button>
-          <button type="button" role="tab" id="shot-tab-3" aria-controls="shot-3" aria-selected="false" tabindex="-1"><span>03</span>Engine settings</button>
-          <button type="button" role="tab" id="shot-tab-4" aria-controls="shot-4" aria-selected="false" tabindex="-1"><span>04</span>Quality &amp; editor</button>
-          <button type="button" role="tab" id="shot-tab-5" aria-controls="shot-5" aria-selected="false" tabindex="-1"><span>05</span>Tools &amp; coverage</button>
-          <button type="button" role="tab" id="shot-tab-6" aria-controls="shot-6" aria-selected="false" tabindex="-1"><span>06</span>Glossary</button>
-          <button type="button" role="tab" id="shot-tab-7" aria-controls="shot-7" aria-selected="false" tabindex="-1"><span>07</span>Themes</button>
+      <dl class="index reveal" aria-labelledby="pr-title">
+        <div>
+          <dt><span data-lang="en">Local-first</span><span data-lang="tr">Yerel öncelikli</span></dt>
+          <dd>
+            <span data-lang="en">Your databases, translation memories, download queues, and encrypted credentials stay on your own computer. No cloud relay stands between you and your work.</span>
+            <span data-lang="tr">Veritabanlarınız, çeviri bellekleriniz, indirme kuyruklarınız ve şifreli anahtarlarınız kendi bilgisayarınızda kalır. Arada hiçbir bulut sunucusu yoktur.</span>
+          </dd>
         </div>
-        <div class="viewer__frame frame">
-          <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
-          <figure class="shot is-on" id="shot-1" role="tabpanel" aria-labelledby="shot-tab-1">
-            <img src="img/translator/01-overview.png" width="1440" height="900" loading="lazy" decoding="async" alt="Lexi Ren'Py Translator screenshot: the Overview screen of the app.">
-            <figcaption><span>Fig. 01 / 07</span>Overview</figcaption>
-          </figure>
-          <figure class="shot" id="shot-2" role="tabpanel" aria-labelledby="shot-tab-2">
-            <img src="img/translator/02-scan.png" width="1440" height="900" loading="lazy" decoding="async" alt="Lexi Ren'Py Translator screenshot: the Game scan screen.">
-            <figcaption><span>Fig. 02 / 07</span>Game scan</figcaption>
-          </figure>
-          <figure class="shot" id="shot-3" role="tabpanel" aria-labelledby="shot-tab-3">
-            <img src="img/translator/03-engine-settings.png" width="1440" height="900" loading="lazy" decoding="async" alt="Lexi Ren'Py Translator screenshot: the Engine settings screen, where a translation engine is chosen.">
-            <figcaption><span>Fig. 03 / 07</span>Engine settings</figcaption>
-          </figure>
-          <figure class="shot" id="shot-4" role="tabpanel" aria-labelledby="shot-tab-4">
-            <img src="img/translator/04-quality-editor.png" width="1440" height="900" loading="lazy" decoding="async" alt="Lexi Ren'Py Translator screenshot: the Quality and editor screen with the translation editor and quality checks.">
-            <figcaption><span>Fig. 04 / 07</span>Quality &amp; editor</figcaption>
-          </figure>
-          <figure class="shot" id="shot-5" role="tabpanel" aria-labelledby="shot-tab-5">
-            <img src="img/translator/05-tools-coverage.png" width="1440" height="900" loading="lazy" decoding="async" alt="Lexi Ren'Py Translator screenshot: the Tools and coverage screen.">
-            <figcaption><span>Fig. 05 / 07</span>Tools &amp; coverage</figcaption>
-          </figure>
-          <figure class="shot" id="shot-6" role="tabpanel" aria-labelledby="shot-tab-6">
-            <img src="img/translator/06-glossary.png" width="1440" height="900" loading="lazy" decoding="async" alt="Lexi Ren'Py Translator screenshot: the Glossary screen.">
-            <figcaption><span>Fig. 06 / 07</span>Glossary</figcaption>
-          </figure>
-          <figure class="shot" id="shot-7" role="tabpanel" aria-labelledby="shot-tab-7">
-            <img src="img/translator/07-themes.png" width="1440" height="900" loading="lazy" decoding="async" alt="Lexi Ren'Py Translator screenshot: the Themes screen with the color themes.">
-            <figcaption><span>Fig. 07 / 07</span>Themes</figcaption>
-          </figure>
+        <div>
+          <dt><span data-lang="en">Zero ads</span><span data-lang="tr">Sıfır reklam</span></dt>
+          <dd>
+            <span data-lang="en">No banners, no tracking pixels, no telemetry beacons, and no bundled third-party adware in any installer.</span>
+            <span data-lang="tr">Hiçbir kurulum dosyasında reklam şeridi, izleme pikseli, telemetri veya üçüncü taraf istenmeyen yazılım bulunmaz.</span>
+          </dd>
         </div>
-      </div>
-
-      <figure class="promo reveal">
-        <video autoplay muted loop playsinline preload="metadata" poster="img/video/lexi_demo_poster.jpg" width="1280" height="720" aria-label="Lexi demo video: scanning a Ren'Py game, choosing Turkish, translating, then playing the game in Turkish."><source src="img/video/lexi_demo_1280.mp4" type="video/mp4"></video>
-        <figcaption>Scan, pick a language, translate — then play.</figcaption>
-      </figure>
-
-      <div class="cards reveal" role="group" aria-label="Lexi feature cards. Select a card to open it larger.">
-        <a class="card card--wide" href="img/cards/card-hero.jpg"><img src="img/cards/card-hero-800.jpg" srcset="img/cards/card-hero-800.jpg 800w, img/cards/card-hero.jpg 1600w" sizes="(max-width: 760px) 92vw, 46vw" width="1600" height="900" decoding="async" loading="lazy" alt="A visual novel scene translated by Lexi, with the caption: Play it in your language."></a>
-        <a class="card card--wide" href="img/cards/card-languages.jpg"><img src="img/cards/card-languages-800.jpg" srcset="img/cards/card-languages-800.jpg 800w, img/cards/card-languages.jpg 1600w" sizes="(max-width: 760px) 92vw, 46vw" width="1600" height="900" loading="lazy" decoding="async" alt="The same visual novel line shown in six languages, one line per language."></a>
-        <a class="card" href="img/cards/card-names.jpg"><img src="img/cards/card-names-800.jpg" srcset="img/cards/card-names-800.jpg 800w, img/cards/card-names.jpg 1600w" sizes="(max-width: 760px) 92vw, 46vw" width="1600" height="900" loading="lazy" decoding="async" alt="A translated scene where the character name stays unchanged."></a>
-        <a class="card" href="img/cards/card-fonts.jpg"><img src="img/cards/card-fonts-800.jpg" srcset="img/cards/card-fonts-800.jpg 800w, img/cards/card-fonts.jpg 1600w" sizes="(max-width: 760px) 92vw, 46vw" width="1600" height="900" loading="lazy" decoding="async" alt="Japanese and Korean text drawn with real letters instead of empty boxes."></a>
-        <a class="card" href="img/cards/card-menus.jpg"><img src="img/cards/card-menus-800.jpg" srcset="img/cards/card-menus-800.jpg 800w, img/cards/card-menus.jpg 1600w" sizes="(max-width: 760px) 92vw, 46vw" width="1600" height="900" loading="lazy" decoding="async" alt="A Ren'Py game menu shown in a translated language."></a>
-        <a class="card" href="img/cards/card-themes.jpg"><img src="img/cards/card-themes-800.jpg" srcset="img/cards/card-themes-800.jpg 800w, img/cards/card-themes.jpg 1600w" sizes="(max-width: 760px) 92vw, 46vw" width="1600" height="900" loading="lazy" decoding="async" alt="Lexi color themes and a custom background image."></a>
-      </div>
-
-      <h3 class="label" id="tr-inside">What is inside</h3>
-      <dl class="index reveal" aria-labelledby="tr-inside">
-        <div><dt>Engines</dt><dd>Free machine translation engines in Basic: Google, Edge, Bing, Yandex, and an automatic free chain. Plus adds AI translation with your own API key.</dd></div>
-        <div><dt>Memory</dt><dd>Translation memory: lines that are already translated are reused.</dd></div>
-        <div><dt>Resume</dt><dd>A run that stops can be resumed where it left off.</dd></div>
-        <div><dt>Backups</dt><dd>A backup is made before anything is written.</dd></div>
-        <div><dt>Names</dt><dd>Character names are kept as they are, not translated like ordinary words. You can see the list and remove a word that is not a name.</dd></div>
-        <div><dt>Fonts</dt><dd>For Chinese, Japanese, Korean, Thai and Hindi, a suitable font is added to the game automatically.</dd></div>
-        <div><dt>Menus</dt><dd>Ren'Py's own menu texts (Save, Load, Preferences) come pre-translated in 21 languages.</dd></div>
-        <div><dt>Game updates</dt><dd>When a game gets a new version, your previous translation loads back; only new and changed lines are translated.</dd></div>
-        <div><dt>Glossary</dt><dd>A glossary of terms.</dd></div>
-        <div><dt>Editor</dt><dd>A translation editor and quality checks.</dd></div>
-        <div><dt>Preview</dt><dd>Live preview.</dd></div>
-        <div><dt>In-game</dt><dd>An optional in-game language switcher.</dd></div>
-        <div><dt>Direction</dt><dd>Right-to-left languages are supported.</dd></div>
-        <div><dt>Interface</dt><dd>In 11 languages: English, Turkish, Russian, Chinese, Japanese, Spanish, Brazilian Portuguese, German, French, Korean and Polish.</dd></div>
-        <div><dt>Themes</dt><dd>12 color themes.</dd></div>
-        <div><dt>Updates</dt><dd>Automatic updates.</dd></div>
-        <div><dt>Support</dt><dd>A built-in &ldquo;Report a problem&rdquo;.</dd></div>
+        <div>
+          <dt><span data-lang="en">No lock-in</span><span data-lang="tr">Hesap şartı yok</span></dt>
+          <dd>
+            <span data-lang="en">Lexi Download Manager, LexiDictate, and Lexi Ren'Py Translator Basic run immediately after installation without creating an account.</span>
+            <span data-lang="tr">Lexi Download Manager, LexiDictate ve Lexi Ren'Py Translator Basic kurulumdan hemen sonra hiçbir hesap açmadan çalışır.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Safe backups</span><span data-lang="tr">Güvenli yedek</span></dt>
+          <dd>
+            <span data-lang="en">Before modifying a game folder or migrating a database schema, Lexi creates an automatic local backup so you never lose work.</span>
+            <span data-lang="tr">Bir oyun klasörüne yazmadan veya veritabanı şemasını güncellemeden önce otomatik yerel yedek alınır; hiçbir veriniz kaybolmaz.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Self-updating</span><span data-lang="tr">Otomatik güncel</span></dt>
+          <dd>
+            <span data-lang="en">Each app checks official GitHub Releases for new versions and updates cleanly in the background.</span>
+            <span data-lang="tr">Her uygulama resmi GitHub Sürümler sayfasını kontrol eder ve yeni sürümleri arka planda güvenle kurar.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Direct support</span><span data-lang="tr">Doğrudan destek</span></dt>
+          <dd>
+            <span data-lang="en">Built-in diagnostic issue reporting with automatic secret redaction, plus direct email contact at <code>lexiapps@protonmail.com</code>.</span>
+            <span data-lang="tr">Gizli bilgileri otomatik maskeleyen yerleşik sorun bildirme aracı ve <code>lexiapps@protonmail.com</code> üzerinden doğrudan iletişim.</span>
+          </dd>
+        </div>
       </dl>
-
-      <h3 class="label" id="tr-problems">Common problems, and where Lexi stands</h3>
-      <dl class="index reveal" aria-labelledby="tr-problems">
-        <div><dt>Broken tags</dt><dd>Handled. A translation with a damaged tag such as {b} or a damaged [variable] is rejected and retried.</dd></div>
-        <div><dt>Translated names</dt><dd>Handled in the default free engine: character names are not translated and stay in Latin letters. Other engines protect names less strictly.</dd></div>
-        <div><dt>Empty boxes</dt><dd>Handled. For Chinese, Japanese, Korean, Thai and Hindi, a suitable font is added to the game automatically.</dd></div>
-        <div><dt>English menus</dt><dd>Handled. Ren'Py's own menu texts come with the official Ren'Py translation in 21 languages.</dd></div>
-        <div><dt>Missing screen texts</dt><dd>Handled. Buttons and labels are scanned in games with compiled scripts (.rpyc) and archives (.rpa).</dd></div>
-        <div><dt>Game updates</dt><dd>Handled. Your previous translation is restored, and only new or changed lines are translated.</dd></div>
-        <div><dt>Interrupted runs</dt><dd>Handled. A translation that stops carries on from where it left off.</dd></div>
-        <div><dt>Overwritten files</dt><dd>Handled. A backup is made first, and the translation is written to the game's tl folder.</dd></div>
-        <div><dt>Switching in-game</dt><dd>Partly. After a language change inside the game, some texts saved in variables can stay in the old language.</dd></div>
-        <div><dt>Old translations</dt><dd>Handled. &ldquo;Translate from scratch&rdquo; redoes a game you translated before, without the old translation or memory. A backup is made first; free engines only.</dd></div>
-        <div><dt>Gender and context</dt><dd>Partly. Machine translation can get gender and context wrong, and how often depends on the game and the language.</dd></div>
-        <div><dt>Note</dt><dd>This is machine translation: quality changes with the game and the language.</dd></div>
-      </dl>
-
-      <p class="sec__cta reveal">
-        <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator" rel="noopener">Download on GitHub <span aria-hidden="true">&nearr;</span></a>
-      </p>
     </div>
   </section>
 
-  <!-- ============ B. Plans ============ -->
-  <section class="sec plans" id="plans" aria-labelledby="plans-title">
-    <div class="wrap">
-      <header class="sec__head reveal">
-        <p class="eyebrow">Plans <span>/</span> Lexi Ren'Py Translator</p>
-        <h2 id="plans-title">Plans, line by line<em>.</em></h2>
-      </header>
-
-      <div class="ledger reveal" role="table" aria-labelledby="plans-title" data-progress>
-        <div class="ledger__row ledger__row--head" role="row">
-          <span class="ledger__k" role="columnheader"><span class="vh">Item</span></span>
-          <span role="columnheader"><b>Basic</b><i>Free</i></span>
-          <span role="columnheader"><b>Plus</b><i>$7 / month</i></span>
-          <span role="columnheader"><b>Pro</b><i>$12 / month</i></span>
-        </div>
-        <div class="ledger__row" role="row">
-          <span class="ledger__k" role="rowheader">Account</span>
-          <span role="cell">No account, no sign-in</span>
-          <span role="cell">Patreon membership</span>
-          <span role="cell">Patreon membership</span>
-        </div>
-        <div class="ledger__row" role="row">
-          <span class="ledger__k" role="rowheader">Machine translation engines</span>
-          <span role="cell"><i class="yes" aria-hidden="true"></i><span class="vh">Included</span></span>
-          <span role="cell"><i class="yes" aria-hidden="true"></i><span class="vh">Included</span></span>
-          <span role="cell"><i class="yes" aria-hidden="true"></i><span class="vh">Included</span></span>
-        </div>
-        <div class="ledger__row" role="row">
-          <span class="ledger__k" role="rowheader">AI translation with your own API key</span>
-          <span role="cell"><i class="no" aria-hidden="true"></i><span class="vh">Not included</span></span>
-          <span role="cell"><i class="yes" aria-hidden="true"></i><span class="vh">Included</span></span>
-          <span role="cell"><i class="yes" aria-hidden="true"></i><span class="vh">Included</span></span>
-        </div>
-        <div class="ledger__row" role="row">
-          <span class="ledger__k" role="rowheader">Lexi credits</span>
-          <span role="cell"><i class="no" aria-hidden="true"></i><span class="vh">Not included</span></span>
-          <span role="cell"><i class="no" aria-hidden="true"></i><span class="vh">Not included</span></span>
-          <span role="cell">Coming soon</span>
-        </div>
-        <div class="ledger__row ledger__row--sum" role="row">
-          <span class="ledger__k" role="rowheader">In short</span>
-          <span role="cell">Machine translation engines</span>
-          <span role="cell">Everything in Basic + AI translation with your own API key</span>
-          <span role="cell">Everything in Plus + Lexi credits (coming soon)</span>
-        </div>
-      </div>
-
-      <div class="plans__foot reveal">
-        <ul class="notes">
-          <li>Plus and Pro are Patreon memberships. Sign in with Patreon inside the app.</li>
-          <li>First run: Windows may show &ldquo;Windows protected your PC&rdquo; because Lexi is not code-signed yet. Click More info, then Run anyway. See the <a href="#faq">FAQ</a>.</li>
-          <li>One license = one computer.</li>
-          <li>An optional 3-day Plus trial is available once per computer.</li>
-          <li>Prefer a one-time tip without a membership? Use Buy Me a Coffee (voluntary support only; does not unlock Plus or Pro).</li>
-        </ul>
-        <div class="plans__actions">
-          <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator" rel="noopener">Download Basic <span aria-hidden="true">&nearr;</span></a>
-          <a class="btn" href="https://www.patreon.com/cw/LexiApps" rel="noopener">Plus and Pro on Patreon <span aria-hidden="true">&nearr;</span></a>
-          <a class="btn" href="https://buymeacoffee.com/lexiapps" rel="noopener">Buy Me a Coffee <span aria-hidden="true">&nearr;</span></a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ C. Download Manager ============ -->
-  <section class="sec dm" id="download-manager" aria-labelledby="dm-title">
-    <div class="wrap dm__grid">
-      <div class="dm__text reveal">
-        <p class="eyebrow">02 <span>/</span> Lexi Download Manager</p>
-        <h2 id="dm-title">Downloads, plainly<em>.</em></h2>
-        <p class="sec__lede">A download manager for Windows. Free, with no ads and no account.</p>
-        <dl class="spec">
-          <div><dt>Version</dt><dd>v0.2.3</dd></div>
-          <div><dt>System</dt><dd>Windows</dd></div>
-          <div><dt>Price</dt><dd>Free</dd></div>
-          <div><dt>Ads</dt><dd>None</dd></div>
-          <div><dt>Account</dt><dd>Not needed</dd></div>
-        </dl>
-        <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-download-manager" rel="noopener">Download v0.2.3 on GitHub <span aria-hidden="true">&nearr;</span></a>
-      </div>
-      <figure class="dm__shot frame reveal" data-progress>
-        <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
-        <img src="img/dm/main.png" width="1264" height="761" loading="lazy" decoding="async" alt="Lexi Download Manager main window: a list of downloads with size, progress, speed, time left and status columns, a sidebar that groups downloads by status and category, and a details panel for the selected download.">
-        <div class="dm__bar" aria-hidden="true"><i></i></div>
-        <figcaption><span>Fig. 01 / 01</span>Main window: the download list, the status and category sidebar, and the details of the selected download.</figcaption>
-      </figure>
-    </div>
-  </section>
-
-  <!-- ============ D. FAQ ============ -->
+  <!-- ============ C. FAQ ============ -->
   <section class="sec faq" id="faq" aria-labelledby="faq-title">
     <div class="wrap faq__grid">
       <header class="sec__head reveal">
-        <p class="eyebrow">FAQ <span>/</span> Lexi Apps</p>
-        <h2 id="faq-title">Short answers<em>.</em></h2>
+        <p class="eyebrow">
+          <span data-lang="en">FAQ <span>/</span> LEXI APPS</span>
+          <span data-lang="tr">SSS <span>/</span> LEXI APPS</span>
+        </p>
+        <h2 id="faq-title">
+          <span data-lang="en">Short answers<em>.</em></span>
+          <span data-lang="tr">Kısa yanıtlar<em>.</em></span>
+        </h2>
       </header>
       <div class="faq__list reveal">
         <details>
-          <summary><span>Is it really free?</span></summary>
-          <p>Lexi Ren'Py Translator Basic is free and comes with the machine translation engines. Lexi Download Manager is free, with no ads. Plus and Pro are paid Patreon memberships.</p>
+          <summary>
+            <span data-lang="en">Are the apps really free?</span>
+            <span data-lang="tr">Uygulamalar gerçekten ücretsiz mi?</span>
+          </summary>
+          <p data-lang="en">Lexi Download Manager and LexiDictate are 100% free with no paid tiers. Lexi Ren'Py Translator Basic is free with all machine translation engines; Plus ($7/month) and Pro ($12/month) are optional Patreon memberships for AI translation.</p>
+          <p data-lang="tr">Lexi Download Manager ve LexiDictate tamamen ücretsizdir. Lexi Ren'Py Translator Basic tüm makine çevirisi motorlarıyla ücretsizdir; Plus ($7/ay) ve Pro ($12/ay) ise yapay zekâ çevirisi için isteğe bağlı Patreon üyelikleridir.</p>
         </details>
         <details>
-          <summary><span>Do I need an account?</span></summary>
-          <p>Not for Basic, and not for Lexi Download Manager: no account, no sign-in. Plus and Pro are Patreon memberships, so for those you sign in with Patreon inside the app.</p>
+          <summary>
+            <span data-lang="en">Do I need an account to use Lexi apps?</span>
+            <span data-lang="tr">Kullanmak için hesap açmam gerekiyor mu?</span>
+          </summary>
+          <p data-lang="en">No account or sign-in is needed for Lexi Download Manager, LexiDictate, or Lexi Ren'Py Translator Basic. Only Ren'Py Translator Plus and Pro use Patreon sign-in inside the app.</p>
+          <p data-lang="tr">Lexi Download Manager, LexiDictate ve Lexi Ren'Py Translator Basic için hiçbir hesap veya giriş gerekmez. Yalnızca Ren'Py Translator Plus ve Pro uygulama içinde Patreon girişi kullanır.</p>
         </details>
         <details>
-          <summary><span>Windows says &ldquo;Windows protected your PC&rdquo;. What do I do?</span></summary>
-          <p>Windows may show this the first time you run the installer. It appears because Lexi is not code-signed yet (signing certificates are paid), not because a problem was found. Click <strong>More info</strong>, then <strong>Run anyway</strong>. Download Lexi only from the <a href="https://github.com/lexi-apps/lexi-renpy-translator/releases" rel="noopener">official GitHub releases page</a>.</p>
+          <summary>
+            <span data-lang="en">Windows says &ldquo;Windows protected your PC&rdquo;. What do I do?</span>
+            <span data-lang="tr">Windows &ldquo;Bilgisayarınız korundu&rdquo; uyarısı veriyor. Ne yapmalıyım?</span>
+          </summary>
+          <p data-lang="en">Windows SmartScreen may show this the first time you run an installer because the binaries are not code-signed yet (code-signing certificates are paid). Click <strong>More info</strong>, then <strong>Run anyway</strong>, and always download from our official GitHub releases.</p>
+          <p data-lang="tr">Kurulum dosyaları henüz ücretli dijital imza sertifikasıyla imzalanmadığı için Windows SmartScreen ilk çalıştırmada bu ekranı gösterebilir. <strong>Ek bilgi</strong> ve ardından <strong>Yine de çalıştır</strong> seçeneğine tıklayın; dosyaları her zaman resmi GitHub sayfalarımızdan indirin.</p>
         </details>
         <details>
-          <summary><span>Where do translations go?</span></summary>
-          <p>Into the game's <code>tl/</code> folder. A backup is made first.</p>
+          <summary>
+            <span data-lang="en">How can I support Lexi Apps?</span>
+            <span data-lang="tr">Lexi Apps'e nasıl destek olabilirim?</span>
+          </summary>
+          <p data-lang="en">You can support ongoing development and code-signing certificate costs via <a href="https://buymeacoffee.com/lexiapps" rel="noopener">Buy Me a Coffee</a> (one-time tip) or <a href="https://www.patreon.com/cw/LexiApps" rel="noopener">Patreon</a> (monthly membership).</p>
+          <p data-lang="tr">Geliştirme sürecine ve dijital imza sertifikası maliyetlerine <a href="https://buymeacoffee.com/lexiapps" rel="noopener">Buy Me a Coffee</a> (tek seferlik) veya <a href="https://www.patreon.com/cw/LexiApps" rel="noopener">Patreon</a> (aylık üyelik) üzerinden destek olabilirsiniz.</p>
         </details>
         <details>
-          <summary><span>Which languages does the interface speak?</span></summary>
-          <p>The interface of Lexi Ren'Py Translator is available in 11 languages: English, Turkish, Russian, Chinese, Japanese, Spanish, Brazilian Portuguese, German, French, Korean and Polish.</p>
-        </details>
-        <details>
-          <summary><span>What do Plus and Pro add?</span></summary>
-          <p>Plus ($7 / month) is everything in Basic, plus AI translation with your own API key. Pro ($12 / month) is everything in Plus, plus Lexi credits, which are coming soon. An optional 3-day Plus trial is available once per computer.</p>
-        </details>
-        <details>
-          <summary><span>Can I use one license on two computers?</span></summary>
-          <p>No. One license = one computer.</p>
+          <summary>
+            <span data-lang="en">Where do I report a bug or ask a question?</span>
+            <span data-lang="tr">Hata bildirimi veya sorular için nereye yazabilirim?</span>
+          </summary>
+          <p data-lang="en">Every app includes a built-in <strong>Report a problem</strong> tool under Settings / About that redacts personal paths and keys automatically. You can also write directly to <strong>lexiapps@protonmail.com</strong>.</p>
+          <p data-lang="tr">Her uygulamanın Ayarlar / Hakkında bölümünde kişisel dosya yollarını ve anahtarları otomatik gizleyen <strong>Sorun bildir</strong> aracı bulunur. Ayrıca doğrudan <strong>lexiapps@protonmail.com</strong> adresine yazabilirsiniz.</p>
         </details>
       </div>
     </div>
@@ -428,49 +450,107 @@
   </div>
 </main>
 
-<!-- ============ E. Final call + footer ============ -->
+<!-- ============ D. Final call + footer ============ -->
 <footer class="final" id="get" aria-labelledby="final-title">
   <div class="final__inner">
-    <p class="eyebrow reveal">Lexi Apps <span>/</span> Software for Windows</p>
-    <h2 id="final-title" class="reveal">Take your pick<em>.</em></h2>
+    <p class="eyebrow reveal">
+      <span data-lang="en">LEXI APPS <span>/</span> SOFTWARE FOR WINDOWS</span>
+      <span data-lang="tr">LEXI APPS <span>/</span> WINDOWS YAZILIMLARI</span>
+    </p>
+    <h2 id="final-title" class="reveal">
+      <span data-lang="en">Take your pick<em>.</em></span>
+      <span data-lang="tr">Aracınızı seçin<em>.</em></span>
+    </h2>
     <ul class="final__list reveal">
       <li>
-        <a href="https://github.com/lexi-apps/lexi-renpy-translator" rel="noopener">
+        <a href="https://lexi-apps.github.io/lexi-renpy-translator/">
           <span class="final__n">01</span>
-          <span class="final__name">Lexi Ren'Py Translator</span>
-          <span class="final__meta">Windows &middot; Basic is free</span>
-          <span class="final__go">Download <span aria-hidden="true">&nearr;</span></span>
+          <span class="final__name" lang="en">LEXI REN'PY TRANSLATOR</span>
+          <span class="final__meta">
+            <span data-lang="en">v0.4.1 &middot; Windows &middot; Basic is free</span>
+            <span data-lang="tr">v0.4.1 &middot; Windows &middot; Basic ücretsiz</span>
+          </span>
+          <span class="final__go">
+            <span data-lang="en">Explore</span>
+            <span data-lang="tr">İncele</span>
+            <span aria-hidden="true">&rarr;</span>
+          </span>
         </a>
       </li>
       <li>
-        <a href="https://github.com/lexi-apps/lexi-download-manager" rel="noopener">
+        <a href="https://lexi-apps.github.io/lexi-download-manager/">
           <span class="final__n">02</span>
-          <span class="final__name">Lexi Download Manager</span>
-          <span class="final__meta">v0.2.3 &middot; Windows &middot; Free</span>
-          <span class="final__go">Download <span aria-hidden="true">&nearr;</span></span>
+          <span class="final__name" lang="en">LEXI DOWNLOAD MANAGER</span>
+          <span class="final__meta">
+            <span data-lang="en">v0.2.4 &middot; Windows &middot; 100% Free</span>
+            <span data-lang="tr">v0.2.4 &middot; Windows &middot; %100 Ücretsiz</span>
+          </span>
+          <span class="final__go">
+            <span data-lang="en">Explore</span>
+            <span data-lang="tr">İncele</span>
+            <span aria-hidden="true">&rarr;</span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a href="https://lexi-apps.github.io/lexi-dictate/">
+          <span class="final__n">03</span>
+          <span class="final__name" lang="en">LEXIDICTATE</span>
+          <span class="final__meta">
+            <span data-lang="en">v0.6.0 &middot; Windows &middot; Freeware</span>
+            <span data-lang="tr">v0.6.0 &middot; Windows &middot; Ücretsiz</span>
+          </span>
+          <span class="final__go">
+            <span data-lang="en">Explore</span>
+            <span data-lang="tr">İncele</span>
+            <span aria-hidden="true">&rarr;</span>
+          </span>
         </a>
       </li>
     </ul>
   </div>
   <div class="foot">
-    <a class="brand" href="#top" aria-label="Lexi Apps, back to top">
+    <a class="brand" href="#top" aria-label="Lexi Apps, back to top" lang="en">
       <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
         <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
         <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
       </svg>
-      <span>Lexi Apps</span>
+      <span>LEXI APPS</span>
     </a>
     <ul>
+      <li><a href="https://lexi-apps.github.io/lexi-renpy-translator/">Ren'Py Translator</a></li>
+      <li><a href="https://lexi-apps.github.io/lexi-download-manager/">Download Manager</a></li>
+      <li><a href="https://lexi-apps.github.io/lexi-dictate/">LexiDictate</a></li>
       <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener">Patreon</a></li>
       <li><a href="https://buymeacoffee.com/lexiapps" rel="noopener">Buy Me a Coffee</a></li>
       <li><a href="https://github.com/lexi-apps" rel="noopener">GitHub</a></li>
-      <li><a href="https://github.com/lexi-apps/lexi-renpy-translator" rel="noopener">Ren'Py Translator</a></li>
-      <li><a href="https://github.com/lexi-apps/lexi-download-manager" rel="noopener">Download Manager</a></li>
+      <li><a href="mailto:lexiapps@protonmail.com">lexiapps@protonmail.com</a></li>
     </ul>
     <p>&copy; 2026 Lexi Apps</p>
   </div>
 </footer>
 
+<script>
+  function setLang(lang, save) {
+    document.documentElement.setAttribute('lang', lang);
+    var enBtn = document.getElementById('lang-en');
+    var trBtn = document.getElementById('lang-tr');
+    var cur = document.getElementById('lang-cur');
+    if (enBtn) enBtn.classList.toggle('is-on', lang === 'en');
+    if (trBtn) trBtn.classList.toggle('is-on', lang === 'tr');
+    if (cur) cur.textContent = lang.toUpperCase();
+    if (save) {
+      try { localStorage.setItem('lexi-user-lang', lang); } catch (e) {}
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    }
+    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+  }
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('lexi-user-lang'); } catch (e) {}
+    setLang(saved === 'tr' ? 'tr' : 'en', false);
+  })();
+</script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
