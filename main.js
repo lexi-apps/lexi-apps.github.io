@@ -405,6 +405,17 @@ function setupLightbox() {
     true
   );
 }
+/* Promo video: hareket azaltma tercihi varsa otomatik oynatmayi kapatir. */
+function setupPromoVideo() {
+  const v = document.querySelector('.promo video');
+  if (!v || !reduced) return;
+  v.removeAttribute('autoplay');
+  v.removeAttribute('loop');
+  v.controls = true;
+  v.pause();
+}
+
 setupLightbox();
+setupPromoVideo();
 
 boot();
