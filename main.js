@@ -28,6 +28,9 @@ function applyAccent(key, save) {
   root.setAttribute('data-accent', key);
   const out = $('#accent-name');
   if (out) out.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+  $$('[data-accent-choice]').forEach((btn) => {
+    btn.classList.toggle('is-on', btn.getAttribute('data-accent-choice') === key);
+  });
   if (sceneRef) sceneRef.setAccent(a[0]);
   if (save) {
     try { localStorage.setItem('lexi-accent', key); } catch (e) { /* storage unavailable: the choice lasts for this visit */ }
@@ -38,6 +41,12 @@ function setupAccent() {
   $$('.accent input').forEach((input) => {
     input.checked = input.value === current;
     input.addEventListener('change', () => { if (input.checked) applyAccent(input.value, true); });
+  });
+  $$('[data-accent-choice]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      applyAccent(btn.getAttribute('data-accent-choice'), true);
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    });
   });
   applyAccent(current, false);
 }
@@ -158,9 +167,7 @@ function freeBox(textEl, textTop, closing) {
 // what the scene does behind each part of the page (brightness, small camera move)
 const MOODS = [
   ['#apps', { dim: 0.42, x: 0, dolly: 0, roll: 0 }],
-  ['#translator', { dim: 0.36, x: -0.9, dolly: 1.5, roll: 0 }],
-  ['#plans', { dim: 0.3, x: 0, dolly: 5, roll: 0.07 }],
-  ['#download-manager', { dim: 0.4, x: 1.3, dolly: -0.5, roll: 0 }],
+  ['#principles', { dim: 0.34, x: -0.8, dolly: 2.5, roll: 0.04 }],
   ['#faq', { dim: 0.28, x: 0, dolly: 6, roll: -0.06 }],
 ];
 
