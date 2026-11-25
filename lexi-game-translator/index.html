@@ -78,8 +78,8 @@
   "publisher": { "@type": "Organization", "name": "Lexi Apps", "url": "https://lexiapps.dev/" },
   "offers": [
     { "@type": "Offer", "name": "Basic", "price": "0", "priceCurrency": "USD" },
-    { "@type": "Offer", "name": "Plus", "price": "7", "priceCurrency": "USD", "description": "Per month" },
-    { "@type": "Offer", "name": "Pro", "price": "12", "priceCurrency": "USD", "description": "Per month" }
+    { "@type": "Offer", "name": "Lexi Supporter", "price": "4", "priceCurrency": "USD", "description": "Per month on Patreon" },
+    { "@type": "Offer", "name": "Lexi Pro", "price": "6", "priceCurrency": "USD", "description": "Per month on Patreon" }
   ]
 }
 </script>
@@ -273,7 +273,7 @@
     </p>
   </section>
 
-  <!-- ============ Overview (Basic & Plus/Pro) ============ -->
+  <!-- ============ Overview (Basic & Patreon) ============ -->
   <section class="apps" id="apps" aria-labelledby="apps-title">
     <header class="apps__head reveal">
       <p class="eyebrow">
@@ -290,7 +290,7 @@
         <h3 id="app-1">
           <span data-lang="en">Basic — Free Machine Engines</span>
         </h3>
-        <p class="app__lede" data-lang="en">Translate across all 18 game engines using Google, Edge, Bing, Yandex, and an automatic free fallback chain. No account or sign-in required.</p>
+        <p class="app__lede" data-lang="en">Translate across all 18 game engines using the keyless built-in Google + Microsoft Edge fallback chain — or use Bing and Yandex with your own API key. No account or sign-in required.</p>
         <dl class="spec">
           <div>
             <dt><span data-lang="en">Price</span></dt>
@@ -326,23 +326,23 @@
       </article>
 
       <article class="app reveal" aria-labelledby="app-2">
-        <div class="app__meta"><span>02</span><span><span data-lang="en">Plus &amp; Pro &middot; Patreon</span></span></div>
+        <div class="app__meta"><span>02</span><span><span data-lang="en">Supporter &amp; Pro &middot; Patreon</span></span></div>
         <h3 id="app-2">
-          <span data-lang="en">Plus &amp; Pro — AI Translation</span>
+          <span data-lang="en">Lexi Pro — AI Translation</span>
         </h3>
-        <p class="app__lede" data-lang="en">Unlock cloud and local AI translation with your own API key in Plus ($7 / month) — including 1-click presets for Gemini, Groq, Mistral, OpenRouter, OpenAI, Claude, DeepSeek, and Ollama — or Pro ($12 / month, Lexi credits coming soon).</p>
+        <p class="app__lede" data-lang="en">Unlock cloud and local AI translation with Lexi Pro ($6 / month on Patreon) — including 1-click presets for Gemini, Groq, Mistral, OpenRouter, DeepSeek, Claude, Cerebras, OpenAI, Ollama, and LM Studio — and hide the in-game credit line. Or back development with Lexi Supporter ($4 / month).</p>
         <dl class="spec">
           <div>
-            <dt>PLUS</dt>
-            <dd><span data-lang="en">$7 / month. Everything in Basic + your own AI key &amp; cost cap.</span></dd>
+            <dt lang="en">LEXI SUPPORTER</dt>
+            <dd><span data-lang="en">$4 / month. Support ongoing development &amp; early devlogs (uses Basic free engines).</span></dd>
           </div>
           <div>
-            <dt>PRO</dt>
-            <dd><span data-lang="en">$12 / month. Everything in Plus + credits (soon).</span></dd>
+            <dt lang="en">LEXI PRO</dt>
+            <dd><span data-lang="en">$6 / month. Everything in Basic + cloud &amp; local AI (your own key) + cost cap + hide credit line.</span></dd>
           </div>
           <div>
             <dt><span data-lang="en">Trial</span></dt>
-            <dd><span data-lang="en">Optional 3-day Plus trial available once per computer.</span></dd>
+            <dd><span data-lang="en">Optional 3-day free AI trial available once per computer.</span></dd>
           </div>
           <div>
             <dt><span data-lang="en">License</span></dt>
@@ -351,7 +351,7 @@
         </dl>
         <div class="app__actions">
           <a class="btn" href="https://www.patreon.com/cw/LexiApps" rel="noopener">
-            <span data-lang="en">Plus &amp; Pro on Patreon</span>
+            <span data-lang="en">View tiers on Patreon</span>
             <span aria-hidden="true">&nearr;</span>
           </a>
           <a class="more" href="#support">
@@ -375,7 +375,7 @@
         <h2 id="tr-title">
           <span data-lang="en">Three clicks to play<em>.</em></span>
         </h2>
-        <p class="sec__lede" data-lang="en">Drop any supported game folder. Lexi detects the engine, configures Autopilot &amp; font patches where needed, backs up first, and translates with full resume support.</p>
+        <p class="sec__lede" data-lang="en">Drop any supported game folder or <code>.exe</code>. Lexi detects the engine, configures Autopilot &amp; font patches where needed, backs up first, and translates with full resume support.</p>
       </header>
 
       <h3 class="label" id="tr-how">
@@ -385,7 +385,7 @@
         <li class="step">
           <span class="step__n" aria-hidden="true">01</span>
           <h4>
-            <span data-lang="en">Drop the game folder</span>
+            <span data-lang="en">Drop the game folder or .exe</span>
           </h4>
           <p data-lang="en">Lexi auto-detects 18 engines — Ren'Py, RPG Maker 2000–MZ, Unity, Unreal 4/5, Godot 3/4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio.</p>
         </li>
@@ -394,7 +394,7 @@
           <h4>
             <span data-lang="en">Choose language &amp; engine</span>
           </h4>
-          <p data-lang="en">Use free built-in machine translation in Basic, or connect your own cloud/local AI key in Plus. Autopilot sets up Unity &amp; Unreal bridges and patches fonts automatically.</p>
+          <p data-lang="en">Use the keyless free Google + Edge chain in Basic (or Bing/Yandex with your own key), or connect your own cloud/local AI in Lexi Pro. Autopilot sets up Unity &amp; Unreal bridges and patches fonts automatically.</p>
         </li>
         <li class="step">
           <span class="step__n" aria-hidden="true">03</span>
@@ -529,14 +529,14 @@
       <dl class="index reveal" aria-labelledby="inside">
         <div><dt><span data-lang="en">18 Engines</span></dt><dd><span data-lang="en">Ren'Py, RPG Maker (2000/2003, XP, VX, VX Ace, MV, MZ), Unity (Mono/IL2CPP), Unreal 4 &amp; 5, Godot 3 &amp; 4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio.</span></dd></div>
         <div><dt><span data-lang="en">Autopilot</span></dt><dd><span data-lang="en">Automatic plugin setup and Live Bridge for Unity and Unreal games — no manual folder hunting or plugin wiring.</span></dd></div>
-        <div><dt><span data-lang="en">Auto Fonts</span></dt><dd><span data-lang="en">Automatic font patch for Turkish, Cyrillic, Japanese, Korean, Chinese, Thai, and Hindi so games show real letters instead of empty boxes.</span></dd></div>
+        <div><dt><span data-lang="en">Auto Fonts</span></dt><dd><span data-lang="en">Automatic font patch with bundled fallback fonts for Turkish and European accented Latin, Cyrillic, Greek, Vietnamese, Arabic/Hebrew, Japanese, Korean, Chinese, Thai, and Hindi so games show real letters instead of empty boxes.</span></dd></div>
         <div><dt><span data-lang="en">Names</span></dt><dd><span data-lang="en">Character names, speaker labels, variables, and markup tags stay protected instead of being translated like ordinary words.</span></dd></div>
-        <div><dt><span data-lang="en">Glossary</span></dt><dd><span data-lang="en">Context glossary for locking terms, place names, and recurring vocabulary across your whole playthrough.</span></dd></div>
+        <div><dt><span data-lang="en">Glossary</span></dt><dd><span data-lang="en">Context glossary and offline Context Bible for locking terms, place names, and speaker notes across your whole playthrough.</span></dd></div>
         <div><dt><span data-lang="en">Game Shelf</span></dt><dd><span data-lang="en">Keep recent games organized with cover art, adaptive palette colors, saved translations, and 1-click launch.</span></dd></div>
-        <div><dt><span data-lang="en">Backups</span></dt><dd><span data-lang="en">Automatic snapshot before anything is written to your game folder, with 1-click restore anytime.</span></dd></div>
-        <div><dt><span data-lang="en">Editor &amp; QA</span></dt><dd><span data-lang="en">Built-in quality check, 1-click Retranslate Problems, live line editor, CSV import/export, and 1-click shareable patch <code>.zip</code>.</span></dd></div>
-        <div><dt><span data-lang="en">Memory</span></dt><dd><span data-lang="en">Built-in translation memory reuses existing lines automatically — when a game updates, only new or changed lines are translated.</span></dd></div>
-        <div><dt><span data-lang="en">Engines &amp; AI</span></dt><dd><span data-lang="en">Free built-in chain (Google, Edge, Bing, Yandex) in Basic. Plus adds cloud &amp; local AI (OpenAI, Gemini, DeepSeek, Groq, Claude, Ollama) with strict cost caps.</span></dd></div>
+        <div><dt><span data-lang="en">Backups</span></dt><dd><span data-lang="en">Automatic verified snapshot before anything is written to your game folder (with your first original backup locked automatically) and 1-click restore anytime.</span></dd></div>
+        <div><dt><span data-lang="en">Editor &amp; QA</span></dt><dd><span data-lang="en">Built-in quality check, 1-click Retranslate Problems, live line editor, CSV import/export, 1-click shareable patch <code>.zip</code>, plus <code>.srt</code>/<code>.vtt</code> subtitles, Ren'Py mods, and free batch queue.</span></dd></div>
+        <div><dt><span data-lang="en">Memory</span></dt><dd><span data-lang="en">Built-in translation memory and saved translations reuse existing lines automatically — when a game updates, only new or changed lines are translated.</span></dd></div>
+        <div><dt><span data-lang="en">Engines &amp; AI</span></dt><dd><span data-lang="en">Keyless built-in chain (Google + Microsoft Edge with automatic fallback), plus Bing and Yandex with your own API key in Basic. Lexi Pro adds cloud &amp; local AI (Gemini, Groq, Mistral, OpenRouter, DeepSeek, Claude, OpenAI, Cerebras, Ollama, LM Studio, llama.cpp) with strict cost caps.</span></dd></div>
         <div><dt><span data-lang="en">12 UI Langs</span></dt><dd><span data-lang="en">12 interface languages (EN, TR, AR with full RTL, RU, ZH, JA, ES, PT-BR, DE, FR, KO, PL) and translation into 30+ target languages.</span></dd></div>
         <div><dt><span data-lang="en">Themes</span></dt><dd><span data-lang="en">Adaptive dark themes, high-contrast Paper &amp; Daylight light themes, and custom wallpaper backgrounds.</span></dd></div>
       </dl>
@@ -551,11 +551,11 @@
         </div>
         <div>
           <dt><span data-lang="en">Internet</span></dt>
-          <dd><span data-lang="en">Needed for the online translation engines (Google, Edge, Bing, Yandex) and cloud AI. Local AI with Ollama runs on your own computer. <a href="privacy.html">Privacy Policy</a></span></dd>
+          <dd><span data-lang="en">Needed for online translation engines (keyless Google + Microsoft Edge, key-based Bing/Yandex, and cloud AI). Local AI with Ollama, LM Studio, or llama.cpp runs offline on your own computer. <a href="privacy.html">Privacy Policy</a></span></dd>
         </div>
         <div>
-          <dt><span data-lang="en">API key (Plus)</span></dt>
-          <dd><span data-lang="en">Only for cloud AI translation: your own API key. Basic needs none.</span></dd>
+          <dt><span data-lang="en">API key</span></dt>
+          <dd><span data-lang="en">Not needed for the default free engine (Google + Microsoft Edge) or local AI. Required only if you use Bing, Yandex, or cloud AI services in Lexi Pro.</span></dd>
         </div>
       </dl>
 
@@ -565,7 +565,7 @@
       <dl class="index reveal" aria-labelledby="tr-problems">
         <div><dt><span data-lang="en">Broken tags</span></dt><dd><span data-lang="en">Protected across engines. Damaged markup tags or variables are flagged by quality checks and retried automatically.</span></dd></div>
         <div><dt><span data-lang="en">Translated names</span></dt><dd><span data-lang="en">Character names are detected and locked automatically so a name like Rose stays Rose instead of becoming a flower.</span></dd></div>
-        <div><dt><span data-lang="en">Empty boxes</span></dt><dd><span data-lang="en">Automatic font patching supplies compatible fonts for CJK, Turkish, Cyrillic, Thai, and Hindi scripts.</span></dd></div>
+        <div><dt><span data-lang="en">Empty boxes</span></dt><dd><span data-lang="en">Automatic font patching supplies bundled compatible fonts for Turkish and European accented Latin, Cyrillic, Greek, Vietnamese, Arabic/Hebrew, CJK, Thai, and Hindi scripts.</span></dd></div>
         <div><dt><span data-lang="en">Complex engines</span></dt><dd><span data-lang="en">Autopilot handles BepInEx/XUnity and UE4SS setup for Unity and Unreal titles, while simpler engines keep a clean UI with no plugin clutter.</span></dd></div>
         <div><dt><span data-lang="en">Interrupted runs</span></dt><dd><span data-lang="en">Progress is saved continuously; stopping or closing mid-run lets you resume from the exact line later.</span></dd></div>
         <div><dt><span data-lang="en">Honest note</span></dt><dd><span data-lang="en">Automated translation quality varies by engine, game structure, and language pair — the built-in editor is always ready when you want to refine lines.</span></dd></div>
@@ -589,8 +589,8 @@
         <div class="ledger__row ledger__row--head" role="row">
           <span class="ledger__k" role="columnheader"><span class="vh"><span data-lang="en">Item</span></span></span>
           <span role="columnheader"><b lang="en">Basic</b><i><span data-lang="en">Free</span></i></span>
-          <span role="columnheader"><b>Plus</b><i>$7 / <span data-lang="en">month</span></i></span>
-          <span role="columnheader"><b>Pro</b><i>$12 / <span data-lang="en">month</span></i></span>
+          <span role="columnheader"><b lang="en">Lexi Supporter</b><i>$4 / <span data-lang="en">month</span></i></span>
+          <span role="columnheader"><b lang="en">Lexi Pro</b><i>$6 / <span data-lang="en">month</span></i></span>
         </div>
         <div class="ledger__row" role="row">
           <span class="ledger__k" role="rowheader"><span data-lang="en">Account</span></span>
@@ -605,30 +605,42 @@
           <span role="cell"><i class="yes" aria-hidden="true"></i></span>
         </div>
         <div class="ledger__row" role="row">
-          <span class="ledger__k" role="rowheader"><span data-lang="en">Machine translation engines</span></span>
+          <span class="ledger__k" role="rowheader"><span data-lang="en">Keyless free engines (Google + Edge)</span></span>
           <span role="cell"><i class="yes" aria-hidden="true"></i></span>
           <span role="cell"><i class="yes" aria-hidden="true"></i></span>
           <span role="cell"><i class="yes" aria-hidden="true"></i></span>
         </div>
         <div class="ledger__row" role="row">
-          <span class="ledger__k" role="rowheader"><span data-lang="en">AI translation with your own API key</span></span>
-          <span role="cell"><i class="no" aria-hidden="true"></i></span>
+          <span class="ledger__k" role="rowheader"><span data-lang="en">Bing &amp; Yandex (own API key)</span></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
           <span role="cell"><i class="yes" aria-hidden="true"></i></span>
           <span role="cell"><i class="yes" aria-hidden="true"></i></span>
         </div>
         <div class="ledger__row" role="row">
-          <span class="ledger__k" role="rowheader"><span data-lang="en">Lexi credits</span></span>
+          <span class="ledger__k" role="rowheader"><span data-lang="en">Cloud &amp; local AI translation (own key / Ollama / LM Studio)</span></span>
           <span role="cell"><i class="no" aria-hidden="true"></i></span>
           <span role="cell"><i class="no" aria-hidden="true"></i></span>
-          <span role="cell"><span data-lang="en">Coming soon</span></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+        </div>
+        <div class="ledger__row" role="row">
+          <span class="ledger__k" role="rowheader"><span data-lang="en">Hide in-game &ldquo;Translated with Lexi&rdquo; line</span></span>
+          <span role="cell"><i class="no" aria-hidden="true"></i></span>
+          <span role="cell"><i class="no" aria-hidden="true"></i></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+        </div>
+        <div class="ledger__row" role="row">
+          <span class="ledger__k" role="rowheader"><span data-lang="en">Support development &amp; early devlogs</span></span>
+          <span role="cell"><i class="no" aria-hidden="true"></i></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
         </div>
       </div>
 
       <div class="plans__foot reveal">
         <ul class="notes">
-          <li><span data-lang="en">Plus and Pro are Patreon memberships. Sign in with Patreon inside the app.</span></li>
-          <li><span data-lang="en">One license = one computer. An optional 3-day Plus trial is available once per computer.</span></li>
-          <li><span data-lang="en">Basic never locks when a trial or membership ends — free engines keep working.</span></li>
+          <li><span data-lang="en">Lexi Supporter ($4 / month) supports ongoing development; Lexi Pro ($6 / month) unlocks cloud and local AI translation via Patreon sign-in inside the app.</span></li>
+          <li><span data-lang="en">One license = one computer. An optional 3-day free AI trial is available once per computer.</span></li>
+          <li><span data-lang="en">Basic never locks when a trial or membership ends — the keyless free engines keep working.</span></li>
           <li><span data-lang="en">Prefer a one-time tip without a membership? Use Buy Me a Coffee.</span></li>
         </ul>
         <div class="plans__actions">
@@ -637,7 +649,7 @@
             <span aria-hidden="true">&nearr;</span>
           </a>
           <a class="btn" href="https://www.patreon.com/cw/LexiApps" rel="noopener">
-            <span>Patreon (Plus / Pro)</span>
+            <span lang="en">Patreon (Supporter / Pro)</span>
             <span aria-hidden="true">&nearr;</span>
           </a>
           <a class="btn" href="https://buymeacoffee.com/lexiapps" rel="noopener">
@@ -666,15 +678,19 @@
           <p data-lang="en">18 engines: Ren'Py, RPG Maker (2000/2003, XP, VX, VX Ace, MV, MZ), Unity (Mono &amp; IL2CPP), Unreal Engine 4 &amp; 5, Godot 3 &amp; 4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio.</p>
         </details>
         <details>
+          <summary><span data-lang="en">How do I translate a Ren'Py game, step by step?</span></summary>
+          <p data-lang="en">Download and install the app, pick the game folder, choose your language and the free engine, press Translate, then pick the language in the game's menu. Our <a href="/renpy-translation-guide/">Ren'Py translation guide</a> walks through every step, with tips and short answers.</p>
+        </details>
+        <details>
           <summary><span data-lang="en">Where do translations go, and can I undo them?</span></summary>
           <p data-lang="en">Lexi writes translations in each engine's native format (such as Ren'Py's <code>tl/</code> folder, RPG Maker data files, or Unity/Unreal Live Bridge files) and creates an automatic local backup beforehand so you can restore in one click.</p>
         </details>
         <details>
           <summary><span data-lang="en">Windows says &ldquo;Windows protected your PC&rdquo;. What do I do?</span></summary>
-          <p data-lang="en">Click <strong>More info</strong>, then <strong>Run anyway</strong>. It appears because the installer is not code-signed yet (code-signing certificates are paid). Always download from our official GitHub releases. <a href="/install-help/"><span data-lang="en">Step-by-step guide</span></a>.</p>
+          <p data-lang="en">Click <strong>More info</strong>, then <strong>Run anyway</strong>. It appears because the installer is not code-signed yet (code-signing certificates are paid). Always download from our official GitHub releases. <a href="/install-help/">Step-by-step guide</a>.</p>
         </details>
         <details>
-          <summary><span data-lang="en">Can I use one Plus/Pro license on two computers?</span></summary>
+          <summary><span data-lang="en">Can I use one Lexi Pro license on two computers?</span></summary>
           <p data-lang="en">No. One license = one computer.</p>
         </details>
       </div>
@@ -731,6 +747,7 @@
       <li><a href="/lexi-dictate/" target="_blank" rel="noopener" lang="en">LexiDictate</a></li>
       <li><a href="privacy.html"><span data-lang="en">Privacy Policy</span></a></li>
       <li><a href="/install-help/"><span data-lang="en">Install help</span></a></li>
+      <li><a href="/renpy-translation-guide/"><span data-lang="en">Ren'Py guide</span></a></li>
       <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" lang="en">Discord</a></li>
       <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener" lang="en">Patreon</a></li>
       <li><a href="https://buymeacoffee.com/lexiapps" rel="noopener" lang="en">Buy Me a Coffee</a></li>

@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="en" class="no-gl is-ready">
+<head>
+<meta charset="utf-8">
+<script data-lexi-probe>
+/* Mirror only: if the main site provably answers, send the visitor there;
+   otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
+   tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var base = (local && q.get('probe') === 'fail') ? 'https://lexi-probe-test.invalid' : MAIN;
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    var fail = function () {                      // blocked, timed out or not our site: stay here
+      clearTimeout(timer);
+      try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+    };
+    // CORS fetch: only a real answer from our own site (JSON marker) counts, not an opaque one.
+    fetch(base + '/lexi-probe.json?probe=' + Date.now(),
+          { mode: 'cors', cache: 'no-store', credentials: 'omit', signal: ctl.signal })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        if (!d || d.site !== 'lexi-apps') throw 0;
+        clearTimeout(timer);                      // proven reachable: same page on the main site
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      })
+      .catch(fail);
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Translate a Ren'Py Game (Free, Step by Step) — Lexi Game Translator</title>
+<meta name="description" content="A free, step-by-step Ren'Py translation guide: translate any Ren'Py visual novel into your language with Lexi Game Translator. Tags, variables and menus stay intact, and a backup is made first.">
+<link rel="canonical" href="https://lexiapps.dev/renpy-translation-guide/">
+<link rel="alternate" hreflang="en" href="https://lexiapps.dev/renpy-translation-guide/">
+<link rel="alternate" hreflang="tr" href="https://lexiapps.dev/tr/renpy-translation-guide/">
+<link rel="alternate" hreflang="x-default" href="https://lexiapps.dev/renpy-translation-guide/">
+<meta name="theme-color" content="#05070a">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lexi Apps">
+<meta property="og:title" content="How to Translate a Ren'Py Game (Free, Step by Step)">
+<meta property="og:description" content="Translate a Ren'Py visual novel into your language for free with Lexi Game Translator, without breaking tags, variables or menus.">
+<meta property="og:url" content="https://lexiapps.dev/renpy-translation-guide/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:image" content="https://lexiapps.dev/img/translator/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lexi Game Translator app: overview of a translated game">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Translate a Ren'Py Game (Free, Step by Step)">
+<meta name="twitter:description" content="Translate a Ren'Py visual novel into your language for free with Lexi Game Translator, without breaking tags, variables or menus.">
+<meta name="twitter:image" content="https://lexiapps.dev/img/translator/share.png">
+<script type="application/ld+json" data-lang="en">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "How to translate a Ren'Py game, step by step",
+      "description": "A free, step-by-step Ren'Py translation guide: translate any Ren'Py visual novel into your language with Lexi Game Translator. Tags, variables and menus stay intact, and a backup is made first.",
+      "inLanguage": "en",
+      "url": "https://lexiapps.dev/renpy-translation-guide/",
+      "mainEntityOfPage": "https://lexiapps.dev/renpy-translation-guide/",
+      "image": "https://lexiapps.dev/img/translator/share.png",
+      "datePublished": "2026-11-25",
+      "dateModified": "2026-11-25",
+      "author": { "@type": "Organization", "name": "Lexi Apps", "url": "https://lexiapps.dev/" },
+      "publisher": { "@type": "Organization", "name": "Lexi Apps", "url": "https://lexiapps.dev/", "logo": { "@type": "ImageObject", "url": "https://lexiapps.dev/logo.svg" } },
+      "about": { "@type": "SoftwareApplication", "name": "Lexi Game Translator", "operatingSystem": "Windows 10, Windows 11", "applicationCategory": "UtilitiesApplication", "url": "https://lexiapps.dev/lexi-game-translator/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Lexi Apps", "item": "https://lexiapps.dev/" },
+        { "@type": "ListItem", "position": 2, "name": "Lexi Game Translator", "item": "https://lexiapps.dev/lexi-game-translator/" },
+        { "@type": "ListItem", "position": 3, "name": "Ren'Py translation guide", "item": "https://lexiapps.dev/renpy-translation-guide/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is Lexi Game Translator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Basic tier is free, needs no account or sign-in, and translates with the keyless built-in Google and Microsoft Edge chain (plus Bing and Yandex if you provide your own API key). AI translation is optional and unlocked with Lexi Pro ($6/month on Patreon), with a one-time 3-day free AI trial per computer." } },
+        { "@type": "Question", "name": "Will it change or damage my game files?", "acceptedAnswer": { "@type": "Answer", "text": "The game's own script files are not edited. Lexi writes translation files into game/tl/<language>/ and adds a small language-switcher script, and it makes a verified full backup of the game folder before every translation (automatically locking your first original backup), so you can go back with one click. In free Basic the in-game language menu shows a small \"Translated with Lexi\" line, which can be turned off in Lexi Pro or during the 3-day trial." } },
+        { "@type": "Question", "name": "Which Ren'Py games work?", "acceptedAnswer": { "@type": "Answer", "text": "Ren'Py 7 and Ren'Py 8 games, including released games that ship only compiled .rpyc scripts inside .rpa archives, plus optional .srt/.vtt video subtitles and Ren'Py mods. Lexi Game Translator also auto-detects 18 game engines in total, including RPG Maker, Unity, Unreal Engine, Godot, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio." } },
+        { "@type": "Question", "name": "Do I need an internet connection or an API key?", "acceptedAnswer": { "@type": "Answer", "text": "The default free engine (Google and Microsoft Edge working together) works online and needs no API key. Bing and Yandex are also available in Basic using your own API key. Cloud AI presets in Lexi Pro use your own API key, while local AI models (Ollama, LM Studio, or llama.cpp) run offline on your own computer once downloaded." } },
+        { "@type": "Question", "name": "Can I switch back to the original language?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Use the Language button in the game's main menu, or press Shift+L while playing to switch between the translation and the original text." } },
+        { "@type": "Question", "name": "What if the translation stops halfway?", "acceptedAnswer": { "@type": "Answer", "text": "Nothing is lost. Finished lines are kept in the translation memory, and when you start again Lexi continues where it stopped, so finished work is never paid for twice." } },
+        { "@type": "Question", "name": "The game shows empty boxes instead of letters. What can I do?", "acceptedAnswer": { "@type": "Answer", "text": "Usually nothing. Lexi checks the game's fonts (including fonts packed inside .rpa archives) for your target language's characters and automatically adds a bundled fallback font when letters are missing, covering Turkish and European accented Latin, Cyrillic, Greek, Vietnamese, Japanese, Korean, Chinese, Thai, Hindi, and right-to-left scripts." } },
+        { "@type": "Question", "name": "Can I share my translation with others?", "acceptedAnswer": { "@type": "Answer", "text": "Lexi can export a translation patch as a .zip file, but the game's text belongs to its developer. Translate for your own use, and ask the developer for permission before you share a translated patch publicly." } }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="page.css">
+<script>
+  (function () {
+    var A = {
+      ember:  ['#ff5a36', '#0a0605'],
+      acid:   ['#c8ff2e', '#0a0d02'],
+      amber:  ['#ffb224', '#0d0902'],
+      ice:    ['#5ad8ff', '#02090d'],
+      signal: ['#ff2e4d', '#0a0204'],
+      mono:   ['#f2f5f7', '#05070a']
+    };
+    var k = 'ember';
+    try { k = localStorage.getItem('lexi-accent') || k; } catch (e) {}
+    if (!A[k]) k = 'ember';
+    var d = document.documentElement;
+    d.style.setProperty('--accent', A[k][0]);
+    d.style.setProperty('--on-accent', A[k][1]);
+    d.setAttribute('data-accent', k);
+    window.__lexiAccents = A;
+    d.classList.add('js');
+  })();
+</script>
+</head>
+<body>
+<a class="skip-link" href="#top"><span data-lang="en">Skip to content</span></a>
+
+<div class="fallback-core" aria-hidden="true"><i></i><i></i></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="/" aria-label="Lexi Apps, back to home" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-btn__icon" aria-hidden="true"></span><span class="menu-btn__label"><span data-lang="en">Menu</span></span></button>
+  <div class="top__panel" id="menu">
+    <nav aria-label="Primary">
+      <a class="nav-home" href="/"><span aria-hidden="true">←</span> <span data-lang="en">Home</span></a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span><span data-lang="en">Apps</span></span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="/lexi-game-translator/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI GAME TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-download-manager/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-dictate/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--discord" href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" title="Join Discord Community">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span lang="en">Discord</span>
+      </a>
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Buy Me a Coffee">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span lang="en">Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Support on Patreon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span lang="en">Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Language">
+        <span id="lang-cur">EN</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" id="lang-en" data-set-lang="en" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">EN</span><span lang="en">English</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="dd__item" id="lang-tr" data-set-lang="tr" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">TR</span><span>Türkçe</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Accent color">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top" tabindex="-1" class="guide">
+  <div class="deep">
+    <article>
+    <section class="sec" aria-labelledby="g-title" style="padding-top:140px;padding-bottom:0;">
+      <div class="wrap">
+        <header class="sec__head g-head">
+          <nav aria-label="Breadcrumb">
+            <p class="g-crumbs"><a href="/" lang="en">Lexi Apps</a><span aria-hidden="true">/</span><a href="/lexi-game-translator/" lang="en">Lexi Game Translator</a><span aria-hidden="true">/</span><span><span data-lang="en">Ren'Py translation guide</span></span></p>
+          </nav>
+          <p class="eyebrow"><span data-lang="en">Guide <span>/</span> Ren'Py <span>/</span> Step by step</span></p>
+          <h1 id="g-title"><span data-lang="en">How to translate a Ren'Py game, step by step<em>.</em></span></h1>
+          <p class="sec__lede" data-lang="en">Many visual novels are made with Ren'Py. This guide shows how to translate a Ren'Py game into your own language for free with <strong>Lexi Game Translator</strong>, a Ren'Py translator for Windows, without breaking the game's text tags, variables or menus.</p>
+          <nav class="g-toc" aria-label="On this page">
+            <a href="#why"><span data-lang="en">Why it's tricky</span></a>
+            <a href="#before"><span data-lang="en">Before you start</span></a>
+            <a href="#steps"><span data-lang="en">Step by step</span></a>
+            <a href="#tips"><span data-lang="en">Tips</span></a>
+            <a href="#faq"><span data-lang="en">FAQ</span></a>
+          </nav>
+        </header>
+
+        <!-- 1. Why Ren'Py is tricky -->
+        <section class="g-block g-prose" aria-labelledby="why">
+          <h2 id="why"><span data-lang="en">Why translating a Ren'Py game is tricky</span></h2>
+          <p data-lang="en">A Ren'Py game keeps its story in script files (<code>.rpy</code>). Released games usually ship them only in compiled form (<code>.rpyc</code>), often packed inside <code>.rpa</code> archives. A single line of dialogue can look like this:</p>
+          <pre class="g-code"><code>e "Welcome back, <span class="t">{b}</span><span class="t">[player_name]</span><span class="t">{/b}</span>! You have <span class="t">[gold]</span> coins."</code></pre>
+          <p data-lang="en">Only the words should be translated. <code>{b}…{/b}</code> is a text tag (bold), while <code>[player_name]</code> and <code>[gold]</code> are variables that the game fills in as you play. If a translation service changes or drops them (for example, turning <code>[gold]</code> into <code>[oro]</code> on the way to Spanish), the line shows garbage or Ren'Py stops with an error. Menu choices, button texts and character names need the same care: a heroine called Rose should not turn into a flower.</p>
+          <p data-lang="en">Ren'Py has its own system for extra languages: translation files in the game's <code>tl</code> folder plus an in-game language setting. Lexi Game Translator writes your translation into exactly this system, so the original story files stay as they are.</p>
+        </section>
+
+        <!-- 1b. Before you start -->
+        <section class="g-block g-prose" aria-labelledby="before">
+          <h2 id="before"><span data-lang="en">Before you start</span></h2>
+          <ul class="notes">
+            <li><span data-lang="en">A PC with <strong>Windows 10 or 11 (64-bit)</strong>. The installer does not need administrator rights.</span></li>
+            <li><span data-lang="en">The game installed on your PC: select the folder containing <code>game</code>, or drag and drop the game folder or its <code>.exe</code> file straight onto the Lexi window.</span></li>
+            <li><span data-lang="en">Some free disk space. Lexi makes a verified copy of the whole <code>game</code> folder before every translation (keeping the last three unlocked backups by default, plus auto-locking your first original backup), so a large game needs roughly the same space again per backup. You can adjust the backup count in <strong>Backups and memory</strong>.</span></li>
+            <li><span data-lang="en">An internet connection for the online translation engines (or a local AI model with Ollama, LM Studio, or llama.cpp for offline translation in Lexi Pro).</span></li>
+          </ul>
+        </section>
+
+        <!-- 2. Step by step -->
+        <section class="g-block" aria-labelledby="steps">
+          <h2 id="steps"><span data-lang="en">Translate a Ren'Py game with <span lang="en">Lexi Game Translator</span></span></h2>
+          <ol class="g-steps">
+            <li class="g-step">
+              <h3><span data-lang="en">Download and install the app</span></h3>
+              <p data-lang="en">Lexi Game Translator is a free app for <strong>Windows 10 and 11 (64-bit)</strong> with 12 built-in interface languages (including Turkish and right-to-left Arabic) plus dark and light themes. Download the installer from the official <a href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">GitHub Releases page</a> and run it. The installer is not code-signed yet, so Windows SmartScreen may warn you the first time; the <a href="/install-help/">install help page</a> shows exactly what to click.</p>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="en">Pick or drop the game folder</span></h3>
+              <p data-lang="en">On first launch the <strong>Quick start</strong> wizard opens; you can also start it any time from the app's <strong>Guide</strong> page, or simply drag and drop the game folder or its <code>.exe</code> file onto the window. Lexi auto-detects Ren'Py (along with 17 other supported game engines) and scans it right away, counting every line, including scripts in <code>.rpa</code> archives and compiled <code>.rpyc</code> files. Scanning does not change any files.</p>
+              <figure class="frame g-fig">
+                <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+                <img src="/img/translator/03-scan.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Game scan screen of Lexi Game Translator after scanning a Ren'Py game: line counts and the scanned .rpy and .rpyc files">
+                <figcaption><span data-lang="en">Game scan: lines found in a Ren'Py game</span></figcaption>
+              </figure>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="en">Choose the target language and engine</span></h3>
+              <p data-lang="en">Pick your target language from 30+ supported languages. The default engine in Basic is completely free and keyless: <strong>Google and Microsoft Edge working together in parallel</strong>, with automatic fallback if one is rate-limited. Basic also includes <strong>Bing / Microsoft Translator</strong> and <strong>Yandex Translate</strong> if you provide your own API key. Optional AI translation — 1-click cloud presets (Gemini, Groq, Mistral, OpenRouter, DeepSeek, Claude, Cerebras, plus OpenAI) with your own key, or local offline models (Ollama, LM Studio, llama.cpp) — is unlocked in <strong>Lexi Pro</strong> on Patreon ($6/month, with a one-time 3-day free AI trial per computer). Before any paid job starts, Lexi shows the estimated cost, asks for your approval, and lets you set a spending cap.</p>
+              <figure class="frame g-fig">
+                <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+                <img src="/img/translator/04-engines-ai.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Translation settings screen with target language, the free built-in engines and optional AI presets">
+                <figcaption><span data-lang="en">Translation settings: free engines first, AI optional</span></figcaption>
+              </figure>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="en">Start the translation</span></h3>
+              <p data-lang="en">Press <strong>Translate</strong> and wait. Before anything is written, Lexi makes a <strong>verified full copy of the game's <code>game</code> folder</strong> as a backup. Tags, variables and character names are protected while the text is translated. You can pause or stop at any time: finished lines are kept in the translation memory, and the next run continues where it stopped.</p>
+              <p data-lang="en">The translation goes into <code>game/tl/&lt;language&gt;/</code>, and a small language-switcher script is added to the game folder. The game's own script files are not edited. Lexi also checks fonts on disk and inside <code>.rpa</code> archives and adds a bundled fallback font automatically whenever your target language's letters are missing (and writes RTL support for right-to-left languages). If the game includes <code>.srt</code> or <code>.vtt</code> video subtitles, you can translate them in the same run without touching timestamps.</p>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="en">Launch the game and switch the language</span></h3>
+              <p data-lang="en">When the translation is ready, press <strong>Open game</strong> (or launch it any time later from the <strong>Game Shelf</strong>). In the game's main menu, press the <strong>Language</strong> button with the globe icon and choose your language. While playing, <strong>Shift+L</strong> switches between the translation and the original text without closing the game.</p>
+            </li>
+          </ol>
+        </section>
+
+        <!-- 3. Tips -->
+        <section class="g-block" aria-labelledby="tips">
+          <h2 id="tips"><span data-lang="en">Tips for a better translation</span></h2>
+          <dl class="index g-tips">
+            <div>
+              <dt><span data-lang="en">Glossary &amp; context</span></dt>
+              <dd><span data-lang="en">Lexi reads character names from the game's scripts and lists them under <strong>Suggested character names</strong>. Add them to the <strong>Glossary</strong> so they stay unchanged, and set fixed translations for recurring terms so they read the same everywhere. For AI engines, Lexi also builds an offline <strong>Context Bible</strong> of speakers and character notes automatically.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="en">Quality &amp; CSV</span></dt>
+              <dd><span data-lang="en">The <strong>Quality and editing</strong> page finds lines that are empty, untranslated, still in English or have broken tags. <strong>Retranslate problems</strong> sends only those lines again, and you can edit any line directly in the app or export/import <strong>CSV</strong> to review translations in Excel or LibreOffice.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="en">Game updates</span></dt>
+              <dd><span data-lang="en">When a new version of the game comes out, scan and translate it again. Every finished line is kept in the translation memory, so unchanged lines come back instantly and only new or changed lines go to the engine. Lexi also keeps a local copy under <strong>Saved translations</strong> so your work survives uninstalling or replacing the game folder.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="en">Backups</span></dt>
+              <dd><span data-lang="en">Something looks wrong? Open <strong>Backups and memory</strong> and press <strong>Restore</strong>: the whole <code>game</code> folder goes back to the chosen date, and a safety backup of its current state is made first. By default the last three unlocked backups are kept (adjustable from 0 to 10), your first original backup is locked automatically, and you can lock any other backup to keep it for good.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="en">Mods, subtitles &amp; batch</span></dt>
+              <dd><span data-lang="en">Under <strong>Tools</strong>, Lexi can also translate Ren'Py mods (<code>.rpy</code> / <code>.rpa</code>) with automatic rollback backup, translate <code>.srt</code>/<code>.vtt</code> video subtitles, export a 1-click patch <code>.zip</code>, and queue multiple games for unattended translation using the free engines.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="en">18 game engines</span></dt>
+              <dd><span data-lang="en">Although this guide focuses on Ren'Py, the same app auto-detects <strong>18 engines</strong> in total — including RPG Maker (2000–MZ), Unity (Mono &amp; IL2CPP), Unreal Engine 4 &amp; 5, Godot 3 &amp; 4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio. See the <a href="/lexi-game-translator/">Lexi Game Translator page</a> for details.</span></dd>
+            </div>
+          </dl>
+          <figure class="frame g-fig" style="margin-top:28px;">
+            <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+            <img src="/img/translator/05-editor-qa.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Quality check and line editor in Lexi Game Translator, with the Retranslate problems button">
+            <figcaption><span data-lang="en">Quality and editing: find and fix problem lines</span></figcaption>
+          </figure>
+
+          <aside class="g-note" aria-labelledby="g-note-title">
+            <h2 id="g-note-title"><span data-lang="en">Personal use and sharing</span></h2>
+            <p data-lang="en">A translation made this way is for your own use. The game's story, text and art belong to its developer, so before you share a translated patch publicly (for example with Lexi's patch <code>.zip</code> export), ask the developer for permission.</p>
+          </aside>
+        </section>
+      </div>
+    </section>
+
+    <!-- 4. FAQ (same text as the FAQPage JSON-LD above) -->
+    <section class="sec faq" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq__grid">
+        <header class="sec__head">
+          <p class="eyebrow"><span data-lang="en">FAQ <span>/</span> Ren'Py translation</span></p>
+          <h2 id="faq-title"><span data-lang="en">Short answers<em>.</em></span></h2>
+        </header>
+        <div class="faq__list">
+          <details>
+            <summary><span data-lang="en">Is Lexi Game Translator free?</span></summary>
+            <p data-lang="en">Yes. The Basic tier is free, needs no account or sign-in, and translates with the keyless built-in Google and Microsoft Edge chain (plus Bing and Yandex if you provide your own API key). AI translation is optional and unlocked with Lexi Pro ($6/month on Patreon), with a one-time 3-day free AI trial per computer.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Will it change or damage my game files?</span></summary>
+            <p data-lang="en">The game's own script files are not edited. Lexi writes translation files into <code>game/tl/&lt;language&gt;/</code> and adds a small language-switcher script, and it makes a verified full backup of the game folder before every translation (automatically locking your first original backup), so you can go back with one click. In free Basic the in-game language menu shows a small &ldquo;Translated with Lexi&rdquo; line, which can be turned off in Lexi Pro or during the 3-day trial.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Which Ren'Py games work?</span></summary>
+            <p data-lang="en">Ren'Py 7 and Ren'Py 8 games, including released games that ship only compiled <code>.rpyc</code> scripts inside <code>.rpa</code> archives, plus optional <code>.srt</code>/<code>.vtt</code> video subtitles and Ren'Py mods. Lexi Game Translator also auto-detects 18 game engines in total, including RPG Maker, Unity, Unreal Engine, Godot, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio; see the <a href="/lexi-game-translator/">product page</a> for the full list.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Do I need an internet connection or an API key?</span></summary>
+            <p data-lang="en">The default free engine (Google and Microsoft Edge working together) works online and needs no API key. Bing and Yandex are also available in Basic using your own API key. Cloud AI presets in Lexi Pro use your own API key, while local AI models (Ollama, LM Studio, or llama.cpp) run offline on your own computer once downloaded.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Can I switch back to the original language?</span></summary>
+            <p data-lang="en">Yes. Use the Language button in the game's main menu, or press Shift+L while playing to switch between the translation and the original text.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">What if the translation stops halfway?</span></summary>
+            <p data-lang="en">Nothing is lost. Finished lines are kept in the translation memory, and when you start again Lexi continues where it stopped, so finished work is never paid for twice.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">The game shows empty boxes instead of letters. What can I do?</span></summary>
+            <p data-lang="en">Usually nothing. Lexi checks the game's fonts (including fonts packed inside <code>.rpa</code> archives) for your target language's characters and automatically adds a bundled fallback font when letters are missing, covering Turkish and European accented Latin, Cyrillic, Greek, Vietnamese, Japanese, Korean, Chinese, Thai, Hindi, and right-to-left scripts.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Can I share my translation with others?</span></summary>
+            <p data-lang="en">Lexi can export a translation patch as a .zip file, but the game's text belongs to its developer. Translate for your own use, and ask the developer for permission before you share a translated patch publicly.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. CTA -->
+    <section class="sec g-cta" aria-labelledby="cta-title">
+      <div class="wrap">
+        <div class="g-cta__box">
+          <h2 id="cta-title"><span data-lang="en">Ready to play in your language<em>?</em></span></h2>
+          <p data-lang="en">Lexi Game Translator is free to download for Windows 10 and 11. Basic needs no account.</p>
+          <div class="g-cta__actions">
+            <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
+              <span data-lang="en">Download for Windows</span>
+              <span aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="btn" href="/lexi-game-translator/">
+              <span data-lang="en">About <span lang="en">Lexi Game Translator</span></span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="more" href="/install-help/">
+              <span data-lang="en">Install help</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    </article>
+  </div>
+</main>
+
+<footer class="foot">
+  <a class="brand" href="/" aria-label="Lexi Apps" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <ul>
+    <li><a href="/"><span data-lang="en">Main Site</span></a></li>
+    <li><a href="/lexi-game-translator/" lang="en">Lexi Game Translator</a></li>
+    <li><a href="/install-help/"><span data-lang="en">Install help</span></a></li>
+    <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" lang="en">Discord</a></li>
+    <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener" lang="en">Patreon</a></li>
+    <li><a href="mailto:lexiapps@protonmail.com" lang="en">lexiapps@protonmail.com</a></li>
+  </ul>
+  <p lang="en">&copy; 2026 Lexi Apps</p>
+</footer>
+
+<script>
+  /* Generated by build_site.py: this is the EN version of the page.
+     The EN/TR menu saves the choice and opens the other language's URL (same #hash).
+     A stored preference is NOT applied on load: each URL always shows its own language. */
+  function setLang(lang, save) {
+    var page = 'en';
+    var urls = { en: '/renpy-translation-guide/', tr: '/tr/renpy-translation-guide/' };
+    if (!urls[lang]) lang = page;
+    if (save) {
+      try { localStorage.setItem('lexi-user-lang', lang); } catch (e) {}
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    }
+    if (lang !== page) {
+      window.location.href = urls[lang] + window.location.search + window.location.hash;
+      return;
+    }
+    document.documentElement.setAttribute('lang', page);
+    var enBtn = document.getElementById('lang-en');
+    var trBtn = document.getElementById('lang-tr');
+    var cur = document.getElementById('lang-cur');
+    if (enBtn) enBtn.classList.toggle('is-on', page === 'en');
+    if (trBtn) trBtn.classList.toggle('is-on', page === 'tr');
+    if (cur) cur.textContent = page.toUpperCase();
+  }
+  setLang('en', false);
+  /* EN/TR buttons: listeners, not onclick="" attributes (the CSP blocks inline handlers). */
+  Array.from(document.querySelectorAll('[data-set-lang]')).forEach(function (btn) {
+    btn.addEventListener('click', function () { setLang(btn.getAttribute('data-set-lang'), true); });
+  });
+</script>
+<script>
+  (function () {
+    var A = window.__lexiAccents;
+    var root = document.documentElement;
+    var current = root.getAttribute('data-accent') || 'ember';
+    var out = document.getElementById('accent-name');
+    function apply(key, save) {
+      var a = A[key] || A.ember;
+      root.style.setProperty('--accent', a[0]);
+      root.style.setProperty('--on-accent', a[1]);
+      root.setAttribute('data-accent', key);
+      if (out) out.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+      Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+        btn.classList.toggle('is-on', btn.getAttribute('data-accent-choice') === key);
+      });
+      if (save) { try { localStorage.setItem('lexi-accent', key); } catch (e) {} }
+    }
+    Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        apply(btn.getAttribute('data-accent-choice'), true);
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      });
+    });
+    apply(current, false);
+  })();
+</script>
+<script type="module">import { setupDropdowns, setupMenu } from '/dropdowns.js'; setupMenu(); setupDropdowns();</script>
+</body>
+</html>
