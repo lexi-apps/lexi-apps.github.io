@@ -1,5 +1,5 @@
 // Lexi Apps — page orchestration: accent, menu, viewer, smooth scroll, scroll-driven scene.
-import { setupDropdowns } from './dropdowns.js';
+import { setupDropdowns, setupMenu } from './dropdowns.js';
 const root = document.documentElement;
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -52,27 +52,11 @@ function setupAccent() {
   applyAccent(current, false);
 }
 
-/* ---------- compact menu ---------- */
+/* ---------- compact menu (logic lives in dropdowns.js, shared with the pages that do not load main.js) ---------- */
+let lenisRef = null; // set once the smooth scroller runs; paused while the menu sheet is open
 let closeMenu = () => {};
-function setupMenu() {
-  const btn = $('.menu-btn');
-  const top = $('.top');
-  if (!btn || !top) return;
-  const set = (open) => {
-    top.classList.toggle('is-open', open);
-    btn.setAttribute('aria-expanded', String(open));
-  };
-  closeMenu = () => set(false);
-  btn.addEventListener('click', () => set(!top.classList.contains('is-open')));
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && top.classList.contains('is-open')) {
-      set(false);
-      btn.focus();
-    }
-  });
-  document.addEventListener('click', (e) => {
-    if (top.classList.contains('is-open') && !top.contains(e.target)) set(false);
-  });
+function initMenu() {
+  closeMenu = setupMenu({ lock: (on) => { if (lenisRef) { if (on) lenisRef.stop(); else lenisRef.start(); } } }).close;
 }
 
 /* ---------- screenshot viewer (tabs) ---------- */
@@ -321,7 +305,7 @@ function setupReveals() {
 async function boot() {
   if (reduced) root.classList.add('reduced');
   setupAccent();
-  setupMenu();
+  initMenu();
   setupDropdowns();
   setupViewer();
   const updateProgress = setupProgress();
@@ -342,7 +326,8 @@ async function boot() {
   sceneRef = scene;
   scene.setAccent((ACCENTS[root.getAttribute('data-accent')] || ACCENTS.ember)[0]);
   setupHud(scene);
-  setupAnchors(setupScroll(scene, updateProgress));
+  lenisRef = setupScroll(scene, updateProgress);
+  setupAnchors(lenisRef);
 
   // first page view of a session keeps the intro a moment; later views skip the wait
   let seen = false;

@@ -72,6 +72,7 @@
     d.style.setProperty('--on-accent', A[k][1]);
     d.setAttribute('data-accent', k);
     window.__lexiAccents = A;
+    d.classList.add('js');
   })();
 </script>
 </head>
@@ -89,6 +90,7 @@
     </svg>
     <span>Lexi Download Manager</span>
   </a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-btn__icon" aria-hidden="true"></span><span class="menu-btn__label"><span data-lang="en">Menu</span><span data-lang="tr">Menü</span></span></button>
   <div class="top__panel" id="menu">
     <nav aria-label="Primary">
       <a class="nav-home" href="/"><span aria-hidden="true">←</span> <span data-lang="en">Home</span><span data-lang="tr">Ana Sayfa</span></a>
@@ -274,6 +276,6 @@
     apply(current, false);
   })();
 </script>
-<script type="module">import { setupDropdowns } from '/dropdowns.js'; setupDropdowns();</script>
+<script type="module">import { setupDropdowns, setupMenu } from '/dropdowns.js'; setupMenu(); setupDropdowns();</script>
 </body>
 </html>
