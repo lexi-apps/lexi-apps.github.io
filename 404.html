@@ -2,9 +2,96 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Redirecting to Lexi Apps…</title>
-<meta http-equiv="refresh" content="0;url=https://lexi-apps.pages.dev/">
-<script>location.replace("https://lexi-apps.pages.dev" + location.pathname + location.search + location.hash);</script>
+<script>/* Mirror only: apply the main site's _redirects rules to addresses
+   that have no static redirect page (runs before the probe). */
+(function () { try {
+  var R = [["/lexi-renpy-translator", "/lexi-game-translator/", 0], ["/lexi-renpy-translator/", "/lexi-game-translator/", 1]], p = location.pathname, t = null, i, r;
+  for (i = 0; i < R.length && !t; i++) { r = R[i];
+    if (r[2] ? p.indexOf(r[0]) === 0 : (p === r[0] || p === r[0] + '/'))
+      t = r[2] ? r[1] + p.slice(r[0].length) : r[1]; }
+  if (t && t !== p) { window.lexiRedirecting = true;
+    location.replace(t + location.search + location.hash); }
+} catch (e) {} })();
+</script>
+<script data-lexi-probe>
+/* Mirror only: if the main site (pages.dev) is reachable, send the visitor there;
+   if it is blocked, remember that for this tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var target = (local && q.get('probe') === 'fail')
+      ? 'https://lexi-probe-test.invalid/' : MAIN + '/favicon.ico';
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    fetch(target + '?probe=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: ctl.signal })
+      .then(function () {                         // reachable: same page on the main site
+        clearTimeout(timer);
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      }, function () {                            // blocked or timed out: stay here
+        clearTimeout(timer);
+        try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+      });
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 — Page not found · Lexi Apps</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#05070a">
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+:root{--bg:#05070a;--ice:#dfeaf1;--dim:#8a98a3;--line:rgba(223,234,241,.16);--accent:#ff5a36;--on-accent:#0a0605;--display:"Anybody","Arial Narrow",system-ui,sans-serif;--body:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:32px 20px;background:var(--bg);color:var(--ice);font:400 17px/1.55 var(--body);-webkit-font-smoothing:antialiased;text-align:center}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+main{max-width:640px;width:100%}
+.logo{display:inline-flex;align-items:center;gap:10px;font:500 14px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.logo img{width:28px;height:28px;display:block}
+h1{margin:24px 0 8px;font:900 clamp(96px,22vw,200px)/.9 var(--display);color:var(--accent);letter-spacing:-.02em}
+h2{margin:0;font:700 clamp(22px,4vw,32px)/1.2 var(--display)}
+h2 span{display:block}
+h2 span+span{margin-top:4px;color:var(--dim);font-weight:500;font-size:.8em}
+.home{display:inline-block;margin:32px 0 28px;padding:14px 28px;background:var(--accent);color:var(--on-accent);font:600 16px var(--body);border-radius:2px}
+.home:hover{filter:brightness(1.1)}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+ul a{display:block;padding:10px 16px;border:1px solid var(--line);font:500 13px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ice)}
+ul a:hover{border-color:var(--accent);color:var(--accent)}
+.skip-link{position:absolute;left:12px;top:12px;z-index:1000;padding:10px 16px;background:var(--accent);color:var(--on-accent);font:600 13px var(--mono);letter-spacing:.08em;text-transform:uppercase;transform:translateY(-200%)}
+.skip-link:focus{transform:none}
+main:focus{outline:none}
+</style>
 </head>
-<body><p>Redirecting to <a href="https://lexi-apps.pages.dev/">lexi-apps.pages.dev</a>…</p></body>
+<body>
+<a class="skip-link" href="#main">Skip to content / İçeriğe geç</a>
+<main id="main" tabindex="-1">
+  <a class="logo" href="/"><img src="/logo.svg" alt="" width="28" height="28"><span>Lexi Apps</span></a>
+  <h1>404</h1>
+  <h2><span lang="en">Page not found</span><span lang="tr">Sayfa bulunamadı</span></h2>
+  <a class="home" href="/">&larr; Home / Ana Sayfa</a>
+  <ul>
+    <li><a href="/lexi-game-translator/">Lexi Game Translator</a></li>
+    <li><a href="/lexi-download-manager/">Lexi Download Manager</a></li>
+    <li><a href="/lexi-dictate/">LexiDictate</a></li>
+  </ul>
+</main>
+</body>
 </html>

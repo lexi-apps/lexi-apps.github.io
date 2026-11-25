@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script data-lexi-probe>
+/* Mirror only: if the main site (pages.dev) is reachable, send the visitor there;
+   if it is blocked, remember that for this tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var target = (local && q.get('probe') === 'fail')
+      ? 'https://lexi-probe-test.invalid/' : MAIN + '/favicon.ico';
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    fetch(target + '?probe=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: ctl.signal })
+      .then(function () {                         // reachable: same page on the main site
+        clearTimeout(timer);
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      }, function () {                            // blocked or timed out: stay here
+        clearTimeout(timer);
+        try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+      });
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lexi Download Manager — Fast, Free &amp; Local Download Manager for Windows</title>
+<meta name="description" content="Lexi Download Manager for Windows 10 &amp; 11 (64-bit): fast multi-part downloads, multiple queues, 25+ native file hosts across 200+ mirrors, smart Debrid routing, video clip trimming, HLS stream capture, torrents, Click'n'Load 2, and official browser extensions. Free, no ads, no account.">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "SoftwareApplication",
+ "name": "Lexi Download Manager",
+ "applicationCategory": "UtilitiesApplication",
+ "operatingSystem": "Windows 10, Windows 11",
+ "url": "https://lexi-apps.pages.dev/lexi-download-manager/",
+ "downloadUrl": "https://github.com/lexi-apps/lexi-download-manager/releases/latest",
+ "image": "https://lexi-apps.pages.dev/lexi-download-manager/assets/share.png",
+ "description": "Lexi Download Manager for Windows 10 & 11 (64-bit): fast multi-part downloads, multiple queues, 25+ native file hosts across 200+ mirrors, smart Debrid routing, video clip trimming, HLS stream capture, torrents, Click'n'Load 2, and official browser extensions. Free, no ads, no account.",
+ "publisher": {
+  "@type": "Organization",
+  "name": "Lexi Apps",
+  "url": "https://lexi-apps.pages.dev/"
+ },
+ "offers": {
+  "@type": "Offer",
+  "price": "0",
+  "priceCurrency": "USD"
+ }
+}
+</script>
+<meta name="theme-color" content="#05070a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lexi Apps">
+<meta property="og:title" content="Lexi Download Manager — Downloads, plainly fast.">
+<meta property="og:description" content="A free download manager for Windows 10 &amp; 11 (64-bit): multi-part acceleration, video sites, HLS stream capture, torrents, file hosts, and browser extension. No ads, no account.">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://lexi-apps.pages.dev/lexi-download-manager/">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:image" content="https://lexi-apps.pages.dev/lexi-download-manager/assets/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://lexi-apps.pages.dev/lexi-download-manager/assets/share.png">
+<link rel="canonical" href="https://lexi-apps.pages.dev/lexi-download-manager/">
+<link rel="alternate" hreflang="en" href="https://lexi-apps.pages.dev/lexi-download-manager/">
+<link rel="alternate" hreflang="tr" href="https://lexi-apps.pages.dev/tr/lexi-download-manager/">
+<link rel="alternate" hreflang="x-default" href="https://lexi-apps.pages.dev/lexi-download-manager/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="page.css">
+<script>
+  (function () {
+    var A = {
+      ember:  ['#ff5a36', '#0a0605'],
+      acid:   ['#c8ff2e', '#0a0d02'],
+      amber:  ['#ffb224', '#0d0902'],
+      ice:    ['#5ad8ff', '#02090d'],
+      signal: ['#ff2e4d', '#0a0204'],
+      mono:   ['#f2f5f7', '#05070a']
+    };
+    var k = 'ember';
+    try { k = localStorage.getItem('lexi-accent') || k; } catch (e) {}
+    if (!A[k]) k = 'ember';
+    var d = document.documentElement;
+    d.style.setProperty('--accent', A[k][0]);
+    d.style.setProperty('--on-accent', A[k][1]);
+    d.setAttribute('data-accent', k);
+    window.__lexiAccents = A;
+    d.classList.add('js');
+    setTimeout(function () { d.classList.add('is-ready'); }, 7000);
+  })();
+</script>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+</head>
+<body>
+<a class="skip-link" href="#top"><span data-lang="en">Skip to content</span></a>
+
+<div class="loader" aria-hidden="true">
+  <div class="loader__box">
+    <svg class="mark mark--intro" viewBox="0 0 32 32">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <div class="loader__label"><span>Lexi Apps</span><span>Download Manager</span></div>
+    <div class="loader__bar"><i></i></div>
+  </div>
+</div>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="fallback-core" aria-hidden="true"><i></i><i></i></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="#top" aria-label="Lexi Download Manager, back to top" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>LEXI DOWNLOAD MANAGER</span>
+  </a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-btn__icon" aria-hidden="true"></span><span class="menu-btn__label"><span data-lang="en">Menu</span></span></button>
+  <div class="top__panel" id="menu">
+    <nav aria-label="Primary">
+      <a class="nav-home" href="/"><span aria-hidden="true">←</span> <span data-lang="en">Home</span></a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span data-lang="en">Apps</span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="/lexi-game-translator/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI GAME TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item is-on" href="/lexi-download-manager/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-dictate/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a href="#apps"><span data-lang="en">Packages</span></a>
+      <a href="#dm-video"><span data-lang="en">Video</span></a>
+      <a href="#screens"><span data-lang="en">Screens</span></a>
+      <a href="#inside"><span data-lang="en">Inside</span></a>
+      <a href="#faq"><span data-lang="en">FAQ</span></a>
+      <a href="privacy.html"><span data-lang="en">Privacy</span></a>
+    </nav>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--discord" href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" title="Join Discord Community">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Discord</span>
+      </a>
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Buy Me a Coffee">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span>Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Support on Patreon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span>Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Language">
+        <span id="lang-cur">EN</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" id="lang-en" onclick="setLang('en', true)" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">EN</span><span>English</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="dd__item" id="lang-tr" onclick="setLang('tr', true)" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">TR</span><span>Türkçe</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Accent color">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="hud" aria-hidden="true">
+  <div class="hud__left"><span class="hud__tick"></span><span id="hud-script">Latin</span></div>
+  <div class="hud__right"><span id="hud-xy">X +0.00 &nbsp; Y +0.00</span><span id="hud-pct">000</span></div>
+  <div class="hud__rail"><i id="hud-bar"></i></div>
+</div>
+
+<main id="top" tabindex="-1">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__inner">
+      <p class="eyebrow r" style="--i:0">
+        <span data-lang="en">LEXI APPS <span>/</span> DOWNLOAD MANAGER</span>
+      </p>
+      <h1 id="hero-title">
+        <span class="line"><span class="r" style="--i:1"><span data-lang="en">Downloads,</span></span></span>
+        <span class="line"><span class="r" style="--i:2"><span data-lang="en">plainly</span></span></span>
+        <span class="line"><span class="r" style="--i:3"><span data-lang="en">fast<em>.</em></span></span></span>
+      </h1>
+      <p class="lede r" style="--i:4" data-lang="en">A free download manager for Windows 10 &amp; 11 (64-bit). Multi-part acceleration, 3-stage floating progress dialog, zero native Save-As popups, multiple queues, 25+ built-in file hosts across 200+ official mirrors, smart Debrid routing, 1,000+ video sites with clip trimming, live <em>HLS stream capture</em>, torrents, optional Click'n'Load 2, and official Chrome Web Store &amp; Firefox extensions. No ads, no account.</p>
+      <div class="cta r" style="--i:5" style="display:flex;flex-wrap:wrap;gap:14px;">
+        <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-download-manager/releases/latest" rel="noopener">
+          <span data-lang="en">Download for Windows</span>
+          <span aria-hidden="true">&nearr;</span>
+        </a>
+        <a class="btn" href="#dm-video">
+          <span data-lang="en">Watch 40s video</span>
+          <span aria-hidden="true">&darr;</span>
+        </a>
+        <a class="more" href="https://github.com/lexi-apps/lexi-download-manager/releases" target="_blank" rel="noopener">
+          <span data-lang="en">What's new</span>
+          <span aria-hidden="true">&nearr;</span>
+        </a>
+      </div>
+    </div>
+    <p class="hero__scroll r" style="--i:6" aria-hidden="true">
+      <span data-lang="en">Scroll to enter the core</span>
+    </p>
+  </section>
+
+  <section class="flight" aria-label="Transition">
+    <p class="flight__caption">
+      <span data-lang="en">No ads <span>—</span> no account <span>—</span> local only</span>
+    </p>
+  </section>
+
+  <!-- ============ Packages (Installer & Official Browser Extensions) ============ -->
+  <section class="apps" id="apps" aria-labelledby="apps-title">
+    <header class="apps__head reveal">
+      <p class="eyebrow">
+        <span data-lang="en">Windows 10 &amp; 11 (64-bit)</span>
+      </p>
+      <h2 id="apps-title">
+        <span data-lang="en">Desktop app &amp; extensions<em>.</em></span>
+      </h2>
+    </header>
+
+    <div class="apps__grid">
+      <article class="app reveal" aria-labelledby="app-1">
+        <div class="app__meta"><span>01</span><span><span data-lang="en">Windows Setup</span></span></div>
+        <h3 id="app-1">
+          <span data-lang="en">Desktop Installer</span>
+        </h3>
+        <p class="app__lede" data-lang="en">Standard Windows installation with automatic background updates, magnet and <code>.torrent</code> association, and optional startup in the system tray.</p>
+        <dl class="spec">
+          <div>
+            <dt><span data-lang="en">Package</span></dt>
+            <dd><code>Lexi Download Manager Setup (.exe)</code></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">System</span></dt>
+            <dd>Windows 10 / 11 (64-bit)</dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Price</span></dt>
+            <dd><span data-lang="en">Free. No ads, no account.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Updates</span></dt>
+            <dd><span data-lang="en">Automatic in the background.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Interface</span></dt>
+            <dd><span data-lang="en">English and Turkish.</span></dd>
+          </div>
+        </dl>
+        <div class="app__actions">
+          <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-download-manager/releases/latest" rel="noopener">
+            <span data-lang="en">Download Installer</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+          <a class="more" href="#screens">
+            <span data-lang="en">See the window</span>
+            <span aria-hidden="true">&darr;</span>
+          </a>
+          <a class="more" href="https://github.com/lexi-apps/lexi-download-manager/releases" target="_blank" rel="noopener">
+            <span data-lang="en">What's new</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="app reveal" aria-labelledby="app-2">
+        <div class="app__meta"><span>02</span><span><span data-lang="en">Official Stores &amp; Bundled</span></span></div>
+        <h3 id="app-2">
+          <span data-lang="en">Browser Extensions</span>
+        </h3>
+        <p class="app__lede" data-lang="en">Install in one click from the Chrome Web Store or Firefox Add-ons — bundled local extension files also ship inside the installer for offline setups.</p>
+        <dl class="spec">
+          <div>
+            <dt><span data-lang="en">Browsers</span></dt>
+            <dd>Chrome, Edge, Brave, Opera, Vivaldi, Firefox</dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Stores</span></dt>
+            <dd><a href="https://chromewebstore.google.com/detail/lexi-download-manager/kddhaiacbpnikofoopikaapaehfaklln" target="_blank" rel="noopener">Chrome Web Store</a> &middot; <a href="https://addons.mozilla.org/firefox/addon/lexi-download-manager/" target="_blank" rel="noopener"><span data-lang="en">Firefox Add-ons</span></a></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Channel</span></dt>
+            <dd><code>127.0.0.1:19847</code> <span data-lang="en">(local loopback only)</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Security</span></dt>
+            <dd><span data-lang="en">Encrypted cookies, proxy &amp; pairing token.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Telemetry</span></dt>
+            <dd><span data-lang="en">None. Zero external servers.</span></dd>
+          </div>
+        </dl>
+        <div class="app__actions">
+          <a class="btn" href="https://chromewebstore.google.com/detail/lexi-download-manager/kddhaiacbpnikofoopikaapaehfaklln" target="_blank" rel="noopener">
+            <span>Chrome Web Store</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+          <a class="more" href="https://addons.mozilla.org/firefox/addon/lexi-download-manager/" target="_blank" rel="noopener">
+            <span data-lang="en">Firefox Add-ons</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="deep">
+
+  <!-- ============ A. Screens & Workflow Deep Dive ============ -->
+  <section class="sec tr" id="screens" aria-labelledby="tr-title">
+    <div class="wrap">
+      <header class="sec__head reveal">
+        <p class="eyebrow">
+          <span data-lang="en">01 <span>/</span> LEXI DOWNLOAD MANAGER <span>/</span> WINDOWS</span>
+        </p>
+        <h2 id="tr-title">
+          <span data-lang="en">Capture. Route. Finish<em>.</em></span>
+        </h2>
+        <p class="sec__lede" data-lang="en">From a single file in your browser to a 2,000-link batch, a 1080p video stream, or a multi-file torrent — handled locally in three steps.</p>
+      </header>
+
+      <h3 class="label" id="tr-how">
+        <span data-lang="en">How it works</span>
+      </h3>
+      <ol class="steps" data-progress aria-labelledby="tr-how">
+        <li class="step">
+          <span class="step__n" aria-hidden="true">01</span>
+          <h4>
+            <span data-lang="en">Intercept or grab</span>
+          </h4>
+          <p data-lang="en">Browser downloads, page link batches (<code>Alt+Shift+G</code>), playing HLS streams, magnet links, and clipboard URLs pass straight to Lexi with session cookies intact.</p>
+        </li>
+        <li class="step">
+          <span class="step__n" aria-hidden="true">02</span>
+          <h4>
+            <span data-lang="en">Route or pick format</span>
+          </h4>
+          <p data-lang="en">Let automatic category rules sort the file, open the optional &ldquo;Save as&rdquo; dialog with live free disk space, or choose video resolution, audio track, and subtitles.</p>
+        </li>
+        <li class="step">
+          <span class="step__n" aria-hidden="true">03</span>
+          <h4>
+            <span data-lang="en">Accelerate &amp; verify</span>
+          </h4>
+          <p data-lang="en">Files split into parallel parts with a live speed chart and piece bars. Pause, resume, refresh expired links, verify checksums, and scan with Windows Defender.</p>
+        </li>
+      </ol>
+
+      <h3 class="label" id="dm-video">
+        <span data-lang="en">See it in action</span>
+      </h3>
+      <figure class="promo reveal">
+        <video muted loop playsinline preload="metadata" poster="/img/dm/cards/card-hero.webp" width="1920" height="1080" aria-label="Lexi Download Manager showcase video">
+          <source src="/img/video/lexi_dm_promo_1080.mp4" type="video/mp4">
+        </video>
+        <figcaption>
+          <span data-lang="en">Product showcase — Zero Save-As 3-stage floating dialog, official store &amp; bundled extensions, 4K clip trimming, Debrid, and end-to-end SOCKS5 &amp; Tor.</span>
+        </figcaption>
+      </figure>
+
+      <h3 class="label" id="dm-cards">
+        <span data-lang="en">Feature showcase — click any card to enlarge</span>
+      </h3>
+      <div class="cards reveal" role="group" aria-label="Lexi Download Manager feature cards">
+        <a class="card card--wide" href="/img/dm/cards/card-hero.webp" data-lightbox><img src="/img/dm/cards/card-hero.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Lexi Download Manager — free multi-part download manager for Windows"></a>
+        <a class="card card--wide" href="/img/dm/cards/card-dialog.webp" data-lightbox><img src="/img/dm/cards/card-dialog.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Zero browser Save-As popups and 3-stage IDM-style floating download dialog with live SVG speed graph and 16 parallel segments"></a>
+        <a class="card" href="/img/dm/cards/card-extensions.webp" data-lightbox><img src="/img/dm/cards/card-extensions.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Bundled Chrome, Edge, Brave, Opera, Vivaldi, Firefox and Tor extensions with Batch Link Grabber"></a>
+        <a class="card" href="/img/dm/cards/card-video.webp" data-lightbox><img src="/img/dm/cards/card-video.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="1,000+ video sites, 4K quality picker, MP3 audio extraction, clip trimming and SponsorBlock"></a>
+        <a class="card" href="/img/dm/cards/card-hosts.webp" data-lightbox><img src="/img/dm/cards/card-hosts.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="Debrid services (Real-Debrid, AllDebrid, TorBox), Mega, Gofile, Pixeldrain, Buzzheavier, Krakenfiles, 1Fichier and BitTorrent queues"></a>
+        <a class="card" href="/img/dm/cards/card-security.webp" data-lightbox><img src="/img/dm/cards/card-security.webp" width="1920" height="1080" loading="lazy" decoding="async" alt="New: End-to-end SOCKS5/SOCKS5h and Tor proxy, DPAPI encrypted vault, SHA-256 checksum, Windows Defender and Zip-Slip shield"></a>
+      </div>
+
+      <h3 class="label" id="tr-screens">
+        <span data-lang="en">The app, screen by screen — click image to zoom</span>
+      </h3>
+      <div class="viewer reveal" data-viewer>
+        <div class="viewer__tabs" role="tablist" aria-labelledby="tr-screens">
+          <button type="button" role="tab" id="shot-tab-1" aria-controls="shot-1" aria-selected="true">
+            <span>01</span>
+            <b data-lang="en" style="font-weight:inherit">Main window</b>
+          </button>
+          <button type="button" role="tab" id="shot-tab-2" aria-controls="shot-2" aria-selected="false" tabindex="-1">
+            <span>02</span>
+            <b data-lang="en" style="font-weight:inherit">Save confirm</b>
+          </button>
+          <button type="button" role="tab" id="shot-tab-3" aria-controls="shot-3" aria-selected="false" tabindex="-1">
+            <span>03</span>
+            <b data-lang="en" style="font-weight:inherit">Live progress</b>
+          </button>
+          <button type="button" role="tab" id="shot-tab-4" aria-controls="shot-4" aria-selected="false" tabindex="-1">
+            <span>04</span>
+            <b data-lang="en" style="font-weight:inherit">Completed</b>
+          </button>
+          <button type="button" role="tab" id="shot-tab-5" aria-controls="shot-5" aria-selected="false" tabindex="-1">
+            <span>05</span>
+            <b data-lang="en" style="font-weight:inherit">Extension popup</b>
+          </button>
+          <button type="button" role="tab" id="shot-tab-6" aria-controls="shot-6" aria-selected="false" tabindex="-1">
+            <span>06</span>
+            <b data-lang="en" style="font-weight:inherit">Link grabber</b>
+          </button>
+          <button type="button" role="tab" id="shot-tab-7" aria-controls="shot-7" aria-selected="false" tabindex="-1">
+            <span>07</span>
+            <b data-lang="en" style="font-weight:inherit">Video &amp; trim</b>
+          </button>
+          <button type="button" role="tab" id="shot-tab-8" aria-controls="shot-8" aria-selected="false" tabindex="-1">
+            <span>08</span>
+            <b data-lang="en" style="font-weight:inherit">Settings</b>
+          </button>
+        </div>
+        <div class="viewer__frame frame">
+          <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+          <figure class="shot is-on" id="shot-1" role="tabpanel" aria-labelledby="shot-tab-1">
+            <a class="shot__link" href="assets/screenshots/main.png" data-lightbox><img src="assets/screenshots/main.png" width="1264" height="761" decoding="async" alt="Lexi Download Manager main window with download queue, category sidebar, live speed graph, and piece bars."></a>
+            <figcaption>
+              <span><span data-lang="en">Fig. 01 / 08</span></span>
+              <b data-lang="en" style="font-weight:inherit">Main window — download queues, status &amp; category sidebar, live speed chart, and piece progress bars.</b>
+            </figcaption>
+          </figure>
+          <figure class="shot" id="shot-2" role="tabpanel" aria-labelledby="shot-tab-2">
+            <a class="shot__link" href="assets/screenshots/dialog-stage1.png" data-lightbox><img class="shot__img--compact" src="assets/screenshots/dialog-stage1.png" loading="lazy" decoding="async" alt="Lexi Download Manager 3-stage floating download dialog — Stage 1 Save confirmation with live free disk space and recent folder chips."></a>
+            <figcaption>
+              <span><span data-lang="en">Fig. 02 / 08</span></span>
+              <b data-lang="en" style="font-weight:inherit">Floating dialog (Stage 1) — zero browser Save-As popups; live free disk space, recent folders, queue picker, and Browser Handback.</b>
+            </figcaption>
+          </figure>
+          <figure class="shot" id="shot-3" role="tabpanel" aria-labelledby="shot-tab-3">
+            <a class="shot__link" href="assets/screenshots/dialog-stage2.png" data-lightbox><img class="shot__img--compact" src="assets/screenshots/dialog-stage2.png" loading="lazy" decoding="async" alt="Lexi Download Manager 3-stage floating download dialog — Stage 2 Live multi-part progress with SVG transfer speed graph and segment bars."></a>
+            <figcaption>
+              <span><span data-lang="en">Fig. 03 / 08</span></span>
+              <b data-lang="en" style="font-weight:inherit">Floating dialog (Stage 2) — real-time multi-part transfer rate chart, parallel segment bars, and inline speed limit.</b>
+            </figcaption>
+          </figure>
+          <figure class="shot" id="shot-4" role="tabpanel" aria-labelledby="shot-tab-4">
+            <a class="shot__link" href="assets/screenshots/dialog-stage3.png" data-lightbox><img class="shot__img--compact" src="assets/screenshots/dialog-stage3.png" loading="lazy" decoding="async" alt="Lexi Download Manager 3-stage floating download dialog — Stage 3 Completed summary with one-click Open File and Open Folder."></a>
+            <figcaption>
+              <span><span data-lang="en">Fig. 04 / 08</span></span>
+              <b data-lang="en" style="font-weight:inherit">Floating dialog (Stage 3) — clean completion summary with SHA-256 &amp; Defender check plus one-click Open File / Folder.</b>
+            </figcaption>
+          </figure>
+          <figure class="shot" id="shot-5" role="tabpanel" aria-labelledby="shot-tab-5">
+            <a class="shot__link" href="assets/screenshots/extension-popup.webp" data-lightbox><img src="assets/screenshots/extension-popup.webp" loading="lazy" decoding="async" alt="Lexi Download Manager bundled browser extension popup with HLS stream detection and per-site toggle."></a>
+            <figcaption>
+              <span><span data-lang="en">Fig. 05 / 08</span></span>
+              <b data-lang="en" style="font-weight:inherit">Bundled browser extension — live connection indicator, playing HLS stream capture, and per-site interception toggle.</b>
+            </figcaption>
+          </figure>
+          <figure class="shot" id="shot-6" role="tabpanel" aria-labelledby="shot-tab-6">
+            <a class="shot__link" href="assets/screenshots/link-grabber.webp" data-lightbox><img src="assets/screenshots/link-grabber.webp" loading="lazy" decoding="async" alt="Lexi Download Manager Batch Link Grabber capturing and filtering page links."></a>
+            <figcaption>
+              <span><span data-lang="en">Fig. 06 / 08</span></span>
+              <b data-lang="en" style="font-weight:inherit">Batch Link Grabber (Alt+Shift+G) — filter and queue up to 2,000 page links by extension or pattern in one click.</b>
+            </figcaption>
+          </figure>
+          <figure class="shot" id="shot-7" role="tabpanel" aria-labelledby="shot-tab-7">
+            <a class="shot__link" href="assets/screenshots/video-format.png" data-lightbox><img src="assets/screenshots/video-format.png" width="1200" height="800" loading="lazy" decoding="async" alt="Lexi Download Manager video format selection dialog with clip trimming and subtitles."></a>
+            <figcaption>
+              <span><span data-lang="en">Fig. 07 / 08</span></span>
+              <b data-lang="en" style="font-weight:inherit">Video quality &amp; clip trimmer — pick 4K/1080p/MP3, set start–end clip timestamps, subtitles, and SponsorBlock.</b>
+            </figcaption>
+          </figure>
+          <figure class="shot" id="shot-8" role="tabpanel" aria-labelledby="shot-tab-8">
+            <a class="shot__link" href="assets/screenshots/settings.png" data-lightbox><img src="assets/screenshots/settings.png" width="1200" height="800" loading="lazy" decoding="async" alt="Lexi Download Manager tabbed settings window with bilingual live search."></a>
+            <figcaption>
+              <span><span data-lang="en">Fig. 08 / 08</span></span>
+              <b data-lang="en" style="font-weight:inherit">Tabbed settings — live EN/TR search, download rules, Debrid keys, torrent seeding, end-to-end SOCKS5/Tor, and extension pairing.</b>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <h3 class="label" id="inside">
+        <span data-lang="en">What is inside</span>
+      </h3>
+      <dl class="index reveal" aria-labelledby="inside">
+        <div>
+          <dt><span data-lang="en">Multi-part &amp; queues</span></dt>
+          <dd>
+            <span data-lang="en">Splits each file into parallel segments via <code>aria2c</code>. Multiple independent download queues, combined status/category/queue filters with chips, drag-and-drop priority, live speed SVG chart, piece bitfield bars, resizable details panel with multi-select summary, bulk speed limits, and <code>.txt</code> link export.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Video sites</span></dt>
+          <dd>
+            <span data-lang="en">Downloads from YouTube and hundreds of sites with quality profiles, video clip trimming (<code>start–end</code> timestamps), safe thumbnail previews, SponsorBlock chapter skipping, metadata embedding, playlist selection, audio-only (<code>m4a</code> / <code>opus</code>), and subtitles.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">HLS streams</span></dt>
+          <dd>
+            <span data-lang="en">The browser extension detects live HLS and media streams playing on a page, lists available resolutions in the popup, and merges segments into a single file.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Torrents</span></dt>
+          <dd>
+            <span data-lang="en">Magnet links and local <code>.torrent</code> files with selective multi-file picker, live global upload speed limit (<code>KB/s</code>), and configurable post-download seed limits. Unused <code>.torrent</code> copies are cleaned up automatically.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Hosts &amp; Debrid</span></dt>
+          <dd>
+            <span data-lang="en">Smart 3-mode routing for Real-Debrid, AllDebrid, and TorBox (write-only encrypted API keys), per-host connection &amp; concurrency limits, and automatic short-lived token refresh. Native resolvers for 25+ file hosts across 200+ official mirrors — including Pixeldrain (7 mirrors, lists &amp; folders), Buzzheavier/Bzzhr, 1Fichier (13 mirrors &amp; passwords), MediaFire (folders), Krakenfiles, Mega (files &amp; folders), Gofile (passwords &amp; folders), Google Drive (files &amp; folders), Yandex Disk, Dropbox, Koofr, SwissTransfer, Workupload, Mail.ru Cloud, Cyberfile, Bunkr, Ranoz.gg, Rootz.so, Mixdrop, Catbox, FileDitch, Upload.ee, GameBanana, ShareMods, ModsFire, UploadHaven, and OneDrive — plus 32 CAPTCHA-gated Debrid/extension hosts with 1-click &ldquo;Open in browser&rdquo; handoff and opt-in Click'n'Load 2 (Filecrypt) support.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Extension</span></dt>
+          <dd>
+            <span data-lang="en">Official 1-click extensions on <a href="https://chromewebstore.google.com/detail/lexi-download-manager/kddhaiacbpnikofoopikaapaehfaklln" target="_blank" rel="noopener">Chrome Web Store</a> (Chrome, Edge, Brave, Opera, Vivaldi) and <a href="https://addons.mozilla.org/firefox/addon/lexi-download-manager/" target="_blank" rel="noopener">Firefox Add-ons</a> — plus bundled local files inside the installer for offline setup. Synced with all 200+ supported host domains, eliminates native browser Save-As popups when Lexi is active, and includes a 15-minute browser handback bridge, 1-click &ldquo;Open in browser&rdquo; CAPTCHA capture, optional Click'n'Load 2 (<code>127.0.0.1:9666</code>, off by default with confirmation prompt), Batch Link Grabber (<code>Alt+Shift+G</code>, up to 2,000 links), per-site toggle, <code>Alt</code>-click bypass, and expired link refresh.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Dialog &amp; Drop-Zone</span></dt>
+          <dd>
+            <span data-lang="en">Sleek 3-stage floating download dialog (Prompt with live free disk space &amp; recent folder chips → Live Progress with SVG speed chart, segment bars &amp; inline speed limit → Completion summary), paired with an always-on-top Floating Drop-Zone widget for drag-and-drop URLs and <code>.torrent</code> files and a bilingual Settings search bar.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Automation</span></dt>
+          <dd>
+            <span data-lang="en">Custom download rules (by extension, domain, or URL pattern → target folder, speed limit, naming template, post-action), custom categories, RSS/Atom feeds, and watched folders.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Privacy</span></dt>
+          <dd>
+            <span data-lang="en">No account, no ads, no tracking. Saved cookies, HTTP authentication, proxy credentials, site accounts, and extension pairing token (<code>X-Lexi-Token</code>) are encrypted on your PC.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Tor &amp; proxy</span></dt>
+          <dd>
+            <span data-lang="en">End-to-end global or per-download HTTP, HTTPS, and SOCKS5/SOCKS5h proxy support (direct, Debrid, file hosts, MEGA, HLS, and yt-dlp), plus built-in Tor routing.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Backups</span></dt>
+          <dd>
+            <span data-lang="en">Automatic daily database backups (7 automatic, 20 manual) and safe settings export/import.</span>
+          </dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Integrity</span></dt>
+          <dd>
+            <span data-lang="en">Expected checksum verification (SHA-256 / MD5), mirror URL fallback, duplicate download warnings, and automatic Windows Defender scan.</span>
+          </dd>
+        </div>
+      </dl>
+
+      <h3 class="label" id="sysreq">
+        <span data-lang="en">System requirements</span>
+      </h3>
+      <dl class="index reveal" aria-labelledby="sysreq">
+        <div>
+          <dt><span data-lang="en">Operating system</span></dt>
+          <dd><span data-lang="en">Windows 10 or 11, 64-bit.</span></dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Browser extension</span></dt>
+          <dd><span data-lang="en">Optional. Chrome and other Chromium browsers 112 or newer; Firefox 140 or newer.</span></dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Helper tools</span></dt>
+          <dd><span data-lang="en">Download engines such as <code>aria2c</code> and <code>yt-dlp</code> ship inside the installer; nothing extra to install.</span></dd>
+        </div>
+      </dl>
+
+      <p class="sec__cta reveal" style="display:flex;flex-wrap:wrap;gap:14px;">
+        <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-download-manager/releases/latest" rel="noopener">
+          <span data-lang="en">Download on GitHub</span>
+          <span aria-hidden="true">&nearr;</span>
+        </a>
+        <a class="btn" href="https://chromewebstore.google.com/detail/lexi-download-manager/kddhaiacbpnikofoopikaapaehfaklln" target="_blank" rel="noopener">
+          <span>Chrome Web Store</span>
+          <span aria-hidden="true">&nearr;</span>
+        </a>
+        <a class="btn" href="https://addons.mozilla.org/firefox/addon/lexi-download-manager/" target="_blank" rel="noopener">
+          <span data-lang="en">Firefox Add-ons</span>
+          <span aria-hidden="true">&nearr;</span>
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ B. Support & Contact ============ -->
+  <section class="sec plans" id="support" aria-labelledby="support-title">
+    <div class="wrap">
+      <header class="sec__head reveal">
+        <p class="eyebrow">
+          <span data-lang="en">02 <span>/</span> Support &amp; Contact</span>
+        </p>
+        <h2 id="support-title">
+          <span data-lang="en">Free software, backed by you<em>.</em></span>
+        </h2>
+      </header>
+
+      <div class="plans__foot reveal" style="margin-top:0">
+        <ul class="notes">
+          <li>
+            <span data-lang="en">Lexi Download Manager is completely free: no ads, no tracking, no account, and no paid features.</span>
+          </li>
+          <li>
+            <span data-lang="en">If Lexi saves you time, you can support ongoing development and Windows code-signing certificate costs via Buy Me a Coffee or Patreon.</span>
+          </li>
+          <li>
+            <span data-lang="en">Bug reports and questions: <code>lexiapps@protonmail.com</code> — or use <strong>Settings → About → Report a problem</strong> inside the app.</span>
+          </li>
+          <li>
+            <span data-lang="en">Each release publishes the full open-source code archives and <code>SHA256SUMS.txt</code> for the bundled tools (aria2, GMP, FFmpeg, 7-Zip).</span>
+          </li>
+        </ul>
+        <div class="plans__actions">
+          <a class="btn btn--solid" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener">
+            <span>Buy Me a Coffee</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+          <a class="btn" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener">
+            <span data-lang="en">Support on Patreon</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+          <a class="btn" href="mailto:lexiapps@protonmail.com">
+            <span>lexiapps@protonmail.com</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ C. FAQ ============ -->
+  <section class="sec faq" id="faq" aria-labelledby="faq-title">
+    <div class="wrap faq__grid">
+      <header class="sec__head reveal">
+        <p class="eyebrow">
+          <span data-lang="en">FAQ <span>/</span> LEXI DOWNLOAD MANAGER</span>
+        </p>
+        <h2 id="faq-title">
+          <span data-lang="en">Short answers<em>.</em></span>
+        </h2>
+      </header>
+      <div class="faq__list reveal">
+        <details>
+          <summary>
+            <span data-lang="en">Is it really free?</span>
+          </summary>
+          <p data-lang="en">Yes. Every feature in Lexi Download Manager is free, with no ads, no account, and no paid version.</p>
+        </details>
+        <details>
+          <summary>
+            <span data-lang="en">Windows says &ldquo;Windows protected your PC&rdquo;. What do I do?</span>
+          </summary>
+          <p data-lang="en">Windows SmartScreen may show this prompt the first time you run the installer because Lexi is not code-signed yet. Click <strong>More info</strong>, then <strong>Run anyway</strong>. Always download Lexi from the <a href="https://github.com/lexi-apps/lexi-download-manager/releases/latest" rel="noopener">official GitHub releases page</a>. <a href="/install-help/"><span data-lang="en">Step-by-step guide</span></a>.</p>
+        </details>
+        <details>
+          <summary>
+            <span data-lang="en">How do I add the browser extension?</span>
+          </summary>
+          <p data-lang="en">Install in one click from the <a href="https://chromewebstore.google.com/detail/lexi-download-manager/kddhaiacbpnikofoopikaapaehfaklln" target="_blank" rel="noopener">Chrome Web Store</a> (Chrome, Edge, Brave, Opera, Vivaldi) or <a href="https://addons.mozilla.org/firefox/addon/lexi-download-manager/" target="_blank" rel="noopener">Firefox Add-ons</a> — or open <strong>Settings → Browser extension</strong> inside Lexi for both direct store buttons and the bundled local files.</p>
+        </details>
+        <details>
+          <summary>
+            <span data-lang="en">How does the browser extension handle my privacy?</span>
+          </summary>
+          <p data-lang="en">All captured URLs, cookies, and page media links are sent exclusively to the Lexi app on your own computer at <code>127.0.0.1:19847</code>. Nothing is ever sent to external servers. See our <a href="privacy.html">Privacy Policy</a>.</p>
+        </details>
+        <details>
+          <summary>
+            <span data-lang="en">Clicking a magnet link opens another program.</span>
+          </summary>
+          <p data-lang="en">Lexi never replaces your existing torrent client on its own. Go to <strong>Settings → Torrent → Make default torrent app</strong> and choose Lexi for <code>magnet</code> and <code>.torrent</code> in Windows Default apps.</p>
+        </details>
+        <details>
+          <summary>
+            <span data-lang="en">What are the other files in each release?</span>
+          </summary>
+          <p data-lang="en"><code>latest.yml</code> and <code>.blockmap</code> are used by the automatic updater. <code>*.tar.xz</code>, <code>*.7z</code>, <code>lexi-ffmpeg-*-build-recipe.zip</code>, and <code>SHA256SUMS.txt</code> are the source code archives of the bundled open-source tools (aria2, GMP, FFmpeg, 7-Zip), published to comply with their licenses.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  </div>
+</main>
+
+<!-- ============ D. Final call + footer ============ -->
+<footer class="final" id="get" aria-labelledby="final-title">
+  <div class="final__inner">
+    <p class="eyebrow reveal">
+      <span data-lang="en">LEXI APPS <span>/</span> DOWNLOAD MANAGER</span>
+    </p>
+    <h2 id="final-title" class="reveal">
+      <span data-lang="en">Get your copy<em>.</em></span>
+    </h2>
+    <ul class="final__list reveal">
+      <li>
+        <a href="https://github.com/lexi-apps/lexi-download-manager/releases/latest" rel="noopener">
+          <span class="final__n">01</span>
+          <span class="final__name">
+            <span data-lang="en">LEXI SETUP (INSTALLER)</span>
+          </span>
+          <span class="final__meta"><span data-lang="en">Lexi Download Manager Setup (.exe) &middot; Windows 10/11 64-bit &middot; Free</span></span>
+          <span class="final__go">
+            <span data-lang="en">Download</span>
+            <span aria-hidden="true">&nearr;</span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a href="https://chromewebstore.google.com/detail/lexi-download-manager/kddhaiacbpnikofoopikaapaehfaklln" target="_blank" rel="noopener">
+          <span class="final__n">02</span>
+          <span class="final__name">
+            <span data-lang="en">CHROME WEB STORE</span>
+          </span>
+          <span class="final__meta"><span data-lang="en">Chrome, Edge, Brave, Opera &amp; Vivaldi &middot; 1-Click Install</span></span>
+          <span class="final__go">
+            <span data-lang="en">Install</span>
+            <span aria-hidden="true">&nearr;</span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a href="https://addons.mozilla.org/firefox/addon/lexi-download-manager/" target="_blank" rel="noopener">
+          <span class="final__n">03</span>
+          <span class="final__name">
+            <span data-lang="en">FIREFOX ADD-ONS</span>
+          </span>
+          <span class="final__meta"><span data-lang="en">Official Mozilla AMO listing &middot; 1-Click Install</span></span>
+          <span class="final__go">
+            <span data-lang="en">Install</span>
+            <span aria-hidden="true">&nearr;</span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a href="/">
+          <span class="final__n">04</span>
+          <span class="final__name" lang="en">LEXI APPS</span>
+          <span class="final__meta">
+            <span data-lang="en">All instruments &middot; Game Translator, Download Manager &amp; LexiDictate</span>
+          </span>
+          <span class="final__go">
+            <span data-lang="en">Main Site</span>
+            <span aria-hidden="true">&nearr;</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+    <p class="sec__cta reveal" style="margin-top:24px;">
+      <a class="more" href="https://github.com/lexi-apps/lexi-download-manager/releases" target="_blank" rel="noopener">
+        <span data-lang="en">What's new</span>
+        <span aria-hidden="true">&nearr;</span>
+      </a>
+    </p>
+  </div>
+  <div class="foot">
+    <a class="brand" href="#top" aria-label="Lexi Download Manager, back to top" lang="en">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+        <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+        <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+      </svg>
+      <span>LEXI APPS</span>
+    </a>
+    <ul>
+      <li><a href="/"><span data-lang="en">Main Site</span></a></li>
+      <li><a href="https://github.com/lexi-apps/lexi-download-manager/releases/latest" rel="noopener"><span data-lang="en">Releases</span></a></li>
+      <li><a href="privacy.html"><span data-lang="en">Privacy Policy</span></a></li>
+      <li><a href="/install-help/"><span data-lang="en">Install help</span></a></li>
+      <li><a href="https://buymeacoffee.com/lexiapps" rel="noopener">Buy Me a Coffee</a></li>
+      <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener">Discord</a></li>
+      <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener">Patreon</a></li>
+      <li><a href="https://github.com/lexi-apps/lexi-download-manager" rel="noopener">GitHub</a></li>
+      <li><a href="mailto:lexiapps@protonmail.com">lexiapps@protonmail.com</a></li>
+    </ul>
+    <p>&copy; 2026 Lexi Apps</p>
+  </div>
+</footer>
+
+<script>
+  /* Generated by build_site.py: this is the EN version of the page.
+     The EN/TR menu saves the choice and opens the other language's URL (same #hash).
+     A stored preference is NOT applied on load: each URL always shows its own language. */
+  function setLang(lang, save) {
+    var page = 'en';
+    var urls = { en: '/lexi-download-manager/', tr: '/tr/lexi-download-manager/' };
+    if (!urls[lang]) lang = page;
+    if (save) {
+      try { localStorage.setItem('lexi-user-lang', lang); } catch (e) {}
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    }
+    if (lang !== page) {
+      window.location.href = urls[lang] + window.location.search + window.location.hash;
+      return;
+    }
+    document.documentElement.setAttribute('lang', page);
+    var enBtn = document.getElementById('lang-en');
+    var trBtn = document.getElementById('lang-tr');
+    var cur = document.getElementById('lang-cur');
+    if (enBtn) enBtn.classList.toggle('is-on', page === 'en');
+    if (trBtn) trBtn.classList.toggle('is-on', page === 'tr');
+    if (cur) cur.textContent = page.toUpperCase();
+    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+  }
+  setLang('en', false);
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script type="module" src="page.js"></script>
+<script type="module" src="/main.js"></script>
+</body>
+</html>

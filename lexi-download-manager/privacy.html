@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en" class="no-gl is-ready">
+<head>
+<meta charset="utf-8">
+<script data-lexi-probe>
+/* Mirror only: if the main site (pages.dev) is reachable, send the visitor there;
+   if it is blocked, remember that for this tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var target = (local && q.get('probe') === 'fail')
+      ? 'https://lexi-probe-test.invalid/' : MAIN + '/favicon.ico';
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    fetch(target + '?probe=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: ctl.signal })
+      .then(function () {                         // reachable: same page on the main site
+        clearTimeout(timer);
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      }, function () {                            // blocked or timed out: stay here
+        clearTimeout(timer);
+        try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+      });
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy / Gizlilik Politikası — Lexi Download Manager</title>
+<meta name="description" content="Privacy Policy for the Lexi Download Manager browser extension and desktop application. Local loopback communication over 127.0.0.1:19847 with zero tracking or external servers.">
+<link rel="canonical" href="https://lexi-apps.pages.dev/lexi-download-manager/privacy">
+<meta name="theme-color" content="#05070a">
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="page.css">
+<script>
+  (function () {
+    var A = {
+      ember:  ['#ff5a36', '#0a0605'],
+      acid:   ['#c8ff2e', '#0a0d02'],
+      amber:  ['#ffb224', '#0d0902'],
+      ice:    ['#5ad8ff', '#02090d'],
+      signal: ['#ff2e4d', '#0a0204'],
+      mono:   ['#f2f5f7', '#05070a']
+    };
+    var k = 'ember';
+    try { k = localStorage.getItem('lexi-accent') || k; } catch (e) {}
+    if (!A[k]) k = 'ember';
+    var d = document.documentElement;
+    d.style.setProperty('--accent', A[k][0]);
+    d.style.setProperty('--on-accent', A[k][1]);
+    d.setAttribute('data-accent', k);
+    window.__lexiAccents = A;
+  })();
+</script>
+</head>
+<body>
+<a class="skip-link" href="#top"><span data-lang="en">Skip to content</span><span data-lang="tr">İçeriğe geç</span></a>
+
+<div class="fallback-core" aria-hidden="true"><i></i><i></i></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="index.html" aria-label="Lexi Download Manager, back to home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Download Manager</span>
+  </a>
+  <div class="top__panel" id="menu">
+    <nav aria-label="Primary">
+      <a class="nav-home" href="/"><span aria-hidden="true">←</span> <span data-lang="en">Home</span><span data-lang="tr">Ana Sayfa</span></a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span>Apps</span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="/lexi-game-translator/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI GAME TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item is-on" href="/lexi-download-manager/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-dictate/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a href="index.html">← Download Manager</a>
+      <a href="#english">English</a>
+      <a href="#turkce">Türkçe</a>
+    </nav>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--discord" href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" title="Join Discord Community">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Discord</span>
+      </a>
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Buy Me a Coffee">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span>Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Support on Patreon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span>Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Accent color">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top" tabindex="-1">
+  <div class="deep">
+
+    <!-- ============ 01. English Privacy Policy ============ -->
+    <section class="sec" id="english" aria-labelledby="en-title" style="padding-top:140px;">
+      <div class="wrap">
+        <header class="sec__head">
+          <p class="eyebrow">01 <span>/</span> Privacy Policy <span>/</span> English</p>
+          <h2 id="en-title">Local only, by design<em>.</em></h2>
+          <p class="sec__lede">The Lexi browser extension passes downloads from your browser to the Lexi Download Manager desktop app installed on your own computer.</p>
+        </header>
+
+        <h3 class="label">What the extension reads</h3>
+        <ul class="notes">
+          <li>The address (URL) and file name of a download, so Lexi can download it.</li>
+          <li>Links on a page, only when you ask for it (for example &ldquo;Download all links on this page&rdquo; or the media button).</li>
+          <li>The cookies of the website you are downloading from (only that site), so downloads that need you to be signed in keep working.</li>
+          <li>The page address (referer) and your browser's user-agent text, which some sites require.</li>
+          <li>Settings you choose (for example sites where capture is disabled, and the optional pairing code) are stored in the browser's own extension storage on your computer.</li>
+        </ul>
+
+        <h3 class="label">Where it goes</h3>
+        <ul class="notes">
+          <li>All of this is sent only to the Lexi app on your computer, at <code>127.0.0.1</code> (local address, port <code>19847</code>). In Tor Browser it goes through a local helper (native messaging) to the same app.</li>
+          <li>Nothing is sent to any other server, to us, or to anyone else.</li>
+          <li>No analytics, no tracking, no advertising, no remote code.</li>
+        </ul>
+
+        <h3 class="label">Your control</h3>
+        <ul class="notes">
+          <li>You can turn capture off for any site, or entirely, from the extension popup. Removing the extension removes its stored settings.</li>
+          <li>The data handled by the Lexi app itself is covered by the app's own settings and stays on your computer.</li>
+          <li>Contact: <a href="mailto:lexiapps@protonmail.com"><code>lexiapps@protonmail.com</code></a></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 02. Turkish Privacy Policy ============ -->
+    <section class="sec" id="turkce" aria-labelledby="tr-title" style="padding-top:40px;">
+      <div class="wrap">
+        <header class="sec__head">
+          <p class="eyebrow">02 <span>/</span> Gizlilik Politikası <span>/</span> Türkçe</p>
+          <h2 id="tr-title">Tasarım gereği tam yerel<em>.</em></h2>
+          <p class="sec__lede">Lexi eklentisi, tarayıcınızdaki indirmeleri kendi bilgisayarınızda kurulu olan Lexi Download Manager uygulamasına aktarır.</p>
+        </header>
+
+        <h3 class="label">Eklenti neleri okur</h3>
+        <ul class="notes">
+          <li>Bir indirmenin adresi (URL) ve dosya adı; Lexi'nin indirebilmesi için.</li>
+          <li>Sayfadaki bağlantılar; yalnızca siz istediğinizde (örneğin &ldquo;Sayfadaki tüm bağlantıları indir&rdquo; veya medya düğmesi).</li>
+          <li>İndirdiğiniz sitenin çerezleri (yalnızca o site); oturum gerektiren indirmeler çalışsın diye.</li>
+          <li>Bazı sitelerin istediği sayfa adresi (referer) ve tarayıcının kullanıcı aracısı (user-agent) metni.</li>
+          <li>Sizin seçtiğiniz ayarlar (örneğin yakalamanın kapatıldığı siteler ve isteğe bağlı eşleştirme kodu) bilgisayarınızdaki tarayıcının kendi eklenti depolamasında tutulur.</li>
+        </ul>
+
+        <h3 class="label">Nereye gider</h3>
+        <ul class="notes">
+          <li>Bunların hepsi yalnızca bilgisayarınızdaki Lexi uygulamasına, <code>127.0.0.1</code> (yerel adres, <code>19847</code> portu) üzerinden gönderilir. Tor Browser'da aynı uygulamaya yerel bir yardımcı (native messaging) üzerinden ulaşır.</li>
+          <li>Başka hiçbir sunucuya, bize veya üçüncü kişilere hiçbir şey gönderilmez.</li>
+          <li>Analitik, izleme, reklam ve uzaktan kod yoktur.</li>
+        </ul>
+
+        <h3 class="label">Kontrol sizde</h3>
+        <ul class="notes">
+          <li>Eklenti penceresinden herhangi bir site için ya da tamamen yakalamayı kapatabilirsiniz. Eklentiyi kaldırmak, depolanan ayarlarını da siler.</li>
+          <li>Lexi uygulamasının kendi işlediği veriler uygulamanın ayarlarına tabidir ve bilgisayarınızda kalır.</li>
+          <li>İletişim: <a href="mailto:lexiapps@protonmail.com"><code>lexiapps@protonmail.com</code></a></li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <a class="brand" href="index.html" aria-label="Lexi Download Manager">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <ul>
+    <li><a href="index.html">Download Manager</a></li>
+    <li><a href="/">Main Site</a></li>
+    <li><a href="https://github.com/lexi-apps/lexi-download-manager/releases/latest" rel="noopener">Releases</a></li>
+    <li><a href="https://buymeacoffee.com/lexiapps" rel="noopener">Buy Me a Coffee</a></li>
+    <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener">Discord</a></li>
+      <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener">Patreon</a></li>
+    <li><a href="mailto:lexiapps@protonmail.com">lexiapps@protonmail.com</a></li>
+  </ul>
+  <p>&copy; 2026 Lexi Apps</p>
+</footer>
+
+<script>
+  (function () {
+    var A = window.__lexiAccents;
+    var root = document.documentElement;
+    var current = root.getAttribute('data-accent') || 'ember';
+    var out = document.getElementById('accent-name');
+    function apply(key, save) {
+      var a = A[key] || A.ember;
+      root.style.setProperty('--accent', a[0]);
+      root.style.setProperty('--on-accent', a[1]);
+      root.setAttribute('data-accent', key);
+      if (out) out.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+      Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+        btn.classList.toggle('is-on', btn.getAttribute('data-accent-choice') === key);
+      });
+      if (save) { try { localStorage.setItem('lexi-accent', key); } catch (e) {} }
+    }
+    Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        apply(btn.getAttribute('data-accent-choice'), true);
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      });
+    });
+    apply(current, false);
+  })();
+</script>
+<script type="module">import { setupDropdowns } from '/dropdowns.js'; setupDropdowns();</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>/* Mirror only: old address, go to the new page (keeps ?query and #hash). */
+window.lexiRedirecting = true; location.replace("/lexi-game-translator/privacy" + location.search + location.hash);
+</script>
+<script data-lexi-probe>
+/* Mirror only: if the main site (pages.dev) is reachable, send the visitor there;
+   if it is blocked, remember that for this tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var target = (local && q.get('probe') === 'fail')
+      ? 'https://lexi-probe-test.invalid/' : MAIN + '/favicon.ico';
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    fetch(target + '?probe=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: ctl.signal })
+      .then(function () {                         // reachable: same page on the main site
+        clearTimeout(timer);
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      }, function () {                            // blocked or timed out: stay here
+        clearTimeout(timer);
+        try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+      });
+  } catch (e) {}
+})();
+</script>
+<title>Redirecting… · Lexi Apps</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://lexi-apps.pages.dev/lexi-game-translator/privacy">
+<meta http-equiv="refresh" content="0; url=/lexi-game-translator/privacy">
+</head>
+<body>
+<p><a href="/lexi-game-translator/privacy">This page has moved. Continue / Sayfa taşındı, devam edin</a></p>
+</body>
+</html>

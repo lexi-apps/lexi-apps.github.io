@@ -1,0 +1,37 @@
+/* Install help — /style.css'ten SONRA yuklenir; yalniz bu sayfaya ozel kurallar. */
+.ih-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; counter-reset: s; }
+.ih-step { position: relative; border: 1px solid var(--line); background: rgba(223,234,241,.03); padding: 24px clamp(18px,3vw,32px) 26px clamp(70px,8vw,96px); }
+.ih-step::before { counter-increment: s; content: counter(s); position: absolute; left: clamp(16px,2.4vw,28px); top: 20px; width: 40px; height: 40px; display: grid; place-items: center; background: var(--accent); color: var(--on-accent); font: 700 20px/1 var(--display); }
+.ih-step h3 { margin: 0 0 8px; font: 700 clamp(19px,2.2vw,24px)/1.2 var(--display); color: #fff; }
+.ih-step p { margin: 0 0 10px; color: #c9d5dd; font-size: 15.5px; line-height: 1.6; max-width: 70ch; }
+.ih-step p:last-child { margin-bottom: 0; }
+.ih-step a { color: var(--accent); }
+.ih-step strong { color: #fff; }
+.ih-links { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+.ih-links a { display: block; padding: 10px 14px; border: 1px solid var(--line); font: 500 13px/1.4 var(--mono); word-break: break-all; text-decoration: none; }
+.ih-links a:hover { border-color: var(--accent); }
+.ih-links b { display: block; font: 600 13px var(--body); color: #fff; margin-bottom: 2px; }
+.ih-cmd { display: block; margin: 12px 0; padding: 12px 14px; background: #0b1117; border: 1px solid var(--line); font: 500 13.5px/1.5 var(--mono); color: #fff; overflow-x: auto; white-space: pre; }
+.ih-tag { display: inline-block; font: 500 11px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); border: 1px solid var(--line); padding: 5px 8px; margin: 0 0 12px; }
+.ih-note { border-left: 3px solid var(--accent); padding: 10px 14px; background: rgba(223,234,241,.04); color: #c9d5dd; font-size: 14.5px; margin-top: 12px; max-width: 70ch; }
+
+/* Windows-style mock dialog */
+.ih-mocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 24px; margin-top: 28px; }
+.ih-fig { margin: 0; }
+.ih-fig figcaption { margin-top: 10px; font: 500 12px/1.5 var(--mono); letter-spacing: .08em; color: var(--dim); }
+.ih-win { background: #0063b1; color: #fff; font-family: "Segoe UI", system-ui, sans-serif; border: 1px solid rgba(255,255,255,.25); box-shadow: 0 14px 40px rgba(0,0,0,.5); }
+.ih-win__bar { height: 30px; background: rgba(0,0,0,.18); display: flex; justify-content: flex-end; align-items: center; padding: 0 12px; font-size: 14px; opacity: .8; }
+.ih-win__body { padding: 22px 22px 18px; }
+.ih-win h4 { margin: 0 0 12px; font: 600 21px/1.25 "Segoe UI", system-ui, sans-serif; }
+.ih-win p { margin: 0 0 12px; font-size: 14px; line-height: 1.45; }
+.ih-win dl { margin: 0 0 12px; font-size: 13.5px; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; }
+.ih-win dt { opacity: .85; } .ih-win dd { margin: 0; }
+.ih-win__more { display: inline-block; font-size: 14px; text-decoration: underline; padding: 3px 6px; margin-left: -6px; }
+.ih-win__btns { display: flex; justify-content: flex-end; gap: 10px; padding: 8px 22px 22px; flex-wrap: wrap; }
+.ih-win__btn { min-width: 118px; text-align: center; padding: 8px 14px; font-size: 14px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.55); }
+.ih-hl { outline: 3px solid var(--accent); outline-offset: 3px; position: relative; }
+.ih-hl::after { content: "←"; position: absolute; right: calc(100% + 10px); top: 50%; transform: translateY(-50%) rotate(180deg); color: var(--accent); font: 700 22px/1 var(--display); }
+.ih-win__btns .ih-hl::after { right: auto; left: 50%; top: auto; bottom: calc(100% + 4px); transform: translateX(-50%) rotate(-90deg); }
+.ih-win__more.ih-hl::after { display: none; }
+.ih-win__more.ih-hl { outline-offset: 2px; }
+@media (max-width: 560px) { .ih-step { padding-left: 18px; padding-top: 74px; } .ih-win__btn { flex: 1; min-width: 0; } }

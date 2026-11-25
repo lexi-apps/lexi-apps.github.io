@@ -1,0 +1,4 @@
+/* Lexi Download Manager — /style.css'ten SONRA yuklenir; yalniz bu sayfaya ozel kurallar. */
+.card { cursor: zoom-in; }
+.shot__link { display: block; cursor: zoom-in; }
+.shot__img--compact { width: auto !important; max-width: 100%; max-height: 580px; margin: 0 auto; border-radius: 8px; }

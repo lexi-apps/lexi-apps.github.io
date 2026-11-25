@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en" class="no-gl is-ready">
+<head>
+<meta charset="utf-8">
+<script data-lexi-probe>
+/* Mirror only: if the main site (pages.dev) is reachable, send the visitor there;
+   if it is blocked, remember that for this tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var target = (local && q.get('probe') === 'fail')
+      ? 'https://lexi-probe-test.invalid/' : MAIN + '/favicon.ico';
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    fetch(target + '?probe=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: ctl.signal })
+      .then(function () {                         // reachable: same page on the main site
+        clearTimeout(timer);
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      }, function () {                            // blocked or timed out: stay here
+        clearTimeout(timer);
+        try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+      });
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy / Gizlilik Politikası — LexiDictate</title>
+<meta name="description" content="Privacy Policy for LexiDictate, the Windows voice dictation app. Your voice and text go directly to Google's Gemini API with your own API key. No analytics, no tracking, no Lexi server in between.">
+<link rel="canonical" href="https://lexi-apps.pages.dev/lexi-dictate/privacy">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#05070a">
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/style.css">
+<script>
+  (function () {
+    var A = {
+      ember:  ['#ff5a36', '#0a0605'],
+      acid:   ['#c8ff2e', '#0a0d02'],
+      amber:  ['#ffb224', '#0d0902'],
+      ice:    ['#5ad8ff', '#02090d'],
+      signal: ['#ff2e4d', '#0a0204'],
+      mono:   ['#f2f5f7', '#05070a']
+    };
+    var k = 'ember';
+    try { k = localStorage.getItem('lexi-accent') || k; } catch (e) {}
+    if (!A[k]) k = 'ember';
+    var d = document.documentElement;
+    d.style.setProperty('--accent', A[k][0]);
+    d.style.setProperty('--on-accent', A[k][1]);
+    d.setAttribute('data-accent', k);
+    window.__lexiAccents = A;
+  })();
+</script>
+</head>
+<body>
+<a class="skip-link" href="#top"><span data-lang="en">Skip to content</span><span data-lang="tr">İçeriğe geç</span></a>
+
+<div class="fallback-core" aria-hidden="true"><i></i><i></i></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="/lexi-dictate/" aria-label="LexiDictate, back to product page">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>LexiDictate</span>
+  </a>
+  <div class="top__panel" id="menu">
+    <nav aria-label="Primary">
+      <a class="nav-home" href="/"><span aria-hidden="true">←</span> <span data-lang="en">Home</span><span data-lang="tr">Ana Sayfa</span></a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span>Apps</span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="/lexi-game-translator/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI GAME TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-download-manager/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item is-on" href="/lexi-dictate/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a href="/lexi-dictate/">← LexiDictate</a>
+      <a href="#english">English</a>
+      <a href="#turkce">Türkçe</a>
+    </nav>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--discord" href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" title="Join Discord Community">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Discord</span>
+      </a>
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Buy Me a Coffee">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span>Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Support on Patreon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span>Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Accent color">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top" tabindex="-1">
+  <div class="deep">
+
+    <!-- ============ 01. English Privacy Policy ============ -->
+    <section class="sec" id="english" aria-labelledby="en-title" style="padding-top:140px;">
+      <div class="wrap">
+        <header class="sec__head">
+          <p class="eyebrow">01 <span>/</span> Privacy Policy <span>/</span> English</p>
+          <h2 id="en-title">Your voice, your key<em>.</em></h2>
+          <p class="sec__lede">LexiDictate turns your speech into text on Windows. To do that, it sends your recording directly from your computer to Google's Gemini API, using the API key you add yourself. Lexi Apps does not run a server that receives your voice or your text.</p>
+          <p class="eyebrow" style="margin-top:22px;">Last updated <span>/</span> 25 November 2026</p>
+        </header>
+
+        <h3 class="label">What Lexi Apps receives</h3>
+        <ul class="notes">
+          <li>Nothing during normal use. LexiDictate has no user accounts, no analytics, no tracking and no advertising.</li>
+          <li>The only exception is a problem report that you decide to send yourself (see &ldquo;Problem reports&rdquo; below). You see the full report before it is sent.</li>
+          <li>Lexi Apps never receives your recordings, your dictated text or your API keys.</li>
+        </ul>
+
+        <h3 class="label">What stays on your computer</h3>
+        <ul class="notes">
+          <li><strong>Settings file</strong> <code>%APPDATA%\LexiDictate\config.json</code>: your settings, shortcuts, custom vocabulary, excluded apps, your Google AI Studio API keys and your last 15 dictations (the original and the final text). Your API key values are <strong>encrypted with Windows DPAPI</strong> (tied to your Windows user account on this PC); the rest of the file (settings, vocabulary and your last 15 dictations) is stored as plain JSON so anyone who can open your Windows user account can read those fields.</li>
+          <li><strong>Diagnostic log</strong> <code>%APPDATA%\LexiDictate\logs\lexidictate.log</code> (small, replaced as it grows): technical events such as start and stop, durations, character counts, model names, error messages and the names of games that paused dictation in Game Mode. It does not contain the text you dictate.</li>
+          <li><strong>Recordings are kept in memory only.</strong> If a dictation fails, its recording is kept in memory for up to 10 minutes so you can retry it; it is never written to disk. Quick Selection Translation keeps its last 20 results in memory only.</li>
+          <li>If you turn on &ldquo;Start automatically with Windows&rdquo;, a startup entry is added to your Windows user registry. It is removed when you turn the option off or uninstall the app.</li>
+          <li>Downloaded updates are saved temporarily in <code>%TEMP%\lexidictate_update</code>.</li>
+        </ul>
+
+        <h3 class="label">What is sent to Google (Gemini API) and why</h3>
+        <ul class="notes">
+          <li><strong>Your microphone audio</strong>, only while you hold or toggle the dictation shortcut, so Google can turn it into text. Depending on your settings it is streamed live, sent as one recording, or both.</li>
+          <li><strong>Text to clean up or translate</strong>, together with your custom vocabulary and the instructions for the selected mode (Smart Sentence Polish, Verbatim or Translate to Another Language).</li>
+          <li><strong>Text you select for Quick Selection Translation</strong>, only when you click the small translate icon or press its shortcut (up to 1,500 characters).</li>
+          <li>When you test an API key, a request for the list of available models.</li>
+          <li>All of this goes directly from your computer to Google's Gemini API (Google AI Studio), using your own API key. Google's own privacy policy and Gemini API terms decide how Google handles this data, and they can differ between free and paid use. Please read them before you use the app.</li>
+        </ul>
+
+        <h3 class="label">Updates</h3>
+        <ul class="notes">
+          <li>If &ldquo;Automatically check for updates on launch&rdquo; is on (the default), LexiDictate asks GitHub's public API for the latest LexiDictate release a few seconds after it starts.</li>
+          <li>Update files are downloaded only from LexiDictate's own GitHub releases page and are checked (SHA-256) before they are installed.</li>
+          <li>Like any web request, GitHub sees your IP address and a short app name in the request. You can turn automatic checks off in the settings.</li>
+        </ul>
+
+        <h3 class="label">Problem reports</h3>
+        <ul class="notes">
+          <li>A report is sent only when you open &ldquo;Report an Issue&rdquo; and press Send.</li>
+          <li>It contains your description, an optional reply email, the app, Windows, Python and Qt versions, a summary of your settings (modes, selected models, shortcuts and the number of API keys, not the keys themselves) and, if you leave that option on, the last lines of the diagnostic log.</li>
+          <li>Before sending, API keys and similar secrets, your Windows user name and user folder paths, other email addresses, IP addresses, your key labels and the names of your excluded apps are masked. The preview shows exactly what will be sent.</li>
+          <li>Reports go to the Lexi Apps report service (running on Cloudflare), which stores them as issues in a private GitHub repository for the developer. Your reply email is used only to answer your report.</li>
+        </ul>
+
+        <h3 class="label">Third-party services</h3>
+        <ul class="notes">
+          <li><strong>Google</strong> (Gemini API / Google AI Studio): speech recognition, text clean-up and translation, with your own API key.</li>
+          <li><strong>GitHub</strong>: update checks and downloads; storage of problem reports.</li>
+          <li><strong>Cloudflare</strong>: runs the Lexi Apps report service.</li>
+          <li>Each of these companies has its own privacy policy. Links to the website, Discord, Patreon or Buy Me a Coffee only open in your browser; the app sends them no data.</li>
+        </ul>
+
+        <h3 class="label">Children</h3>
+        <ul class="notes">
+          <li>LexiDictate is a general-purpose tool and is not directed at children. Lexi Apps does not knowingly collect personal data from children; the only personal data we can receive is what is in a problem report you choose to send.</li>
+        </ul>
+
+        <h3 class="label">Your choices and deleting your data</h3>
+        <ul class="notes">
+          <li>Use &ldquo;Clear History&rdquo; in the settings to delete saved dictations, and delete API keys from the key list at any time. You can also revoke a key in Google AI Studio.</li>
+          <li>You can turn off automatic update checks, and you can send a report without the log.</li>
+          <li>Uninstalling removes the program but keeps your settings. To remove all local data, also delete the folder <code>%APPDATA%\LexiDictate</code> (and <code>%APPDATA%\MicDictate</code>, if you used the app under its earlier name).</li>
+          <li>For questions about a report you sent, email us.</li>
+        </ul>
+
+        <h3 class="label">Changes to this policy</h3>
+        <ul class="notes">
+          <li>If the app's data handling changes, we will update this page and the &ldquo;Last updated&rdquo; date above.</li>
+        </ul>
+
+        <h3 class="label">Contact</h3>
+        <ul class="notes">
+          <li>Lexi Apps: <a href="mailto:lexiapps@protonmail.com"><code>lexiapps@protonmail.com</code></a></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 02. Turkish Privacy Policy ============ -->
+    <section class="sec" id="turkce" aria-labelledby="tr-title" style="padding-top:40px;">
+      <div class="wrap">
+        <header class="sec__head">
+          <p class="eyebrow">02 <span>/</span> Gizlilik Politikası <span>/</span> Türkçe</p>
+          <h2 id="tr-title">Sesiniz, anahtarınız<em>.</em></h2>
+          <p class="sec__lede">LexiDictate, Windows'ta konuşmanızı yazıya çevirir. Bunun için kaydınızı, sizin eklediğiniz API anahtarıyla doğrudan bilgisayarınızdan Google'ın Gemini API'sine gönderir. Lexi Apps'in sesinizi ya da metninizi alan bir sunucusu yoktur.</p>
+          <p class="eyebrow" style="margin-top:22px;">Son güncelleme <span>/</span> 25 Kasım 2026</p>
+        </header>
+
+        <h3 class="label">Lexi Apps'e ne ulaşır</h3>
+        <ul class="notes">
+          <li>Normal kullanımda hiçbir şey. LexiDictate'te kullanıcı hesabı, analitik, izleme ve reklam yoktur.</li>
+          <li>Tek istisna, kendiniz göndermeye karar verdiğiniz sorun raporudur (aşağıdaki &ldquo;Sorun raporları&rdquo; bölümüne bakın). Raporun tamamını göndermeden önce görürsünüz.</li>
+          <li>Ses kayıtlarınız, yazdırdığınız metinler ve API anahtarlarınız Lexi Apps'e hiçbir zaman ulaşmaz.</li>
+        </ul>
+
+        <h3 class="label">Bilgisayarınızda kalanlar</h3>
+        <ul class="notes">
+          <li><strong>Ayar dosyası</strong> <code>%APPDATA%\LexiDictate\config.json</code>: ayarlarınız, kısayollarınız, özel sözlüğünüz, hariç tuttuğunuz uygulamalar, Google AI Studio API anahtarlarınız ve son 15 dikteniz (ilk ve son hâliyle metin). API anahtarı değerleriniz <strong>Windows DPAPI ile şifrelenir</strong> (bu bilgisayardaki Windows kullanıcı hesabınıza bağlıdır); dosyanın geri kalanı (ayarlarınız, sözlüğünüz ve son 15 dikteniz) düz JSON olarak saklanır ve Windows hesabınıza erişebilen kişilerce okunabilir.</li>
+          <li><strong>Tanılama günlüğü</strong> <code>%APPDATA%\LexiDictate\logs\lexidictate.log</code> (küçük; büyüdükçe eskisi silinir): başlama ve bitiş, süreler, karakter sayıları, model adları, hata iletileri ve Oyun Modu'nda dikteyi duraklatan oyunların adları gibi teknik kayıtlar. Yazdırdığınız metin bu günlükte yer almaz.</li>
+          <li><strong>Ses kayıtları yalnız bellekte tutulur.</strong> Bir dikte başarısız olursa, yeniden deneyebilmeniz için kaydı en çok 10 dakika bellekte kalır; diske hiç yazılmaz. Hızlı Seçim Çevirisi de son 20 sonucunu yalnız bellekte tutar.</li>
+          <li>&ldquo;Windows açılışında otomatik başlat&rdquo; seçeneğini açarsanız Windows kullanıcı kayıt defterinize bir başlangıç kaydı eklenir. Seçeneği kapattığınızda ya da uygulamayı kaldırdığınızda bu kayıt silinir.</li>
+          <li>İndirilen güncellemeler geçici olarak <code>%TEMP%\lexidictate_update</code> klasörüne kaydedilir.</li>
+        </ul>
+
+        <h3 class="label">Google'a (Gemini API) ne gönderilir, neden</h3>
+        <ul class="notes">
+          <li><strong>Mikrofon sesiniz</strong>; yalnız dikte kısayolunu basılı tuttuğunuz ya da açtığınız sürece, Google onu yazıya çevirebilsin diye. Ayarlarınıza göre canlı akış olarak, tek bir kayıt olarak ya da ikisi birden gönderilir.</li>
+          <li><strong>Düzeltilecek ya da çevrilecek metin</strong>; özel sözlüğünüz ve seçili kipin (Akıllı Cümle Düzeltme, Birebir ya da Başka Dile Çevir) talimatlarıyla birlikte.</li>
+          <li><strong>Hızlı Seçim Çevirisi için seçtiğiniz metin</strong>; yalnız küçük çeviri simgesine tıkladığınızda ya da kısayoluna bastığınızda (en çok 1.500 karakter).</li>
+          <li>Bir API anahtarını sınadığınızda, kullanılabilir modellerin listesi için bir istek.</li>
+          <li>Bunların hepsi sizin API anahtarınızla, doğrudan bilgisayarınızdan Google'ın Gemini API'sine (Google AI Studio) gider. Google'ın bu verileri nasıl işlediğini Google'ın kendi gizlilik politikası ve Gemini API koşulları belirler; bu koşullar ücretsiz ve ücretli kullanımda farklı olabilir. Uygulamayı kullanmadan önce lütfen bunları okuyun.</li>
+        </ul>
+
+        <h3 class="label">Güncellemeler</h3>
+        <ul class="notes">
+          <li>&ldquo;Başlangıçta güncellemeleri otomatik denetle&rdquo; açıksa (varsayılan), LexiDictate açıldıktan birkaç saniye sonra GitHub'ın herkese açık API'sine en son LexiDictate sürümünü sorar.</li>
+          <li>Güncelleme dosyaları yalnız LexiDictate'in kendi GitHub sürüm sayfasından indirilir ve kurulmadan önce doğrulanır (SHA-256).</li>
+          <li>Her web isteğinde olduğu gibi GitHub, IP adresinizi ve istekteki kısa uygulama adını görür. Otomatik denetimi ayarlardan kapatabilirsiniz.</li>
+        </ul>
+
+        <h3 class="label">Sorun raporları</h3>
+        <ul class="notes">
+          <li>Rapor yalnız &ldquo;Sorun Bildir&rdquo; penceresini açıp Gönder'e bastığınızda gönderilir.</li>
+          <li>Raporda açıklamanız, isteğe bağlı yanıt e-postanız, uygulama, Windows, Python ve Qt sürümleri, ayarlarınızın özeti (kipler, seçili modeller, kısayollar ve API anahtarlarının sayısı; anahtarların kendisi değil) ve bu seçeneği açık bırakırsanız tanılama günlüğünün son satırları bulunur.</li>
+          <li>Göndermeden önce API anahtarları ve benzeri gizli bilgiler, Windows kullanıcı adınız ve kullanıcı klasörü yollarınız, başka e-posta adresleri, IP adresleri, anahtar etiketleriniz ve hariç tuttuğunuz uygulamaların adları maskelenir. Önizleme, gönderilecek metnin aynısını gösterir.</li>
+          <li>Raporlar Lexi Apps rapor hizmetine (Cloudflare üzerinde çalışır) gider ve geliştirici için gizli bir GitHub deposunda kayıt (issue) olarak saklanır. Yanıt e-postanız yalnız raporunuza cevap vermek için kullanılır.</li>
+        </ul>
+
+        <h3 class="label">Üçüncü taraf hizmetler</h3>
+        <ul class="notes">
+          <li><strong>Google</strong> (Gemini API / Google AI Studio): sizin API anahtarınızla konuşma tanıma, metin düzeltme ve çeviri.</li>
+          <li><strong>GitHub</strong>: güncelleme denetimi ve indirme; sorun raporlarının saklanması.</li>
+          <li><strong>Cloudflare</strong>: Lexi Apps rapor hizmetini çalıştırır.</li>
+          <li>Bu şirketlerin her birinin kendi gizlilik politikası vardır. Web sitesi, Discord, Patreon ya da Buy Me a Coffee bağlantıları yalnız tarayıcınızda açılır; uygulama bunlara veri göndermez.</li>
+        </ul>
+
+        <h3 class="label">Çocuklar</h3>
+        <ul class="notes">
+          <li>LexiDictate genel amaçlı bir araçtır ve çocuklara yönelik değildir. Lexi Apps çocuklardan bilerek kişisel veri toplamaz; bize ulaşabilecek tek kişisel veri, göndermeyi seçtiğiniz bir sorun raporunda yer alanlardır.</li>
+        </ul>
+
+        <h3 class="label">Seçenekleriniz ve verilerinizi silme</h3>
+        <ul class="notes">
+          <li>Kayıtlı dikteleri silmek için ayarlardaki &ldquo;Geçmişi Temizle&rdquo; düğmesini kullanın; API anahtarlarını anahtar listesinden istediğiniz zaman silebilirsiniz. Bir anahtarı Google AI Studio'dan da iptal edebilirsiniz.</li>
+          <li>Otomatik güncelleme denetimini kapatabilir, raporu günlük eklemeden gönderebilirsiniz.</li>
+          <li>Uygulamayı kaldırmak programı siler ama ayarlarınızı bırakır. Bilgisayarınızdaki tüm verileri silmek için <code>%APPDATA%\LexiDictate</code> klasörünü de silin (uygulamayı eski adı MicDictate ile kullandıysanız <code>%APPDATA%\MicDictate</code> klasörünü de).</li>
+          <li>Gönderdiğiniz bir raporla ilgili sorularınız için bize e-posta yazın.</li>
+        </ul>
+
+        <h3 class="label">Bu politikadaki değişiklikler</h3>
+        <ul class="notes">
+          <li>Uygulamanın verileri işleme biçimi değişirse bu sayfayı ve yukarıdaki &ldquo;Son güncelleme&rdquo; tarihini güncelleriz.</li>
+        </ul>
+
+        <h3 class="label">İletişim</h3>
+        <ul class="notes">
+          <li>Lexi Apps: <a href="mailto:lexiapps@protonmail.com"><code>lexiapps@protonmail.com</code></a></li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <a class="brand" href="/lexi-dictate/" aria-label="LexiDictate">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <ul>
+    <li><a href="/lexi-dictate/">LexiDictate</a></li>
+    <li><a href="/">Main Site</a></li>
+    <li><a href="https://github.com/lexi-apps/lexi-dictate/releases/latest" rel="noopener">Releases</a></li>
+    <li><a href="https://buymeacoffee.com/lexiapps" rel="noopener">Buy Me a Coffee</a></li>
+    <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener">Discord</a></li>
+    <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener">Patreon</a></li>
+    <li><a href="mailto:lexiapps@protonmail.com">lexiapps@protonmail.com</a></li>
+  </ul>
+  <p>&copy; 2026 Lexi Apps</p>
+</footer>
+
+<script>
+  (function () {
+    var A = window.__lexiAccents;
+    var root = document.documentElement;
+    var current = root.getAttribute('data-accent') || 'ember';
+    var out = document.getElementById('accent-name');
+    function apply(key, save) {
+      var a = A[key] || A.ember;
+      root.style.setProperty('--accent', a[0]);
+      root.style.setProperty('--on-accent', a[1]);
+      root.setAttribute('data-accent', key);
+      if (out) out.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+      Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+        btn.classList.toggle('is-on', btn.getAttribute('data-accent-choice') === key);
+      });
+      if (save) { try { localStorage.setItem('lexi-accent', key); } catch (e) {} }
+    }
+    Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        apply(btn.getAttribute('data-accent-choice'), true);
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      });
+    });
+    apply(current, false);
+  })();
+</script>
+<script type="module">import { setupDropdowns } from '/dropdowns.js'; setupDropdowns();</script>
+</body>
+</html>

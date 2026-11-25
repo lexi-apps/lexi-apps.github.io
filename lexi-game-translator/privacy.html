@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en" class="no-gl is-ready">
+<head>
+<meta charset="utf-8">
+<script data-lexi-probe>
+/* Mirror only: if the main site (pages.dev) is reachable, send the visitor there;
+   if it is blocked, remember that for this tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var target = (local && q.get('probe') === 'fail')
+      ? 'https://lexi-probe-test.invalid/' : MAIN + '/favicon.ico';
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    fetch(target + '?probe=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: ctl.signal })
+      .then(function () {                         // reachable: same page on the main site
+        clearTimeout(timer);
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      }, function () {                            // blocked or timed out: stay here
+        clearTimeout(timer);
+        try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+      });
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy / Gizlilik Politikası — Lexi Game Translator</title>
+<meta name="description" content="Privacy Policy for Lexi Game Translator, the Windows game translation tool. Game text goes only to the translation service you choose; no analytics or tracking. What the Plus/Pro license check and problem reports send.">
+<link rel="canonical" href="https://lexi-apps.pages.dev/lexi-game-translator/privacy">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#05070a">
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/style.css">
+<script>
+  (function () {
+    var A = {
+      ember:  ['#ff5a36', '#0a0605'],
+      acid:   ['#c8ff2e', '#0a0d02'],
+      amber:  ['#ffb224', '#0d0902'],
+      ice:    ['#5ad8ff', '#02090d'],
+      signal: ['#ff2e4d', '#0a0204'],
+      mono:   ['#f2f5f7', '#05070a']
+    };
+    var k = 'ember';
+    try { k = localStorage.getItem('lexi-accent') || k; } catch (e) {}
+    if (!A[k]) k = 'ember';
+    var d = document.documentElement;
+    d.style.setProperty('--accent', A[k][0]);
+    d.style.setProperty('--on-accent', A[k][1]);
+    d.setAttribute('data-accent', k);
+    window.__lexiAccents = A;
+  })();
+</script>
+</head>
+<body>
+<a class="skip-link" href="#top"><span data-lang="en">Skip to content</span><span data-lang="tr">İçeriğe geç</span></a>
+
+<div class="fallback-core" aria-hidden="true"><i></i><i></i></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="/lexi-game-translator/" aria-label="Lexi Game Translator, back to product page">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Game Translator</span>
+  </a>
+  <div class="top__panel" id="menu">
+    <nav aria-label="Primary">
+      <a class="nav-home" href="/"><span aria-hidden="true">←</span> <span data-lang="en">Home</span><span data-lang="tr">Ana Sayfa</span></a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span>Apps</span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item is-on" href="/lexi-game-translator/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI GAME TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-download-manager/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-dictate/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a href="/lexi-game-translator/">← Game Translator</a>
+      <a href="#english">English</a>
+      <a href="#turkce">Türkçe</a>
+    </nav>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--discord" href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" title="Join Discord Community">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Discord</span>
+      </a>
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Buy Me a Coffee">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span>Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Support on Patreon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span>Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Accent color">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top" tabindex="-1">
+  <div class="deep">
+
+    <!-- ============ 01. English Privacy Policy ============ -->
+    <section class="sec" id="english" aria-labelledby="en-title" style="padding-top:140px;">
+      <div class="wrap">
+        <header class="sec__head">
+          <p class="eyebrow">01 <span>/</span> Privacy Policy <span>/</span> English</p>
+          <h2 id="en-title">Your games, your choice of service<em>.</em></h2>
+          <p class="sec__lede">Lexi Game Translator works on the games on your own computer. The text lines being translated go only to the translation service you choose, directly from your computer. Lexi Apps receives only what a Plus/Pro license check needs and the problem reports you decide to send.</p>
+          <p class="eyebrow" style="margin-top:22px;">Last updated <span>/</span> 25 November 2026</p>
+        </header>
+
+        <h3 class="label">What Lexi Apps receives</h3>
+        <ul class="notes">
+          <li>With the free Basic plan: nothing. Basic needs no sign-in and does not contact the Lexi license server.</li>
+          <li>For a trial or a Plus/Pro license: your machine code and, if you sign in with Patreon, your Patreon user ID and membership status (see &ldquo;License verification&rdquo; below).</li>
+          <li>Problem reports, only when you send one yourself.</li>
+          <li>Lexi Apps never receives your game files, the game text, your translations or your AI/translation API keys. The app has no analytics, no tracking and no advertising.</li>
+        </ul>
+
+        <h3 class="label">What stays on your computer</h3>
+        <ul class="notes">
+          <li><strong>Settings</strong> in your Windows user registry under <code>HKCU\Software\RenpyTranslator</code>: your preferences, recently used game folders and engine detection results, and your license key.</li>
+          <li><strong>App folder</strong> <code>%LOCALAPPDATA%\renpy_translator</code>: a copy of the license (<code>license.json</code>), the diagnostic log (<code>logs\lexi.log</code>, rotating, secrets masked), your game library list, saved translations, and helper tools Lexi downloads (such as the Ren'Py SDK). A small state file may also be kept in <code>%LOCALAPPDATA%\Lexi</code>.</li>
+          <li><strong>Inside each game folder</strong>: the translation files Lexi writes, backups that let you undo its changes, and the translation memory (<code>_rt_cache.rtcache</code>).</li>
+          <li>Interface preferences such as theme, wallpaper and cover settings are kept in the app's own local storage.</li>
+          <li><strong>API keys</strong> you type into the API key box are kept in memory only while Lexi is open; they are not written to settings, profiles or logs. If you press &ldquo;Save key&rdquo; for OpenAI, that key is stored in Windows Credential Manager (entry <code>Lexi/openai/default</code>) and can be removed with &ldquo;Delete key&rdquo;.</li>
+          <li>The live translation bridge used for some Unity and Unreal games listens only on your own computer (<code>127.0.0.1</code>).</li>
+        </ul>
+
+        <h3 class="label">What is sent to translation services and why</h3>
+        <ul class="notes">
+          <li>To translate, Lexi sends the text lines from the game, together with translation instructions. With AI services, the &ldquo;Context&rdquo; setting (default: speaker and scene) also sends the speaker's name and a few earlier lines of the scene; you can turn it off.</li>
+          <li>Text goes directly from your computer to the service you select, with your own API key where the service needs one. Paid services bill you directly.</li>
+          <li><strong>Machine translation</strong>: Google Translate and Microsoft Edge Translator (free, no key); Microsoft Translator (Bing) and Yandex Translate (with your own key).</li>
+          <li><strong>AI services</strong> (Plus/Pro, your own key): OpenAI, Anthropic (Claude), Google Gemini, Groq, Mistral, OpenRouter, DeepSeek, Cerebras, OpenCode Go, or an OpenAI-compatible address you enter yourself.</li>
+          <li><strong>Local engines</strong> (Ollama, LM Studio, llama.cpp) run on your own computer; with them the text stays on your computer unless you enter a remote address.</li>
+          <li>The optional in-game &ldquo;Instant free translation (Google)&rdquo; (off by default) sends untranslated lines from the running game to Google Translate while you play.</li>
+          <li>Each service handles the text under its own privacy policy and terms. Please read them before you choose a service.</li>
+        </ul>
+
+        <h3 class="label">Helper tool downloads</h3>
+        <ul class="notes">
+          <li>When a feature needs it, Lexi downloads the official Ren'Py SDK from renpy.org, and tools such as BepInEx, XUnity.AutoTranslator, UE4SS or llama.cpp from their GitHub release pages. These sites see a normal download request (for example your IP address).</li>
+        </ul>
+
+        <h3 class="label">Updates</h3>
+        <ul class="notes">
+          <li>If &ldquo;Check automatically at startup&rdquo; is on (the default), Lexi downloads a small release information file from Lexi's GitHub releases page, at most once a day, shortly after it opens.</li>
+          <li>Updates come only from Lexi's own GitHub releases and are checked (digital signature and SHA-256) before installing. Like any web request, GitHub sees your IP address. You can turn automatic checks off.</li>
+        </ul>
+
+        <h3 class="label">License verification (trial, Plus and Pro)</h3>
+        <ul class="notes">
+          <li><strong>Machine code</strong>: a 16-character code made on your computer with a one-way hash (SHA-256 with a fixed salt) of your computer's hardware ID or Windows machine ID (fallback: computer name and network adapter address). Only the code is sent, never the original identifiers.</li>
+          <li><strong>Trial</strong>: when you start the trial, Lexi sends the machine code to the Lexi license server (<code>lexi-lisans.lexi-apps-dm.workers.dev</code>, run on Cloudflare).</li>
+          <li><strong>Patreon sign-in</strong>: your browser opens the license server with your machine code and a random session ID, then Patreon's sign-in page. With the &ldquo;identity&rdquo; permission, Patreon gives the server your Patreon user ID and your membership details for the Lexi Apps page (status, tier and billing dates). The server does not ask Patreon for, or store, your name or email address.</li>
+          <li><strong>Automatic renewal</strong>: when a Patreon license has less than 7 days left, Lexi sends the machine code and the current license key to the server to get a renewed key.</li>
+          <li><strong>Stored on the server</strong>: machine code, Patreon user ID, tier, license dates, the Patreon access-renewal token (encrypted), and a salted hash of your IP address (used only to limit abuse of trials and sign-ins). Sign-in sessions are deleted once the result is delivered. The license key itself is checked on your computer, offline.</li>
+          <li><strong>How long</strong>: license records have no automatic deletion date; they are kept so your license and trial can be checked. To have your record deleted, email <a href="mailto:lexiapps@protonmail.com">lexiapps@protonmail.com</a>.</li>
+        </ul>
+
+        <h3 class="label">Problem reports</h3>
+        <ul class="notes">
+          <li>A report is sent only when you press Send in &ldquo;Report a problem&rdquo;. After a crash, Lexi asks you first.</li>
+          <li>It contains your description, an optional reply email, the app, Windows, Python and Qt versions, the interface language, the selected translation service, your license tier (not the key), crash details if you send a crash report, and the last lines of the diagnostic log.</li>
+          <li>API keys, license keys, tokens, your Windows user name, other email addresses and IP addresses are masked before sending. The log can still contain names of game folders and files. The preview shows exactly what will be sent.</li>
+          <li>Reports go to the Lexi Apps report service (running on Cloudflare), which stores them as issues in a private GitHub repository for the developer. Your reply email is used only to answer your report.</li>
+        </ul>
+
+        <h3 class="label">Third-party services</h3>
+        <ul class="notes">
+          <li>The translation services listed above, only the ones you choose.</li>
+          <li><strong>Patreon</strong>: membership sign-in for Plus/Pro. <strong>Cloudflare</strong>: runs the license server and the report service. <strong>GitHub</strong>: updates, tool downloads and storage of problem reports. <strong>renpy.org</strong>: Ren'Py SDK downloads.</li>
+          <li>Each of these has its own privacy policy. Links to the website, Discord, Patreon or Buy Me a Coffee only open in your browser.</li>
+        </ul>
+
+        <h3 class="label">Children</h3>
+        <ul class="notes">
+          <li>Lexi Game Translator is a general-purpose tool and is not directed at children. Lexi Apps does not knowingly collect personal data from children.</li>
+        </ul>
+
+        <h3 class="label">Your choices and deleting your data</h3>
+        <ul class="notes">
+          <li>Use the free Basic plan without signing in, choose a local engine to keep text on your computer, turn off the &ldquo;Context&rdquo; setting, and turn off automatic update checks.</li>
+          <li>Uninstalling removes only the program files. To remove all local data, also delete the registry key <code>HKCU\Software\RenpyTranslator</code>, the folders <code>%LOCALAPPDATA%\renpy_translator</code> and <code>%LOCALAPPDATA%\Lexi</code>, the Windows Credential Manager entry <code>Lexi/openai/default</code> (or use &ldquo;Delete key&rdquo; in the app), and the Lexi files inside your game folders.</li>
+          <li>Deleting local data does not reset the trial: the trial record is linked to the machine code on the server.</li>
+          <li>For questions about the license records linked to your computer or Patreon account, or about a report you sent, email us.</li>
+        </ul>
+
+        <h3 class="label">Changes to this policy</h3>
+        <ul class="notes">
+          <li>If the app's data handling changes, we will update this page and the &ldquo;Last updated&rdquo; date above.</li>
+        </ul>
+
+        <h3 class="label">Contact</h3>
+        <ul class="notes">
+          <li>Lexi Apps: <a href="mailto:lexiapps@protonmail.com"><code>lexiapps@protonmail.com</code></a></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 02. Turkish Privacy Policy ============ -->
+    <section class="sec" id="turkce" aria-labelledby="tr-title" style="padding-top:40px;">
+      <div class="wrap">
+        <header class="sec__head">
+          <p class="eyebrow">02 <span>/</span> Gizlilik Politikası <span>/</span> Türkçe</p>
+          <h2 id="tr-title">Oyunlarınız sizde, servisi siz seçersiniz<em>.</em></h2>
+          <p class="sec__lede">Lexi Game Translator, kendi bilgisayarınızdaki oyunlar üzerinde çalışır. Çevrilecek metin satırları, doğrudan bilgisayarınızdan yalnız sizin seçtiğiniz çeviri servisine gider. Lexi Apps'e yalnız Plus/Pro lisans denetiminin gerektirdiği bilgiler ve göndermeye karar verdiğiniz sorun raporları ulaşır.</p>
+          <p class="eyebrow" style="margin-top:22px;">Son güncelleme <span>/</span> 25 Kasım 2026</p>
+        </header>
+
+        <h3 class="label">Lexi Apps'e ne ulaşır</h3>
+        <ul class="notes">
+          <li>Ücretsiz Basic planda: hiçbir şey. Basic giriş gerektirmez ve Lexi lisans sunucusuna bağlanmaz.</li>
+          <li>Deneme ya da Plus/Pro lisansı için: makine kodunuz ve Patreon ile giriş yaparsanız Patreon kullanıcı kimliğiniz ile üyelik durumunuz (aşağıdaki &ldquo;Lisans doğrulama&rdquo; bölümüne bakın).</li>
+          <li>Sorun raporları; yalnız kendiniz gönderdiğinizde.</li>
+          <li>Oyun dosyalarınız, oyun metinleri, çevirileriniz ve AI/çeviri API anahtarlarınız Lexi Apps'e hiçbir zaman ulaşmaz. Uygulamada analitik, izleme ve reklam yoktur.</li>
+        </ul>
+
+        <h3 class="label">Bilgisayarınızda kalanlar</h3>
+        <ul class="notes">
+          <li><strong>Ayarlar</strong>, Windows kullanıcı kayıt defterinizde <code>HKCU\Software\RenpyTranslator</code> altında: tercihleriniz, son kullandığınız oyun klasörleri ve motor algılama sonuçları ile lisans anahtarınız.</li>
+          <li><strong>Uygulama klasörü</strong> <code>%LOCALAPPDATA%\renpy_translator</code>: lisansın bir kopyası (<code>license.json</code>), tanılama günlüğü (<code>logs\lexi.log</code>; dönerek yenilenir, gizli bilgiler maskelenir), oyun kütüphanesi listeniz, kayıtlı çevirileriniz ve Lexi'nin indirdiği yardımcı araçlar (örneğin Ren'Py SDK). <code>%LOCALAPPDATA%\Lexi</code> klasöründe de küçük bir durum dosyası tutulabilir.</li>
+          <li><strong>Her oyunun kendi klasöründe</strong>: Lexi'nin yazdığı çeviri dosyaları, değişiklikleri geri almanızı sağlayan yedekler ve çeviri hafızası (<code>_rt_cache.rtcache</code>).</li>
+          <li>Tema, duvar kâğıdı ve kapak ayarları gibi arayüz tercihleri uygulamanın kendi yerel depolamasında tutulur.</li>
+          <li><strong>API anahtarları</strong>: API anahtarı kutusuna yazdığınız anahtarlar yalnız Lexi açıkken bellekte tutulur; ayarlara, profillere ya da günlüklere yazılmaz. OpenAI için &ldquo;Anahtarı kaydet&rdquo;e basarsanız bu anahtar Windows Kimlik Bilgileri Yöneticisi'nde (<code>Lexi/openai/default</code> kaydı) saklanır ve &ldquo;Anahtarı sil&rdquo; ile kaldırılabilir.</li>
+          <li>Bazı Unity ve Unreal oyunlarında kullanılan canlı çeviri köprüsü yalnız kendi bilgisayarınızda (<code>127.0.0.1</code>) dinler.</li>
+        </ul>
+
+        <h3 class="label">Çeviri servislerine ne gönderilir, neden</h3>
+        <ul class="notes">
+          <li>Çeviri için Lexi, oyundaki metin satırlarını çeviri talimatlarıyla birlikte gönderir. AI servislerinde &ldquo;Bağlam&rdquo; ayarı (varsayılan: konuşan karakter ve sahne) konuşan karakterin adını ve sahnedeki önceki birkaç satırı da gönderir; bu ayarı kapatabilirsiniz.</li>
+          <li>Metin, doğrudan bilgisayarınızdan seçtiğiniz servise gider; servis anahtar istiyorsa sizin API anahtarınız kullanılır. Ücretli servisler ücreti doğrudan size yansıtır.</li>
+          <li><strong>Makine çevirisi</strong>: Google Çeviri ve Microsoft Edge Çevirmeni (ücretsiz, anahtarsız); Microsoft Translator (Bing) ve Yandex Çeviri (kendi anahtarınızla).</li>
+          <li><strong>AI servisleri</strong> (Plus/Pro, kendi anahtarınızla): OpenAI, Anthropic (Claude), Google Gemini, Groq, Mistral, OpenRouter, DeepSeek, Cerebras, OpenCode Go ya da kendiniz girdiğiniz OpenAI uyumlu bir adres.</li>
+          <li><strong>Yerel motorlar</strong> (Ollama, LM Studio, llama.cpp) kendi bilgisayarınızda çalışır; uzak bir adres girmediğiniz sürece metin bilgisayarınızdan çıkmaz.</li>
+          <li>İsteğe bağlı oyun içi &ldquo;Anında ücretsiz çeviri (Google)&rdquo; özelliği (varsayılan kapalı), siz oynarken çalışan oyundaki çevrilmemiş satırları Google Çeviri'ye gönderir.</li>
+          <li>Her servis metni kendi gizlilik politikası ve koşullarına göre işler. Bir servisi seçmeden önce lütfen bunları okuyun.</li>
+        </ul>
+
+        <h3 class="label">Yardımcı araç indirmeleri</h3>
+        <ul class="notes">
+          <li>Bir özellik gerektirdiğinde Lexi, resmî Ren'Py SDK'yı renpy.org'dan; BepInEx, XUnity.AutoTranslator, UE4SS ya da llama.cpp gibi araçları da kendi GitHub sürüm sayfalarından indirir. Bu siteler sıradan bir indirme isteği görür (örneğin IP adresinizi).</li>
+        </ul>
+
+        <h3 class="label">Güncellemeler</h3>
+        <ul class="notes">
+          <li>&ldquo;Açılışta otomatik denetle&rdquo; açıksa (varsayılan), Lexi açıldıktan kısa süre sonra, günde en çok bir kez, Lexi'nin GitHub sürüm sayfasından küçük bir sürüm bilgisi dosyası indirir.</li>
+          <li>Güncellemeler yalnız Lexi'nin kendi GitHub sürümlerinden gelir ve kurulmadan önce doğrulanır (dijital imza ve SHA-256). Her web isteğinde olduğu gibi GitHub IP adresinizi görür. Otomatik denetimi kapatabilirsiniz.</li>
+        </ul>
+
+        <h3 class="label">Lisans doğrulama (deneme, Plus ve Pro)</h3>
+        <ul class="notes">
+          <li><strong>Makine kodu</strong>: bilgisayarınızın donanım kimliğinden ya da Windows makine kimliğinden (bunlar okunamazsa bilgisayar adı ve ağ kartı adresinden) tek yönlü bir özetle (sabit tuzlu SHA-256) bilgisayarınızda üretilen 16 karakterlik koddur. Yalnız bu kod gönderilir; asıl kimlikler hiçbir zaman gönderilmez.</li>
+          <li><strong>Deneme</strong>: denemeyi başlattığınızda Lexi, makine kodunu Lexi lisans sunucusuna (<code>lexi-lisans.lexi-apps-dm.workers.dev</code>, Cloudflare üzerinde çalışır) gönderir.</li>
+          <li><strong>Patreon ile giriş</strong>: tarayıcınız, makine kodunuz ve rastgele bir oturum kimliğiyle lisans sunucusunu, ardından Patreon'un giriş sayfasını açar. Patreon, &ldquo;identity&rdquo; (kimlik) izniyle sunucuya Patreon kullanıcı kimliğinizi ve Lexi Apps sayfasındaki üyelik bilgilerinizi (durum, seviye ve ödeme tarihleri) verir. Sunucu Patreon'dan adınızı ya da e-posta adresinizi istemez ve saklamaz.</li>
+          <li><strong>Otomatik yenileme</strong>: Patreon lisansının bitmesine 7 günden az kaldığında Lexi, yenilenmiş anahtarı almak için makine kodunu ve mevcut lisans anahtarını sunucuya gönderir.</li>
+          <li><strong>Sunucuda saklananlar</strong>: makine kodu, Patreon kullanıcı kimliği, seviye, lisans tarihleri, Patreon erişim yenileme jetonu (şifreli) ve IP adresinizin tuzlu bir özeti (yalnız deneme ve giriş kötüye kullanımını sınırlamak için). Giriş oturumları, sonuç teslim edilince silinir. Lisans anahtarının kendisi bilgisayarınızda, çevrimdışı denetlenir.</li>
+          <li><strong>Ne kadar süre</strong>: lisans kayıtlarının otomatik silinme tarihi yoktur; lisansınızın ve denemenizin denetlenebilmesi için tutulur. Kaydınızın silinmesini isterseniz <a href="mailto:lexiapps@protonmail.com">lexiapps@protonmail.com</a> adresine yazın.</li>
+        </ul>
+
+        <h3 class="label">Sorun raporları</h3>
+        <ul class="notes">
+          <li>Rapor yalnız &ldquo;Sorun bildir&rdquo; penceresinde Gönder'e bastığınızda gönderilir. Bir çökmeden sonra Lexi önce size sorar.</li>
+          <li>Raporda açıklamanız, isteğe bağlı yanıt e-postanız, uygulama, Windows, Python ve Qt sürümleri, arayüz dili, seçili çeviri servisi, lisans seviyeniz (anahtar değil), çökme raporu gönderiyorsanız çökme ayrıntıları ve tanılama günlüğünün son satırları bulunur.</li>
+          <li>Göndermeden önce API anahtarları, lisans anahtarları, jetonlar, Windows kullanıcı adınız, başka e-posta adresleri ve IP adresleri maskelenir. Günlükte yine de oyun klasörü ve dosya adları bulunabilir. Önizleme, gönderilecek metnin aynısını gösterir.</li>
+          <li>Raporlar Lexi Apps rapor hizmetine (Cloudflare üzerinde çalışır) gider ve geliştirici için gizli bir GitHub deposunda kayıt (issue) olarak saklanır. Yanıt e-postanız yalnız raporunuza cevap vermek için kullanılır.</li>
+        </ul>
+
+        <h3 class="label">Üçüncü taraf hizmetler</h3>
+        <ul class="notes">
+          <li>Yukarıda sayılan çeviri servislerinden yalnız sizin seçtikleriniz.</li>
+          <li><strong>Patreon</strong>: Plus/Pro için üyelik girişi. <strong>Cloudflare</strong>: lisans sunucusunu ve rapor hizmetini çalıştırır. <strong>GitHub</strong>: güncellemeler, araç indirmeleri ve sorun raporlarının saklanması. <strong>renpy.org</strong>: Ren'Py SDK indirmeleri.</li>
+          <li>Bunların her birinin kendi gizlilik politikası vardır. Web sitesi, Discord, Patreon ya da Buy Me a Coffee bağlantıları yalnız tarayıcınızda açılır.</li>
+        </ul>
+
+        <h3 class="label">Çocuklar</h3>
+        <ul class="notes">
+          <li>Lexi Game Translator genel amaçlı bir araçtır ve çocuklara yönelik değildir. Lexi Apps çocuklardan bilerek kişisel veri toplamaz.</li>
+        </ul>
+
+        <h3 class="label">Seçenekleriniz ve verilerinizi silme</h3>
+        <ul class="notes">
+          <li>Ücretsiz Basic planı giriş yapmadan kullanabilir, metnin bilgisayarınızda kalması için yerel bir motor seçebilir, &ldquo;Bağlam&rdquo; ayarını ve otomatik güncelleme denetimini kapatabilirsiniz.</li>
+          <li>Uygulamayı kaldırmak yalnız program dosyalarını siler. Bilgisayarınızdaki tüm verileri silmek için ayrıca <code>HKCU\Software\RenpyTranslator</code> kayıt defteri anahtarını, <code>%LOCALAPPDATA%\renpy_translator</code> ve <code>%LOCALAPPDATA%\Lexi</code> klasörlerini, Windows Kimlik Bilgileri Yöneticisi'ndeki <code>Lexi/openai/default</code> kaydını (ya da uygulamadaki &ldquo;Anahtarı sil&rdquo; düğmesini) ve oyun klasörlerinizdeki Lexi dosyalarını silin.</li>
+          <li>Yerel verileri silmek denemeyi sıfırlamaz: deneme kaydı sunucuda makine koduna bağlıdır.</li>
+          <li>Bilgisayarınıza ya da Patreon hesabınıza bağlı lisans kayıtları veya gönderdiğiniz bir rapor hakkındaki sorularınız için bize e-posta yazın.</li>
+        </ul>
+
+        <h3 class="label">Bu politikadaki değişiklikler</h3>
+        <ul class="notes">
+          <li>Uygulamanın verileri işleme biçimi değişirse bu sayfayı ve yukarıdaki &ldquo;Son güncelleme&rdquo; tarihini güncelleriz.</li>
+        </ul>
+
+        <h3 class="label">İletişim</h3>
+        <ul class="notes">
+          <li>Lexi Apps: <a href="mailto:lexiapps@protonmail.com"><code>lexiapps@protonmail.com</code></a></li>
+        </ul>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <a class="brand" href="/lexi-game-translator/" aria-label="Lexi Game Translator">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <ul>
+    <li><a href="/lexi-game-translator/">Game Translator</a></li>
+    <li><a href="/">Main Site</a></li>
+    <li><a href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">Releases</a></li>
+    <li><a href="https://buymeacoffee.com/lexiapps" rel="noopener">Buy Me a Coffee</a></li>
+    <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener">Discord</a></li>
+    <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener">Patreon</a></li>
+    <li><a href="mailto:lexiapps@protonmail.com">lexiapps@protonmail.com</a></li>
+  </ul>
+  <p>&copy; 2026 Lexi Apps</p>
+</footer>
+
+<script>
+  (function () {
+    var A = window.__lexiAccents;
+    var root = document.documentElement;
+    var current = root.getAttribute('data-accent') || 'ember';
+    var out = document.getElementById('accent-name');
+    function apply(key, save) {
+      var a = A[key] || A.ember;
+      root.style.setProperty('--accent', a[0]);
+      root.style.setProperty('--on-accent', a[1]);
+      root.setAttribute('data-accent', key);
+      if (out) out.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+      Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+        btn.classList.toggle('is-on', btn.getAttribute('data-accent-choice') === key);
+      });
+      if (save) { try { localStorage.setItem('lexi-accent', key); } catch (e) {} }
+    }
+    Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        apply(btn.getAttribute('data-accent-choice'), true);
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      });
+    });
+    apply(current, false);
+  })();
+</script>
+<script type="module">import { setupDropdowns } from '/dropdowns.js'; setupDropdowns();</script>
+</body>
+</html>

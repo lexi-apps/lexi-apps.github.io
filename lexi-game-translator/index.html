@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script data-lexi-probe>
+/* Mirror only: if the main site (pages.dev) is reachable, send the visitor there;
+   if it is blocked, remember that for this tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var target = (local && q.get('probe') === 'fail')
+      ? 'https://lexi-probe-test.invalid/' : MAIN + '/favicon.ico';
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    fetch(target + '?probe=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: ctl.signal })
+      .then(function () {                         // reachable: same page on the main site
+        clearTimeout(timer);
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      }, function () {                            // blocked or timed out: stay here
+        clearTimeout(timer);
+        try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+      });
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lexi Game Translator — 18-Engine Game Translation Tool for Windows</title>
+<meta name="description" content="Lexi Game Translator translates games across 18 engines including Ren'Py, RPG Maker, Unity, Unreal, and Godot. Autopilot setup, automatic font patch, name protection, backups, and 12 interface languages.">
+<meta name="theme-color" content="#05070a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lexi Apps">
+<meta property="og:title" content="Lexi Game Translator — One Translator. 18 Engines.">
+<meta property="og:description" content="Drop a game folder and play in your language. 18 game engines, Autopilot &amp; Live Bridge, automatic font patch, automatic backups, and 12 interface languages.">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://lexi-apps.pages.dev/lexi-game-translator/">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:image" content="https://lexi-apps.pages.dev/img/share.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="600">
+<meta property="og:image:alt" content="Lexi Game Translator — One Translator. 18 Engines.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lexi-apps.pages.dev/img/share.jpg">
+<link rel="canonical" href="https://lexi-apps.pages.dev/lexi-game-translator/">
+<link rel="alternate" hreflang="en" href="https://lexi-apps.pages.dev/lexi-game-translator/">
+<link rel="alternate" hreflang="tr" href="https://lexi-apps.pages.dev/tr/lexi-game-translator/">
+<link rel="alternate" hreflang="x-default" href="https://lexi-apps.pages.dev/lexi-game-translator/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Lexi Game Translator",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Windows 10, Windows 11",
+  "url": "https://lexi-apps.pages.dev/lexi-game-translator/",
+  "downloadUrl": "https://github.com/lexi-apps/lexi-renpy-translator/releases/latest",
+  "image": "https://lexi-apps.pages.dev/img/share.jpg",
+  "description": "Lexi Game Translator translates games across 18 engines including Ren'Py, RPG Maker, Unity, Unreal, and Godot. Autopilot setup, automatic font patch, name protection, backups, and 12 interface languages.",
+  "publisher": { "@type": "Organization", "name": "Lexi Apps", "url": "https://lexi-apps.pages.dev/" },
+  "offers": [
+    { "@type": "Offer", "name": "Basic", "price": "0", "priceCurrency": "USD" },
+    { "@type": "Offer", "name": "Plus", "price": "7", "priceCurrency": "USD", "description": "Per month" },
+    { "@type": "Offer", "name": "Pro", "price": "12", "priceCurrency": "USD", "description": "Per month" }
+  ]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="page.css">
+<script>
+  (function () {
+    var A = {
+      ember:  ['#ff5a36', '#0a0605'],
+      acid:   ['#c8ff2e', '#0a0d02'],
+      amber:  ['#ffb224', '#0d0902'],
+      ice:    ['#5ad8ff', '#02090d'],
+      signal: ['#ff2e4d', '#0a0204'],
+      mono:   ['#f2f5f7', '#05070a']
+    };
+    var k = 'ember';
+    try { k = localStorage.getItem('lexi-accent') || k; } catch (e) {}
+    if (!A[k]) k = 'ember';
+    var d = document.documentElement;
+    d.style.setProperty('--accent', A[k][0]);
+    d.style.setProperty('--on-accent', A[k][1]);
+    d.setAttribute('data-accent', k);
+    window.__lexiAccents = A;
+    d.classList.add('js');
+    setTimeout(function () { d.classList.add('is-ready'); }, 7000);
+  })();
+</script>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+</script>
+</head>
+<body>
+<a class="skip-link" href="#top"><span data-lang="en">Skip to content</span></a>
+
+<div class="loader" aria-hidden="true">
+  <div class="loader__box">
+    <svg class="mark mark--intro" viewBox="0 0 32 32">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <div class="loader__label" lang="en"><span>LEXI APPS</span><span>GAME TRANSLATOR</span></div>
+    <div class="loader__bar"><i></i></div>
+  </div>
+</div>
+
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="fallback-core" aria-hidden="true"><i></i><i></i></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="#top" aria-label="Lexi Game Translator, back to top" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>LEXI GAME TRANSLATOR</span>
+  </a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-btn__icon" aria-hidden="true"></span><span class="menu-btn__label"><span data-lang="en">Menu</span></span></button>
+  <div class="top__panel" id="menu">
+    <nav aria-label="Primary">
+      <a class="nav-home" href="/"><span aria-hidden="true">←</span> <span data-lang="en">Home</span></a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span data-lang="en">Apps</span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item is-on" href="/lexi-game-translator/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI GAME TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-download-manager/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-dictate/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <a href="#apps"><span data-lang="en">Overview</span></a>
+      <a href="#screens"><span data-lang="en">Showcase</span></a>
+      <a href="#inside"><span data-lang="en">Features</span></a>
+      <a href="#support"><span data-lang="en">Plans</span></a>
+      <a href="#faq"><span data-lang="en">FAQ</span></a>
+      <a href="privacy.html"><span data-lang="en">Privacy</span></a>
+    </nav>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--discord" href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" title="Join Discord Community">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span>Discord</span>
+      </a>
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Buy Me a Coffee">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span>Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Support on Patreon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span>Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Language">
+        <span id="lang-cur">EN</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" id="lang-en" onclick="setLang('en', true)" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">EN</span><span>English</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="dd__item" id="lang-tr" onclick="setLang('tr', true)" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">TR</span><span>Türkçe</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Accent color">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="hud" aria-hidden="true">
+  <div class="hud__left"><span class="hud__tick"></span><span id="hud-script">Latin</span></div>
+  <div class="hud__right"><span id="hud-xy">X +0.00 &nbsp; Y +0.00</span><span id="hud-pct">000</span></div>
+  <div class="hud__rail"><i id="hud-bar"></i></div>
+</div>
+
+<main id="top" tabindex="-1">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__inner">
+      <p class="eyebrow r" style="--i:0">
+        <span data-lang="en">LEXI APPS <span>/</span> GAME TRANSLATOR <span>/</span> 18 ENGINES</span>
+      </p>
+      <h1 id="hero-title">
+        <span class="line"><span class="r" style="--i:1"><span data-lang="en">Point.</span></span></span>
+        <span class="line"><span class="r" style="--i:2"><span data-lang="en">Choose.</span></span></span>
+        <span class="line"><span class="r" style="--i:3"><span data-lang="en">Translate<em>.</em></span></span></span>
+      </h1>
+      <p class="lede r" style="--i:4" data-lang="en">Lexi Game Translator brings <em>18 game engines</em> into your language — from Ren'Py and RPG Maker to Unity, Unreal, and Godot — with Autopilot setup and automatic backups.</p>
+      <div class="cta r" style="--i:5;display:flex;flex-wrap:wrap;gap:14px;">
+        <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
+          <span data-lang="en">Download for Windows</span>
+          <span aria-hidden="true">&nearr;</span>
+        </a>
+        <a class="btn" href="#screens">
+          <span data-lang="en">Watch demo &amp; screens</span>
+          <span aria-hidden="true">&darr;</span>
+        </a>
+        <a class="more" href="https://github.com/lexi-apps/lexi-renpy-translator/releases" target="_blank" rel="noopener">
+          <span data-lang="en">What's new</span>
+          <span aria-hidden="true">&nearr;</span>
+        </a>
+      </div>
+    </div>
+    <p class="hero__scroll r" style="--i:6" aria-hidden="true">
+      <span data-lang="en">Scroll to enter the core</span>
+    </p>
+  </section>
+
+  <section class="flight" aria-label="Transition">
+    <p class="flight__caption">
+      <span data-lang="en">One translator <span>—</span> 18 engines <span>—</span> your language</span>
+    </p>
+  </section>
+
+  <!-- ============ Overview (Basic & Plus/Pro) ============ -->
+  <section class="apps" id="apps" aria-labelledby="apps-title">
+    <header class="apps__head reveal">
+      <p class="eyebrow">
+        <span data-lang="en">LEXI GAME TRANSLATOR <span>/</span> WINDOWS 10 &amp; 11 (64-BIT)</span>
+      </p>
+      <h2 id="apps-title">
+        <span data-lang="en">Start free, upgrade for AI<em>.</em></span>
+      </h2>
+    </header>
+
+    <div class="apps__grid">
+      <article class="app reveal" aria-labelledby="app-1">
+        <div class="app__meta"><span>01</span><span><span data-lang="en">Basic (Free) &middot; 18 Engines</span></span></div>
+        <h3 id="app-1">
+          <span data-lang="en">Basic — Free Machine Engines</span>
+        </h3>
+        <p class="app__lede" data-lang="en">Translate across all 18 game engines using Google, Edge, Bing, Yandex, and an automatic free fallback chain. No account or sign-in required.</p>
+        <dl class="spec">
+          <div>
+            <dt><span data-lang="en">Price</span></dt>
+            <dd><span data-lang="en">Free. No account, no sign-in.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Engines</span></dt>
+            <dd><span data-lang="en">18 game engines with Autopilot &amp; Live Bridge.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Protection</span></dt>
+            <dd><span data-lang="en">Auto backups, character names, tags &amp; font patch.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Interface</span></dt>
+            <dd><span data-lang="en">12 interface languages (including right-to-left Arabic), dark &amp; light themes.</span></dd>
+          </div>
+        </dl>
+        <div class="app__actions">
+          <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
+            <span data-lang="en">Download for Windows</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+          <a class="more" href="#screens">
+            <span data-lang="en">See demo &amp; screens</span>
+            <span aria-hidden="true">&darr;</span>
+          </a>
+          <a class="more" href="https://github.com/lexi-apps/lexi-renpy-translator/releases" target="_blank" rel="noopener">
+            <span data-lang="en">What's new</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+        </div>
+      </article>
+
+      <article class="app reveal" aria-labelledby="app-2">
+        <div class="app__meta"><span>02</span><span><span data-lang="en">Plus &amp; Pro &middot; Patreon</span></span></div>
+        <h3 id="app-2">
+          <span data-lang="en">Plus &amp; Pro — AI Translation</span>
+        </h3>
+        <p class="app__lede" data-lang="en">Unlock cloud and local AI translation with your own API key in Plus ($7 / month) — including 1-click presets for Gemini, Groq, Mistral, OpenRouter, OpenAI, Claude, DeepSeek, and Ollama — or Pro ($12 / month, Lexi credits coming soon).</p>
+        <dl class="spec">
+          <div>
+            <dt>PLUS</dt>
+            <dd><span data-lang="en">$7 / month. Everything in Basic + your own AI key &amp; cost cap.</span></dd>
+          </div>
+          <div>
+            <dt>PRO</dt>
+            <dd><span data-lang="en">$12 / month. Everything in Plus + credits (soon).</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">Trial</span></dt>
+            <dd><span data-lang="en">Optional 3-day Plus trial available once per computer.</span></dd>
+          </div>
+          <div>
+            <dt><span data-lang="en">License</span></dt>
+            <dd><span data-lang="en">One license = one computer.</span></dd>
+          </div>
+        </dl>
+        <div class="app__actions">
+          <a class="btn" href="https://www.patreon.com/cw/LexiApps" rel="noopener">
+            <span data-lang="en">Plus &amp; Pro on Patreon</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+          <a class="more" href="#support">
+            <span data-lang="en">Compare plans</span>
+            <span aria-hidden="true">&darr;</span>
+          </a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="deep">
+
+  <!-- ============ A. Translator Deep Dive ============ -->
+  <section class="sec tr" id="screens" aria-labelledby="tr-title">
+    <div class="wrap">
+      <header class="sec__head reveal">
+        <p class="eyebrow">
+          <span data-lang="en">01 <span>/</span> LEXI GAME TRANSLATOR <span>/</span> WORKFLOW &amp; SHOWCASE</span>
+        </p>
+        <h2 id="tr-title">
+          <span data-lang="en">Three clicks to play<em>.</em></span>
+        </h2>
+        <p class="sec__lede" data-lang="en">Drop any supported game folder. Lexi detects the engine, configures Autopilot &amp; font patches where needed, backs up first, and translates with full resume support.</p>
+      </header>
+
+      <h3 class="label" id="tr-how">
+        <span data-lang="en">How it works</span>
+      </h3>
+      <ol class="steps" data-progress aria-labelledby="tr-how">
+        <li class="step">
+          <span class="step__n" aria-hidden="true">01</span>
+          <h4>
+            <span data-lang="en">Drop the game folder</span>
+          </h4>
+          <p data-lang="en">Lexi auto-detects 18 engines — Ren'Py, RPG Maker 2000–MZ, Unity, Unreal 4/5, Godot 3/4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio.</p>
+        </li>
+        <li class="step">
+          <span class="step__n" aria-hidden="true">02</span>
+          <h4>
+            <span data-lang="en">Choose language &amp; engine</span>
+          </h4>
+          <p data-lang="en">Use free built-in machine translation in Basic, or connect your own cloud/local AI key in Plus. Autopilot sets up Unity &amp; Unreal bridges and patches fonts automatically.</p>
+        </li>
+        <li class="step">
+          <span class="step__n" aria-hidden="true">03</span>
+          <h4>
+            <span data-lang="en">Translate &amp; play</span>
+          </h4>
+          <p data-lang="en">A backup is created before writing. Character names and tags stay protected, interrupted runs resume from the exact line, and you can launch straight from the Game Shelf.</p>
+        </li>
+      </ol>
+
+      <h3 class="label" id="tr-video">
+        <span data-lang="en">See it in action</span>
+      </h3>
+      <figure class="promo reveal">
+        <video muted loop playsinline preload="metadata" poster="/img/video/lexi_demo_poster.webp" width="1920" height="1080" aria-label="Lexi Game Translator showcase video">
+          <source src="/img/video/lexi_demo_1080.mp4" type="video/mp4">
+        </video>
+        <figcaption>
+          <span data-lang="en">18 engines, Autopilot &amp; Live Bridge, Auto Font Patch, Name Protection, and 12 UI languages.</span>
+        </figcaption>
+      </figure>
+
+      <h3 class="label" id="tr-compare">
+        <span data-lang="en">Before &amp; after — drag to compare</span>
+      </h3>
+      <div class="compare reveal" data-compare style="--pos: 50%">
+        <div class="compare__tabs" role="tablist" aria-labelledby="tr-compare">
+          <button type="button" role="tab" id="cmp-tab-1" aria-selected="true" data-cmp-scene="ja">
+            <span>01</span>
+            <b data-lang="en">Japanese Font</b>
+          </button>
+          <button type="button" role="tab" id="cmp-tab-2" aria-selected="false" tabindex="-1" data-cmp-scene="ko">
+            <span>02</span>
+            <b data-lang="en">Korean Font</b>
+          </button>
+          <button type="button" role="tab" id="cmp-tab-3" aria-selected="false" tabindex="-1" data-cmp-scene="names">
+            <span>03</span>
+            <b data-lang="en">Name Protection</b>
+          </button>
+        </div>
+        <div class="compare__stage" role="slider" tabindex="0" aria-label="Before and after comparison slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" data-cmp-stage>
+          <img class="compare__img compare__img--after" src="/img/compare/diyalog_ja.webp" width="1920" height="1080" decoding="async" draggable="false" alt="Japanese dialogue rendered cleanly with Lexi Auto Font Patch" data-cmp-after>
+          <img class="compare__img compare__img--before" src="/img/compare/once_font_ja.webp" width="1920" height="1080" decoding="async" draggable="false" alt="Japanese dialogue showing empty boxes without font patch" data-cmp-before>
+          <div class="compare__badges" aria-hidden="true">
+            <span class="compare__badge compare__badge--before" data-cmp-badge-before>
+              <span data-lang="en">Before — Missing glyphs</span>
+            </span>
+            <span class="compare__badge compare__badge--after" data-cmp-badge-after>
+              <span data-lang="en">With Lexi — Auto Font Patch</span>
+            </span>
+          </div>
+          <div class="compare__divider" aria-hidden="true">
+            <span class="compare__handle">
+              <span class="compare__chev">&#8249;</span>
+              <span class="compare__chev">&#8250;</span>
+            </span>
+          </div>
+        </div>
+        <p class="compare__cap">
+          <span data-lang="en">Click and drag across the image (or use arrow keys) — full 1920&times;1080 in-game captures.</span>
+        </p>
+      </div>
+
+      <h3 class="label" id="tr-cards">
+        <span data-lang="en">Feature showcase — click any card to enlarge</span>
+      </h3>
+      <div class="cards reveal" role="group" aria-label="Lexi Game Translator feature cards">
+        <a class="card card--wide" href="/img/cards/card-hero.webp" data-lightbox><img src="/img/cards/card-hero.webp" width="1600" height="900" loading="lazy" decoding="async" alt="One translator, 18 supported game engines with automatic detection"></a>
+        <a class="card card--wide" href="/img/cards/card-autopilot.webp" data-lightbox><img src="/img/cards/card-autopilot.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Autopilot and Live Bridge for Unity and Unreal with automatic plugin and font setup"></a>
+        <a class="card" href="/img/cards/card-workflow.webp" data-lightbox><img src="/img/cards/card-workflow.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Three clicks to play: drop folder, watch live progress, play in your language"></a>
+        <a class="card" href="/img/cards/card-fonts.webp" data-lightbox><img src="/img/cards/card-fonts.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Real letters, not boxes: automatic font patch for Turkish, Cyrillic, Japanese, Korean, Thai, and Hindi"></a>
+        <a class="card" href="/img/cards/card-names.webp" data-lightbox><img src="/img/cards/card-names.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Names stay names: character names and game tags stay protected during translation"></a>
+        <a class="card" href="/img/cards/card-languages.webp" data-lightbox><img src="/img/cards/card-languages.webp" width="1600" height="900" loading="lazy" decoding="async" alt="12 app interface languages including native right-to-left Arabic UI and translation into 30+ languages"></a>
+        <a class="card" href="/img/cards/card-themes.webp" data-lightbox><img src="/img/cards/card-themes.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Dark and high-contrast light themes, live quality check, line editor, CSV export, and 1-click patch ZIP"></a>
+        <a class="card" href="/img/cards/card-safe.webp" data-lightbox><img src="/img/cards/card-safe.webp" width="1600" height="900" loading="lazy" decoding="async" alt="Free to start, safe by design: unlimited free engines, automatic backups, translation memory, and optional AI with cost cap"></a>
+      </div>
+
+      <h3 class="label" id="tr-screens">
+        <span data-lang="en">The app, screen by screen — click image to zoom</span>
+      </h3>
+      <div class="viewer reveal" data-viewer>
+        <div class="viewer__tabs" role="tablist" aria-labelledby="tr-screens">
+          <button type="button" role="tab" id="shot-tab-1" aria-controls="shot-1" aria-selected="true"><span>01</span><b data-lang="en" style="font-weight:inherit">Overview</b></button>
+          <button type="button" role="tab" id="shot-tab-2" aria-controls="shot-2" aria-selected="false" tabindex="-1"><span>02</span><b data-lang="en" style="font-weight:inherit">Autopilot</b></button>
+          <button type="button" role="tab" id="shot-tab-3" aria-controls="shot-3" aria-selected="false" tabindex="-1"><span>03</span><b data-lang="en" style="font-weight:inherit">Game scan</b></button>
+          <button type="button" role="tab" id="shot-tab-4" aria-controls="shot-4" aria-selected="false" tabindex="-1"><span>04</span><b data-lang="en" style="font-weight:inherit">Engines &amp; AI</b></button>
+          <button type="button" role="tab" id="shot-tab-5" aria-controls="shot-5" aria-selected="false" tabindex="-1"><span>05</span><b data-lang="en" style="font-weight:inherit">Quality &amp; editor</b></button>
+          <button type="button" role="tab" id="shot-tab-6" aria-controls="shot-6" aria-selected="false" tabindex="-1"><span>06</span><b data-lang="en" style="font-weight:inherit">Light themes</b></button>
+          <button type="button" role="tab" id="shot-tab-7" aria-controls="shot-7" aria-selected="false" tabindex="-1"><span>07</span><b data-lang="en" style="font-weight:inherit">Arabic RTL</b></button>
+          <button type="button" role="tab" id="shot-tab-8" aria-controls="shot-8" aria-selected="false" tabindex="-1"><span>08</span><b data-lang="en" style="font-weight:inherit">Multi-engine</b></button>
+        </div>
+        <div class="viewer__frame frame">
+          <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+          <figure class="shot is-on" id="shot-1" role="tabpanel" aria-labelledby="shot-tab-1">
+            <a class="shot__link" href="/img/translator/01-overview.webp" data-lightbox><img src="/img/translator/01-overview.webp" width="2160" height="1350" decoding="async" alt="Lexi Game Translator Overview screen with live preview, backups, and Game Shelf"></a>
+            <figcaption><span><span data-lang="en">Fig. 01 / 08</span></span><b data-lang="en" style="font-weight:inherit">Overview — live preview, adaptive game cover, backups &amp; Game Shelf</b></figcaption>
+          </figure>
+          <figure class="shot" id="shot-2" role="tabpanel" aria-labelledby="shot-tab-2">
+            <a class="shot__link" href="/img/translator/02-autopilot.webp" data-lightbox><img src="/img/translator/02-autopilot.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Unreal Engine Autopilot ready screen with Live Bridge and automatic font patch"></a>
+            <figcaption><span><span data-lang="en">Fig. 02 / 08</span></span><b data-lang="en" style="font-weight:inherit">Autopilot — Unity &amp; Unreal setup, Live Bridge &amp; automatic font patch</b></figcaption>
+          </figure>
+          <figure class="shot" id="shot-3" role="tabpanel" aria-labelledby="shot-tab-3">
+            <a class="shot__link" href="/img/translator/03-scan.webp" data-lightbox><img src="/img/translator/03-scan.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator Game scan screen showing file and line counts"></a>
+            <figcaption><span><span data-lang="en">Fig. 03 / 08</span></span><b data-lang="en" style="font-weight:inherit">Game scan — inspect files, speakers, and memory matches before translating</b></figcaption>
+          </figure>
+          <figure class="shot" id="shot-4" role="tabpanel" aria-labelledby="shot-tab-4">
+            <a class="shot__link" href="/img/translator/04-engines-ai.webp" data-lightbox><img src="/img/translator/04-engines-ai.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Translation settings screen showing built-in free engines and 1-click AI presets"></a>
+            <figcaption><span><span data-lang="en">Fig. 04 / 08</span></span><b data-lang="en" style="font-weight:inherit">Engines &amp; AI — free built-in chain plus 1-click cloud &amp; local AI presets</b></figcaption>
+          </figure>
+          <figure class="shot" id="shot-5" role="tabpanel" aria-labelledby="shot-tab-5">
+            <a class="shot__link" href="/img/translator/05-editor-qa.webp" data-lightbox><img src="/img/translator/05-editor-qa.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Quality check and built-in line editor with Retranslate problems and CSV import/export"></a>
+            <figcaption><span><span data-lang="en">Fig. 05 / 08</span></span><b data-lang="en" style="font-weight:inherit">Quality &amp; editor — filter issues, retranslate problems, edit lines &amp; export CSV</b></figcaption>
+          </figure>
+          <figure class="shot" id="shot-6" role="tabpanel" aria-labelledby="shot-tab-6">
+            <a class="shot__link" href="/img/translator/06-themes.webp" data-lightbox><img src="/img/translator/06-themes.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Paper Light high-contrast light theme in Lexi Game Translator"></a>
+            <figcaption><span><span data-lang="en">Fig. 06 / 08</span></span><b data-lang="en" style="font-weight:inherit">Themes — high-contrast light &amp; dark themes with adaptive game-cover palettes</b></figcaption>
+          </figure>
+          <figure class="shot" id="shot-7" role="tabpanel" aria-labelledby="shot-tab-7">
+            <a class="shot__link" href="/img/translator/07-arabic-rtl.webp" data-lightbox><img src="/img/translator/07-arabic-rtl.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Native right-to-left Arabic interface in Lexi Game Translator"></a>
+            <figcaption><span><span data-lang="en">Fig. 07 / 08</span></span><b data-lang="en" style="font-weight:inherit">Arabic RTL — full native right-to-left interface among 12 built-in UI languages</b></figcaption>
+          </figure>
+          <figure class="shot" id="shot-8" role="tabpanel" aria-labelledby="shot-tab-8">
+            <a class="shot__link" href="/img/translator/08-multi-engine.webp" data-lightbox><img src="/img/translator/08-multi-engine.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="RPG Maker MZ game automatically detected with clean UI in Lexi Game Translator"></a>
+            <figcaption><span><span data-lang="en">Fig. 08 / 08</span></span><b data-lang="en" style="font-weight:inherit">Multi-engine detection — RPG Maker MZ detected automatically with clean controls</b></figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <h3 class="label" id="inside">
+        <span data-lang="en">What is inside</span>
+      </h3>
+      <dl class="index reveal" aria-labelledby="inside">
+        <div><dt><span data-lang="en">18 Engines</span></dt><dd><span data-lang="en">Ren'Py, RPG Maker (2000/2003, XP, VX, VX Ace, MV, MZ), Unity (Mono/IL2CPP), Unreal 4 &amp; 5, Godot 3 &amp; 4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio.</span></dd></div>
+        <div><dt><span data-lang="en">Autopilot</span></dt><dd><span data-lang="en">Automatic plugin setup and Live Bridge for Unity and Unreal games — no manual folder hunting or plugin wiring.</span></dd></div>
+        <div><dt><span data-lang="en">Auto Fonts</span></dt><dd><span data-lang="en">Automatic font patch for Turkish, Cyrillic, Japanese, Korean, Chinese, Thai, and Hindi so games show real letters instead of empty boxes.</span></dd></div>
+        <div><dt><span data-lang="en">Names</span></dt><dd><span data-lang="en">Character names, speaker labels, variables, and markup tags stay protected instead of being translated like ordinary words.</span></dd></div>
+        <div><dt><span data-lang="en">Glossary</span></dt><dd><span data-lang="en">Context glossary for locking terms, place names, and recurring vocabulary across your whole playthrough.</span></dd></div>
+        <div><dt><span data-lang="en">Game Shelf</span></dt><dd><span data-lang="en">Keep recent games organized with cover art, adaptive palette colors, saved translations, and 1-click launch.</span></dd></div>
+        <div><dt><span data-lang="en">Backups</span></dt><dd><span data-lang="en">Automatic snapshot before anything is written to your game folder, with 1-click restore anytime.</span></dd></div>
+        <div><dt><span data-lang="en">Editor &amp; QA</span></dt><dd><span data-lang="en">Built-in quality check, 1-click Retranslate Problems, live line editor, CSV import/export, and 1-click shareable patch <code>.zip</code>.</span></dd></div>
+        <div><dt><span data-lang="en">Memory</span></dt><dd><span data-lang="en">Built-in translation memory reuses existing lines automatically — when a game updates, only new or changed lines are translated.</span></dd></div>
+        <div><dt><span data-lang="en">Engines &amp; AI</span></dt><dd><span data-lang="en">Free built-in chain (Google, Edge, Bing, Yandex) in Basic. Plus adds cloud &amp; local AI (OpenAI, Gemini, DeepSeek, Groq, Claude, Ollama) with strict cost caps.</span></dd></div>
+        <div><dt><span data-lang="en">12 UI Langs</span></dt><dd><span data-lang="en">12 interface languages (EN, TR, AR with full RTL, RU, ZH, JA, ES, PT-BR, DE, FR, KO, PL) and translation into 30+ target languages.</span></dd></div>
+        <div><dt><span data-lang="en">Themes</span></dt><dd><span data-lang="en">Adaptive dark themes, high-contrast Paper &amp; Daylight light themes, and custom wallpaper backgrounds.</span></dd></div>
+      </dl>
+
+      <h3 class="label" id="sysreq">
+        <span data-lang="en">System requirements</span>
+      </h3>
+      <dl class="index reveal" aria-labelledby="sysreq">
+        <div>
+          <dt><span data-lang="en">Operating system</span></dt>
+          <dd><span data-lang="en">Windows 10 or 11, 64-bit.</span></dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">Internet</span></dt>
+          <dd><span data-lang="en">Needed for the online translation engines (Google, Edge, Bing, Yandex) and cloud AI. Local AI with Ollama runs on your own computer. <a href="privacy.html">Privacy Policy</a></span></dd>
+        </div>
+        <div>
+          <dt><span data-lang="en">API key (Plus)</span></dt>
+          <dd><span data-lang="en">Only for cloud AI translation: your own API key. Basic needs none.</span></dd>
+        </div>
+      </dl>
+
+      <h3 class="label" id="tr-problems">
+        <span data-lang="en">Common problems, and where Lexi stands</span>
+      </h3>
+      <dl class="index reveal" aria-labelledby="tr-problems">
+        <div><dt><span data-lang="en">Broken tags</span></dt><dd><span data-lang="en">Protected across engines. Damaged markup tags or variables are flagged by quality checks and retried automatically.</span></dd></div>
+        <div><dt><span data-lang="en">Translated names</span></dt><dd><span data-lang="en">Character names are detected and locked automatically so a name like Rose stays Rose instead of becoming a flower.</span></dd></div>
+        <div><dt><span data-lang="en">Empty boxes</span></dt><dd><span data-lang="en">Automatic font patching supplies compatible fonts for CJK, Turkish, Cyrillic, Thai, and Hindi scripts.</span></dd></div>
+        <div><dt><span data-lang="en">Complex engines</span></dt><dd><span data-lang="en">Autopilot handles BepInEx/XUnity and UE4SS setup for Unity and Unreal titles, while simpler engines keep a clean UI with no plugin clutter.</span></dd></div>
+        <div><dt><span data-lang="en">Interrupted runs</span></dt><dd><span data-lang="en">Progress is saved continuously; stopping or closing mid-run lets you resume from the exact line later.</span></dd></div>
+        <div><dt><span data-lang="en">Honest note</span></dt><dd><span data-lang="en">Automated translation quality varies by engine, game structure, and language pair — the built-in editor is always ready when you want to refine lines.</span></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ============ B. Plans ============ -->
+  <section class="sec plans" id="support" aria-labelledby="plans-title">
+    <div class="wrap">
+      <header class="sec__head reveal">
+        <p class="eyebrow">
+          <span data-lang="en">PLANS <span>/</span> LEXI GAME TRANSLATOR</span>
+        </p>
+        <h2 id="plans-title">
+          <span data-lang="en">Plans, line by line<em>.</em></span>
+        </h2>
+      </header>
+
+      <div class="ledger reveal" role="table" aria-labelledby="plans-title" data-progress>
+        <div class="ledger__row ledger__row--head" role="row">
+          <span class="ledger__k" role="columnheader"><span class="vh"><span data-lang="en">Item</span></span></span>
+          <span role="columnheader"><b>Basic</b><i><span data-lang="en">Free</span></i></span>
+          <span role="columnheader"><b>Plus</b><i>$7 / <span data-lang="en">month</span></i></span>
+          <span role="columnheader"><b>Pro</b><i>$12 / <span data-lang="en">month</span></i></span>
+        </div>
+        <div class="ledger__row" role="row">
+          <span class="ledger__k" role="rowheader"><span data-lang="en">Account</span></span>
+          <span role="cell"><span data-lang="en">No account, no sign-in</span></span>
+          <span role="cell"><span data-lang="en">Patreon membership</span></span>
+          <span role="cell"><span data-lang="en">Patreon membership</span></span>
+        </div>
+        <div class="ledger__row" role="row">
+          <span class="ledger__k" role="rowheader"><span data-lang="en">18 game engines &amp; Autopilot</span></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+        </div>
+        <div class="ledger__row" role="row">
+          <span class="ledger__k" role="rowheader"><span data-lang="en">Machine translation engines</span></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+        </div>
+        <div class="ledger__row" role="row">
+          <span class="ledger__k" role="rowheader"><span data-lang="en">AI translation with your own API key</span></span>
+          <span role="cell"><i class="no" aria-hidden="true"></i></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+          <span role="cell"><i class="yes" aria-hidden="true"></i></span>
+        </div>
+        <div class="ledger__row" role="row">
+          <span class="ledger__k" role="rowheader"><span data-lang="en">Lexi credits</span></span>
+          <span role="cell"><i class="no" aria-hidden="true"></i></span>
+          <span role="cell"><i class="no" aria-hidden="true"></i></span>
+          <span role="cell"><span data-lang="en">Coming soon</span></span>
+        </div>
+      </div>
+
+      <div class="plans__foot reveal">
+        <ul class="notes">
+          <li><span data-lang="en">Plus and Pro are Patreon memberships. Sign in with Patreon inside the app.</span></li>
+          <li><span data-lang="en">One license = one computer. An optional 3-day Plus trial is available once per computer.</span></li>
+          <li><span data-lang="en">Basic never locks when a trial or membership ends — free engines keep working.</span></li>
+          <li><span data-lang="en">Prefer a one-time tip without a membership? Use Buy Me a Coffee.</span></li>
+        </ul>
+        <div class="plans__actions">
+          <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
+            <span data-lang="en">Download Basic (Free)</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+          <a class="btn" href="https://www.patreon.com/cw/LexiApps" rel="noopener">
+            <span>Patreon (Plus / Pro)</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+          <a class="btn" href="https://buymeacoffee.com/lexiapps" rel="noopener">
+            <span>Buy Me a Coffee</span>
+            <span aria-hidden="true">&nearr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ C. FAQ ============ -->
+  <section class="sec faq" id="faq" aria-labelledby="faq-title">
+    <div class="wrap faq__grid">
+      <header class="sec__head reveal">
+        <p class="eyebrow">
+          <span data-lang="en">FAQ <span>/</span> GAME TRANSLATOR</span>
+        </p>
+        <h2 id="faq-title">
+          <span data-lang="en">Short answers<em>.</em></span>
+        </h2>
+      </header>
+      <div class="faq__list reveal">
+        <details>
+          <summary><span data-lang="en">Which game engines are supported?</span></summary>
+          <p data-lang="en">18 engines: Ren'Py, RPG Maker (2000/2003, XP, VX, VX Ace, MV, MZ), Unity (Mono &amp; IL2CPP), Unreal Engine 4 &amp; 5, Godot 3 &amp; 4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio.</p>
+        </details>
+        <details>
+          <summary><span data-lang="en">Where do translations go, and can I undo them?</span></summary>
+          <p data-lang="en">Lexi writes translations in each engine's native format (such as Ren'Py's <code>tl/</code> folder, RPG Maker data files, or Unity/Unreal Live Bridge files) and creates an automatic local backup beforehand so you can restore in one click.</p>
+        </details>
+        <details>
+          <summary><span data-lang="en">Windows says &ldquo;Windows protected your PC&rdquo;. What do I do?</span></summary>
+          <p data-lang="en">Click <strong>More info</strong>, then <strong>Run anyway</strong>. It appears because the installer is not code-signed yet (code-signing certificates are paid). Always download from our official GitHub releases. <a href="/install-help/"><span data-lang="en">Step-by-step guide</span></a>.</p>
+        </details>
+        <details>
+          <summary><span data-lang="en">Can I use one Plus/Pro license on two computers?</span></summary>
+          <p data-lang="en">No. One license = one computer.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  </div>
+</main>
+
+<footer class="final" id="get" aria-labelledby="final-title">
+  <div class="final__inner">
+    <p class="eyebrow reveal" lang="en">LEXI APPS <span>/</span> GAME TRANSLATOR</p>
+    <h2 id="final-title" class="reveal">
+      <span data-lang="en">Get your copy<em>.</em></span>
+    </h2>
+    <ul class="final__list reveal">
+      <li>
+        <a href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
+          <span class="final__n">01</span>
+          <span class="final__name" lang="en">LEXI GAME TRANSLATOR</span>
+          <span class="final__meta">
+            <span data-lang="en">Latest release &middot; Windows 10/11 64-bit &middot; Basic is free</span>
+          </span>
+          <span class="final__go"><span data-lang="en">Download</span> <span aria-hidden="true">&nearr;</span></span>
+        </a>
+      </li>
+      <li>
+        <a href="/">
+          <span class="final__n">02</span>
+          <span class="final__name"><span data-lang="en">LEXI APPS — ALL INSTRUMENTS</span></span>
+          <span class="final__meta">Game Translator &middot; Download Manager &middot; LexiDictate</span>
+          <span class="final__go"><span data-lang="en">Main Site</span> <span aria-hidden="true">&rarr;</span></span>
+        </a>
+      </li>
+    </ul>
+    <p class="sec__cta reveal" style="margin-top:24px;">
+      <a class="more" href="https://github.com/lexi-apps/lexi-renpy-translator/releases" target="_blank" rel="noopener">
+        <span data-lang="en">What's new</span>
+        <span aria-hidden="true">&nearr;</span>
+      </a>
+    </p>
+  </div>
+  <div class="foot">
+    <a class="brand" href="/" lang="en">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+        <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+        <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+      </svg>
+      <span>LEXI APPS</span>
+    </a>
+    <ul>
+      <li><a href="/"><span data-lang="en">Main Site</span></a></li>
+      <li><a href="/lexi-download-manager/" target="_blank" rel="noopener">Download Manager</a></li>
+      <li><a href="/lexi-dictate/" target="_blank" rel="noopener">LexiDictate</a></li>
+      <li><a href="privacy.html"><span data-lang="en">Privacy Policy</span></a></li>
+      <li><a href="/install-help/"><span data-lang="en">Install help</span></a></li>
+      <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener">Discord</a></li>
+      <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener">Patreon</a></li>
+      <li><a href="https://buymeacoffee.com/lexiapps" rel="noopener">Buy Me a Coffee</a></li>
+      <li><a href="https://github.com/lexi-apps/lexi-renpy-translator" rel="noopener">GitHub</a></li>
+      <li><a href="mailto:lexiapps@protonmail.com">lexiapps@protonmail.com</a></li>
+    </ul>
+    <p>&copy; 2026 Lexi Apps</p>
+  </div>
+</footer>
+
+<script>
+  /* Generated by build_site.py: this is the EN version of the page.
+     The EN/TR menu saves the choice and opens the other language's URL (same #hash).
+     A stored preference is NOT applied on load: each URL always shows its own language. */
+  function setLang(lang, save) {
+    var page = 'en';
+    var urls = { en: '/lexi-game-translator/', tr: '/tr/lexi-game-translator/' };
+    if (!urls[lang]) lang = page;
+    if (save) {
+      try { localStorage.setItem('lexi-user-lang', lang); } catch (e) {}
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    }
+    if (lang !== page) {
+      window.location.href = urls[lang] + window.location.search + window.location.hash;
+      return;
+    }
+    document.documentElement.setAttribute('lang', page);
+    var enBtn = document.getElementById('lang-en');
+    var trBtn = document.getElementById('lang-tr');
+    var cur = document.getElementById('lang-cur');
+    if (enBtn) enBtn.classList.toggle('is-on', page === 'en');
+    if (trBtn) trBtn.classList.toggle('is-on', page === 'tr');
+    if (cur) cur.textContent = page.toUpperCase();
+    if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+  }
+  setLang('en', false);
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script type="module" src="page.js"></script>
+<script type="module" src="/main.js"></script>
+</body>
+</html>
