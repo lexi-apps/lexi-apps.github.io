@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <script data-lexi-probe>
-/* Mirror only: if the main site (pages.dev) provably answers, send the visitor there;
+/* Mirror only: if the main site provably answers, send the visitor there;
    otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
    tab session and stay on the mirror. */
 (function () {
   try {
-    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site-v2';
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
     if (window.lexiRedirecting) return;           // a local redirect page is already moving on
     var ss = null;
     try { ss = window.sessionStorage; } catch (e) {}
@@ -52,18 +52,18 @@
 <meta property="og:title" content="Lexi Game Translator — Tek çevirmen. 18 oyun motoru.">
 <meta property="og:description" content="Oyun klasörünü seçin, kendi dilinizde oynayın. 18 oyun motoru, Otopilot ve Canlı Köprü, otomatik font yaması, otomatik yedekleme ve 12 arayüz dili.">
 <meta property="og:locale" content="tr_TR">
-<meta property="og:url" content="https://lexi-apps.pages.dev/tr/lexi-game-translator/">
+<meta property="og:url" content="https://lexiapps.dev/tr/lexi-game-translator/">
 <meta property="og:locale:alternate" content="en_US">
-<meta property="og:image" content="https://lexi-apps.pages.dev/img/share.jpg">
+<meta property="og:image" content="https://lexiapps.dev/img/share.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="600">
 <meta property="og:image:alt" content="Lexi Game Translator — Tek çevirmen. 18 oyun motoru.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://lexi-apps.pages.dev/img/share.jpg">
-<link rel="canonical" href="https://lexi-apps.pages.dev/tr/lexi-game-translator/">
-<link rel="alternate" hreflang="en" href="https://lexi-apps.pages.dev/lexi-game-translator/">
-<link rel="alternate" hreflang="tr" href="https://lexi-apps.pages.dev/tr/lexi-game-translator/">
-<link rel="alternate" hreflang="x-default" href="https://lexi-apps.pages.dev/lexi-game-translator/">
+<meta name="twitter:image" content="https://lexiapps.dev/img/share.jpg">
+<link rel="canonical" href="https://lexiapps.dev/tr/lexi-game-translator/">
+<link rel="alternate" hreflang="en" href="https://lexiapps.dev/lexi-game-translator/">
+<link rel="alternate" hreflang="tr" href="https://lexiapps.dev/tr/lexi-game-translator/">
+<link rel="alternate" hreflang="x-default" href="https://lexiapps.dev/lexi-game-translator/">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -71,14 +71,14 @@
   "name": "Lexi Game Translator",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Windows 10, Windows 11",
-  "url": "https://lexi-apps.pages.dev/lexi-game-translator/",
+  "url": "https://lexiapps.dev/lexi-game-translator/",
   "downloadUrl": "https://github.com/lexi-apps/lexi-renpy-translator/releases/latest",
-  "image": "https://lexi-apps.pages.dev/img/share.jpg",
+  "image": "https://lexiapps.dev/img/share.jpg",
   "description": "Lexi Game Translator; Ren'Py, RPG Maker, Unity, Unreal ve Godot dahil 18 oyun motorundaki oyunları çevirir. Otopilot kurulum, otomatik font yaması, karakter adı koruması, yedekleme ve 12 arayüz dili.",
   "publisher": {
     "@type": "Organization",
     "name": "Lexi Apps",
-    "url": "https://lexi-apps.pages.dev/"
+    "url": "https://lexiapps.dev/"
   },
   "offers": [
     {

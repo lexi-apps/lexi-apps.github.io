@@ -18,14 +18,16 @@ small{display:block;font-size:16px;color:#444;margin-top:8px}
 <body>
 <h1>Lexi Apps – Bağlantı testi</h1>
 <div class="box wait" id="verdict">Test çalışıyor…</div>
-<div class="box wait" id="a"><b>A) Yeni kontrol (CORS): pages.dev /lexi-probe.json</b><span>çalışıyor…</span></div>
-<div class="box wait" id="b"><b>B) Eski kontrol (no-cors): pages.dev /favicon.ico</b><span>çalışıyor…</span></div>
-<div class="box wait" id="c"><b>C) Kontrol: bu sitenin kendi /favicon.ico dosyası</b><span>çalışıyor…</span></div>
-<div class="box" id="d"><b>D) Cihaz ve zaman</b><span id="dtxt"></span></div>
+<div class="box wait" id="a"><b>A) Ana site (CORS): lexiapps.dev /lexi-probe.json</b><span>çalışıyor…</span></div>
+<div class="box wait" id="e"><b>B) Karşılaştırma – eski adres (CORS): lexi-apps.pages.dev /lexi-probe.json</b><span>çalışıyor…</span></div>
+<div class="box wait" id="b"><b>C) Eski tür kontrol (no-cors): lexiapps.dev /favicon.ico</b><span>çalışıyor…</span></div>
+<div class="box wait" id="c"><b>D) Kontrol: bu sitenin kendi /favicon.ico dosyası</b><span>çalışıyor…</span></div>
+<div class="box" id="d"><b>E) Cihaz ve zaman</b><span id="dtxt"></span></div>
+<small>Karar yalnız A satırına bakar. B yalnız karşılaştırma içindir.</small>
 <small>Bu sayfa hiçbir yere yönlendirmez. Ekran görüntüsünü gönderebilirsiniz.</small>
 <script>
 (function () {
-  var MAIN = 'https://lexi-apps.pages.dev', TMO = 6000;
+  var MAIN = 'https://lexiapps.dev', OLD = 'https://lexi-apps.pages.dev', TMO = 6000;
   function $(id) { return document.getElementById(id); }
   function show(id, ok, text, ms) {
     var el = $(id), sp = el.lastChild; el.className = 'box ' + (ok ? 'ok' : 'bad');
@@ -56,6 +58,7 @@ small{display:block;font-size:16px;color:#444;margin-top:8px}
   $('dtxt').textContent = '\n' + navigator.userAgent + '\n' + new Date().toString() + ' (' + new Date().toISOString() + ')';
   $('dtxt').style.whiteSpace = 'pre-wrap';
   var pa = run('a', MAIN + '/lexi-probe.json', 'cors', true);
+  run('e', OLD + '/lexi-probe.json', 'cors', true);
   run('b', MAIN + '/favicon.ico', 'no-cors', false);
   run('c', location.origin + '/favicon.ico', 'cors', false);
   pa.then(function (ok) {

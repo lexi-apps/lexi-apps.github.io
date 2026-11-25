@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <script data-lexi-probe>
-/* Mirror only: if the main site (pages.dev) provably answers, send the visitor there;
+/* Mirror only: if the main site provably answers, send the visitor there;
    otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
    tab session and stay on the mirror. */
 (function () {
   try {
-    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site-v2';
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
     if (window.lexiRedirecting) return;           // a local redirect page is already moving on
     var ss = null;
     try { ss = window.sessionStorage; } catch (e) {}
@@ -46,7 +46,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacy Policy / Gizlilik Politikası — Lexi Download Manager</title>
 <meta name="description" content="Privacy Policy for the Lexi Download Manager browser extension and desktop application. Local loopback communication over 127.0.0.1:19847 with zero tracking or external servers.">
-<link rel="canonical" href="https://lexi-apps.pages.dev/lexi-download-manager/privacy">
+<link rel="canonical" href="https://lexiapps.dev/lexi-download-manager/privacy">
 <meta name="theme-color" content="#05070a">
 <link rel="icon" type="image/svg+xml" href="/logo.svg">
 <link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>

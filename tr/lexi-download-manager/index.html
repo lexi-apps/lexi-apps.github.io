@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <script data-lexi-probe>
-/* Mirror only: if the main site (pages.dev) provably answers, send the visitor there;
+/* Mirror only: if the main site provably answers, send the visitor there;
    otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
    tab session and stay on the mirror. */
 (function () {
   try {
-    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site-v2';
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
     if (window.lexiRedirecting) return;           // a local redirect page is already moving on
     var ss = null;
     try { ss = window.sessionStorage; } catch (e) {}
@@ -53,14 +53,14 @@
   "name": "Lexi Download Manager",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Windows 10, Windows 11",
-  "url": "https://lexi-apps.pages.dev/lexi-download-manager/",
+  "url": "https://lexiapps.dev/lexi-download-manager/",
   "downloadUrl": "https://github.com/lexi-apps/lexi-download-manager/releases/latest",
-  "image": "https://lexi-apps.pages.dev/lexi-download-manager/assets/share.png",
+  "image": "https://lexiapps.dev/lexi-download-manager/assets/share.png",
   "description": "Windows 10 ve 11 (64-bit) için Lexi Download Manager: çok parçalı hızlı indirme, çoklu sıralar, Debrid hizmetleri, video kırpma, HLS yayın yakalama, torrent, dosya barındırma siteleri, yüzen bırakma alanı ve hazır tarayıcı eklentileri. Ücretsiz, reklamsız, hesap gerektirmez.",
   "publisher": {
     "@type": "Organization",
     "name": "Lexi Apps",
-    "url": "https://lexi-apps.pages.dev/"
+    "url": "https://lexiapps.dev/"
   },
   "offers": {
     "@type": "Offer",
@@ -75,16 +75,16 @@
 <meta property="og:title" content="Lexi Download Manager — İndirmeler, yalın ve hızlı.">
 <meta property="og:description" content="Windows 10 ve 11 (64-bit) için ücretsiz indirme yöneticisi: çok parçalı hızlandırma, video siteleri, HLS yayın yakalama, torrent, dosya barındırma siteleri ve tarayıcı eklentisi. Reklam yok, hesap yok.">
 <meta property="og:locale" content="tr_TR">
-<meta property="og:url" content="https://lexi-apps.pages.dev/tr/lexi-download-manager/">
+<meta property="og:url" content="https://lexiapps.dev/tr/lexi-download-manager/">
 <meta property="og:locale:alternate" content="en_US">
-<meta property="og:image" content="https://lexi-apps.pages.dev/lexi-download-manager/assets/share.png">
+<meta property="og:image" content="https://lexiapps.dev/lexi-download-manager/assets/share.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta name="twitter:image" content="https://lexi-apps.pages.dev/lexi-download-manager/assets/share.png">
-<link rel="canonical" href="https://lexi-apps.pages.dev/tr/lexi-download-manager/">
-<link rel="alternate" hreflang="en" href="https://lexi-apps.pages.dev/lexi-download-manager/">
-<link rel="alternate" hreflang="tr" href="https://lexi-apps.pages.dev/tr/lexi-download-manager/">
-<link rel="alternate" hreflang="x-default" href="https://lexi-apps.pages.dev/lexi-download-manager/">
+<meta name="twitter:image" content="https://lexiapps.dev/lexi-download-manager/assets/share.png">
+<link rel="canonical" href="https://lexiapps.dev/tr/lexi-download-manager/">
+<link rel="alternate" hreflang="en" href="https://lexiapps.dev/lexi-download-manager/">
+<link rel="alternate" hreflang="tr" href="https://lexiapps.dev/tr/lexi-download-manager/">
+<link rel="alternate" hreflang="x-default" href="https://lexiapps.dev/lexi-download-manager/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="/logo.svg">
 <link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>

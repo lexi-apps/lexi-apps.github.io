@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <script data-lexi-probe>
-/* Mirror only: if the main site (pages.dev) provably answers, send the visitor there;
+/* Mirror only: if the main site provably answers, send the visitor there;
    otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
    tab session and stay on the mirror. */
 (function () {
   try {
-    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site-v2';
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
     if (window.lexiRedirecting) return;           // a local redirect page is already moving on
     var ss = null;
     try { ss = window.sessionStorage; } catch (e) {}
@@ -52,15 +52,15 @@
 <meta property="og:title" content="LexiDictate — Speak Anywhere. Paste in 0.5s.">
 <meta property="og:description" content="Sub-second voice dictation and instant on-screen selection translation for Windows 10 &amp; 11. 100% freeware, local-only, your own Gemini API key.">
 <meta property="og:locale" content="en_US">
-<meta property="og:url" content="https://lexi-apps.pages.dev/lexi-dictate/">
+<meta property="og:url" content="https://lexiapps.dev/lexi-dictate/">
 <meta property="og:locale:alternate" content="tr_TR">
-<meta property="og:image" content="https://lexi-apps.pages.dev/lexi-dictate/assets/cards/card-hero-en.png">
+<meta property="og:image" content="https://lexiapps.dev/lexi-dictate/assets/cards/card-hero-en.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://lexi-apps.pages.dev/lexi-dictate/assets/cards/card-hero-en.png">
-<link rel="canonical" href="https://lexi-apps.pages.dev/lexi-dictate/">
-<link rel="alternate" hreflang="en" href="https://lexi-apps.pages.dev/lexi-dictate/">
-<link rel="alternate" hreflang="tr" href="https://lexi-apps.pages.dev/tr/lexi-dictate/">
-<link rel="alternate" hreflang="x-default" href="https://lexi-apps.pages.dev/lexi-dictate/">
+<meta name="twitter:image" content="https://lexiapps.dev/lexi-dictate/assets/cards/card-hero-en.png">
+<link rel="canonical" href="https://lexiapps.dev/lexi-dictate/">
+<link rel="alternate" hreflang="en" href="https://lexiapps.dev/lexi-dictate/">
+<link rel="alternate" hreflang="tr" href="https://lexiapps.dev/tr/lexi-dictate/">
+<link rel="alternate" hreflang="x-default" href="https://lexiapps.dev/lexi-dictate/">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -68,14 +68,14 @@
   "name": "LexiDictate",
   "applicationCategory": "UtilitiesApplication",
   "operatingSystem": "Windows 10, Windows 11",
-  "url": "https://lexi-apps.pages.dev/lexi-dictate/",
+  "url": "https://lexiapps.dev/lexi-dictate/",
   "downloadUrl": "https://github.com/lexi-apps/lexi-dictate/releases/latest",
-  "image": "https://lexi-apps.pages.dev/lexi-dictate/assets/cards/card-hero-en.png",
+  "image": "https://lexiapps.dev/lexi-dictate/assets/cards/card-hero-en.png",
   "description": "LexiDictate: sub-second system-wide voice dictation and instant on-screen selection translation (Alt + Q) for Windows 10 & 11. Freeware, bring your own Gemini API key.",
   "publisher": {
     "@type": "Organization",
     "name": "Lexi Apps",
-    "url": "https://lexi-apps.pages.dev/"
+    "url": "https://lexiapps.dev/"
   },
   "offers": {
     "@type": "Offer",

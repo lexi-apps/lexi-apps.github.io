@@ -6,12 +6,12 @@
 window.lexiRedirecting = true; location.replace("/lexi-game-translator/" + location.search + location.hash);
 </script>
 <script data-lexi-probe>
-/* Mirror only: if the main site (pages.dev) provably answers, send the visitor there;
+/* Mirror only: if the main site provably answers, send the visitor there;
    otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
    tab session and stay on the mirror. */
 (function () {
   try {
-    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site-v2';
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
     if (window.lexiRedirecting) return;           // a local redirect page is already moving on
     var ss = null;
     try { ss = window.sessionStorage; } catch (e) {}
@@ -48,7 +48,7 @@ window.lexiRedirecting = true; location.replace("/lexi-game-translator/" + locat
 </script>
 <title>Redirecting… · Lexi Apps</title>
 <meta name="robots" content="noindex">
-<link rel="canonical" href="https://lexi-apps.pages.dev/lexi-game-translator/">
+<link rel="canonical" href="https://lexiapps.dev/lexi-game-translator/">
 <meta http-equiv="refresh" content="0; url=/lexi-game-translator/">
 </head>
 <body>
