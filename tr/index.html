@@ -100,7 +100,7 @@
   })();
 </script>
 <script type="importmap">
-{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+{ "imports": { "three": "/vendor/three-0.160.0/three.module.js" } }
 </script>
 </head>
 <body>
@@ -180,11 +180,11 @@
       </button>
       <div class="dd__menu" role="menu">
         <div class="dd__box">
-          <button type="button" class="dd__item" id="lang-en" onclick="setLang('en', true)" role="menuitem">
+          <button type="button" class="dd__item" id="lang-en" data-set-lang="en" role="menuitem">
             <span class="dd__item-left"><span class="dd__num">EN</span><span lang="en">English</span></span>
             <i class="dd__check" aria-hidden="true"></i>
           </button>
-          <button type="button" class="dd__item is-on" id="lang-tr" onclick="setLang('tr', true)" role="menuitem">
+          <button type="button" class="dd__item is-on" id="lang-tr" data-set-lang="tr" role="menuitem">
             <span class="dd__item-left"><span class="dd__num">TR</span><span>Türkçe</span></span>
             <i class="dd__check" aria-hidden="true"></i>
           </button>
@@ -575,10 +575,14 @@
     if (window.ScrollTrigger) window.ScrollTrigger.refresh();
   }
   setLang('tr', false);
+  /* EN/TR buttons: listeners, not onclick="" attributes (the CSP blocks inline handlers). */
+  Array.from(document.querySelectorAll('[data-set-lang]')).forEach(function (btn) {
+    btn.addEventListener('click', function () { setLang(btn.getAttribute('data-set-lang'), true); });
+  });
 </script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script defer src="/vendor/gsap-3.12.5/gsap.min.js"></script>
+<script defer src="/vendor/gsap-3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="/vendor/lenis-1.1.14/lenis.min.js"></script>
 <script type="module" src="/main.js"></script>
 </body>
 </html>

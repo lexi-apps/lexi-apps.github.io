@@ -1,0 +1,6 @@
+Unmodified copies from the npm package lenis@1.1.14, downloaded 2026-11-25 via
+https://cdn.jsdelivr.net/npm/lenis@1.1.14/ . SHA-256 checked against the jsDelivr
+package metadata (https://data.jsdelivr.com/v1/packages/npm/lenis@1.1.14).
+
+lenis.min.js  <- dist/lenis.min.js  sha256 55a065df7880463fdb4f88cc57f498a9711c5a85b3c82c1c6b81888c32a33850
+LICENSE  <- LICENSE  sha256 bba15b1137346a73ed8c35e7f20961a69e0ed842d956a50339240c3e7b08c089

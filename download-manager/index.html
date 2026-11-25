@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>/* Mirror only: old address, go to the new page (keeps ?query and #hash). */
+window.lexiRedirecting = true; location.replace("/lexi-download-manager/" + location.search + location.hash);
+</script>
+<script data-lexi-probe>
+/* Mirror only: if the main site provably answers, send the visitor there;
+   otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
+   tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var base = (local && q.get('probe') === 'fail') ? 'https://lexi-probe-test.invalid' : MAIN;
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    var fail = function () {                      // blocked, timed out or not our site: stay here
+      clearTimeout(timer);
+      try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+    };
+    // CORS fetch: only a real answer from our own site (JSON marker) counts, not an opaque one.
+    fetch(base + '/lexi-probe.json?probe=' + Date.now(),
+          { mode: 'cors', cache: 'no-store', credentials: 'omit', signal: ctl.signal })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        if (!d || d.site !== 'lexi-apps') throw 0;
+        clearTimeout(timer);                      // proven reachable: same page on the main site
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      })
+      .catch(fail);
+  } catch (e) {}
+})();
+</script>
+<title>Redirecting… · Lexi Apps</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://lexiapps.dev/lexi-download-manager/">
+<meta http-equiv="refresh" content="0; url=/lexi-download-manager/">
+</head>
+<body>
+<p><a href="/lexi-download-manager/">This page has moved. Continue / Sayfa taşındı, devam edin</a></p>
+</body>
+</html>

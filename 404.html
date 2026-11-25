@@ -5,7 +5,7 @@
 <script>/* Mirror only: apply the main site's _redirects rules to addresses
    that have no static redirect page (runs before the probe). */
 (function () { try {
-  var R = [["/lexi-renpy-translator", "/lexi-game-translator/", 0], ["/lexi-renpy-translator/", "/lexi-game-translator/", 1]], p = location.pathname, t = null, i, r;
+  var R = [["/lexi-renpy-translator", "/lexi-game-translator/", 0], ["/lexi-renpy-translator/", "/lexi-game-translator/", 1], ["/discord", "https://discord.gg/HN9eWThUn2", 0], ["/patreon", "https://www.patreon.com/cw/LexiApps", 0], ["/coffee", "https://buymeacoffee.com/lexiapps", 0], ["/github", "https://github.com/lexi-apps", 0], ["/translator", "/lexi-game-translator/", 0], ["/download-manager", "/lexi-download-manager/", 0], ["/dictate", "/lexi-dictate/", 0]], p = location.pathname, t = null, i, r;
   for (i = 0; i < R.length && !t; i++) { r = R[i];
     if (r[2] ? p.indexOf(r[0]) === 0 : (p === r[0] || p === r[0] + '/'))
       t = r[2] ? r[1] + p.slice(r[0].length) : r[1]; }

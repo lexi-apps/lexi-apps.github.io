@@ -54,12 +54,12 @@
 <meta property="og:locale" content="tr_TR">
 <meta property="og:url" content="https://lexiapps.dev/tr/lexi-game-translator/">
 <meta property="og:locale:alternate" content="en_US">
-<meta property="og:image" content="https://lexiapps.dev/img/share.jpg">
+<meta property="og:image" content="https://lexiapps.dev/img/translator/share.png">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="600">
-<meta property="og:image:alt" content="Lexi Game Translator — Tek çevirmen. 18 oyun motoru.">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lexi Game Translator uygulaması: çevrilmiş bir oyunun genel bakış ekranı">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://lexiapps.dev/img/share.jpg">
+<meta name="twitter:image" content="https://lexiapps.dev/img/translator/share.png">
 <link rel="canonical" href="https://lexiapps.dev/tr/lexi-game-translator/">
 <link rel="alternate" hreflang="en" href="https://lexiapps.dev/lexi-game-translator/">
 <link rel="alternate" hreflang="tr" href="https://lexiapps.dev/tr/lexi-game-translator/">
@@ -73,7 +73,7 @@
   "operatingSystem": "Windows 10, Windows 11",
   "url": "https://lexiapps.dev/lexi-game-translator/",
   "downloadUrl": "https://github.com/lexi-apps/lexi-renpy-translator/releases/latest",
-  "image": "https://lexiapps.dev/img/share.jpg",
+  "image": "https://lexiapps.dev/img/translator/share.png",
   "description": "Lexi Game Translator; Ren'Py, RPG Maker, Unity, Unreal ve Godot dahil 18 oyun motorundaki oyunları çevirir. Otopilot kurulum, otomatik font yaması, karakter adı koruması, yedekleme ve 12 arayüz dili.",
   "publisher": {
     "@type": "Organization",
@@ -133,7 +133,7 @@
   })();
 </script>
 <script type="importmap">
-{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+{ "imports": { "three": "/vendor/three-0.160.0/three.module.js" } }
 </script>
 </head>
 <body>
@@ -218,11 +218,11 @@
       </button>
       <div class="dd__menu" role="menu">
         <div class="dd__box">
-          <button type="button" class="dd__item" id="lang-en" onclick="setLang('en', true)" role="menuitem">
+          <button type="button" class="dd__item" id="lang-en" data-set-lang="en" role="menuitem">
             <span class="dd__item-left"><span class="dd__num">EN</span><span lang="en">English</span></span>
             <i class="dd__check" aria-hidden="true"></i>
           </button>
-          <button type="button" class="dd__item is-on" id="lang-tr" onclick="setLang('tr', true)" role="menuitem">
+          <button type="button" class="dd__item is-on" id="lang-tr" data-set-lang="tr" role="menuitem">
             <span class="dd__item-left"><span class="dd__num">TR</span><span>Türkçe</span></span>
             <i class="dd__check" aria-hidden="true"></i>
           </button>
@@ -788,10 +788,14 @@
     if (window.ScrollTrigger) window.ScrollTrigger.refresh();
   }
   setLang('tr', false);
+  /* EN/TR buttons: listeners, not onclick="" attributes (the CSP blocks inline handlers). */
+  Array.from(document.querySelectorAll('[data-set-lang]')).forEach(function (btn) {
+    btn.addEventListener('click', function () { setLang(btn.getAttribute('data-set-lang'), true); });
+  });
 </script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script defer src="/vendor/gsap-3.12.5/gsap.min.js"></script>
+<script defer src="/vendor/gsap-3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="/vendor/lenis-1.1.14/lenis.min.js"></script>
 <script type="module" src="/lexi-game-translator/page.js"></script>
 <script type="module" src="/main.js"></script>
 </body>
