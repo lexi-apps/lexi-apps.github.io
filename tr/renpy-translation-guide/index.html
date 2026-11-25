@@ -79,7 +79,7 @@
       "mainEntityOfPage": "https://lexiapps.dev/tr/renpy-translation-guide/",
       "image": "https://lexiapps.dev/img/translator/share.png",
       "datePublished": "2026-11-25",
-      "dateModified": "2026-11-25",
+      "dateModified": "2026-11-26",
       "author": {
         "@type": "Organization",
         "name": "Lexi Apps",
@@ -330,25 +330,77 @@
           <nav aria-label="Sayfa yolu">
             <p class="g-crumbs"><a href="/tr/" lang="en">Lexi Apps</a><span aria-hidden="true">/</span><a href="/tr/lexi-game-translator/" lang="en">Lexi Game Translator</a><span aria-hidden="true">/</span><span><span data-lang="tr">Ren'Py çeviri rehberi</span></span></p>
           </nav>
-          <p class="eyebrow"><span data-lang="tr">Rehber <span>/</span> Ren'Py <span>/</span> Adım adım</span></p>
+          <p class="eyebrow"><span data-lang="tr">Rehber <span>/</span> Ren'Py ve 18 Motor <span>/</span> Adım adım</span></p>
           <h1 id="g-title"><span data-lang="tr">Ren'Py oyunu nasıl çevrilir? Adım adım Türkçe yama rehberi<em>.</em></span></h1>
-          <p class="sec__lede" data-lang="tr">Görsel romanların (visual novel) pek çoğu Ren'Py motoruyla yapılır. Bu rehberde, ücretsiz oyun çeviri programı <strong>Lexi Game Translator</strong> ile bir Ren'Py oyununu metin etiketlerini, değişkenlerini ve menülerini bozmadan Türkçeye (ya da istediğiniz başka bir dile) nasıl çevireceğinizi adım adım anlatıyoruz.</p>
+          <p class="sec__lede" data-lang="tr">Bağımsız görsel romanların (visual novel) pek çoğu Ren'Py motoruyla yapılır. Bu görsel rehberde, ücretsiz <strong>Lexi Game Translator</strong> ile bir Ren'Py oyununu metin etiketlerini, değişkenlerini, karakter adlarını ve yazı tiplerini bozmadan Türkçeye (ya da 30'dan fazla dile) nasıl çevireceğinizi adım adım gösteriyor; aynı yeni arayüzün <strong>RPG Maker, Unity, Unreal Engine ve Godot dahil 18 oyun motorunu</strong> nasıl yönettiğini örnek ekranlarla anlatıyoruz.</p>
           <nav class="g-toc" aria-label="Bu sayfada">
             <a href="#why"><span data-lang="tr">Neden zor?</span></a>
             <a href="#before"><span data-lang="tr">Başlamadan önce</span></a>
             <a href="#steps"><span data-lang="tr">Adım adım</span></a>
+            <a href="#interface"><span data-lang="tr">Yeni arayüz</span></a>
+            <a href="#engines"><span data-lang="tr">Diğer motorlar</span></a>
             <a href="#tips"><span data-lang="tr">İpuçları</span></a>
             <a href="#faq"><span data-lang="tr">SSS</span></a>
           </nav>
         </header>
 
-        <!-- 1. Why Ren'Py is tricky -->
+        <!-- Hero visual overview -->
+        <figure class="frame g-hero-fig">
+          <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+          <a class="shot__link" href="/img/translator/01-overview.webp" data-lightbox>
+            <img src="/img/translator/01-overview.webp" width="2160" height="1350" decoding="async" alt="Lexi Game Translator genel bakış ekranı: kapak renklerine uyumlu tema, etiket ve karakter adlarını koruyan canlı yan yana önizleme, yedekler ve Oyun Rafı ile tamamlanmış bir Ren&#x27;Py 8 çevirisi">
+          </a>
+          <figcaption>
+            <span data-lang="tr">Genel bakış — kapağa uyumlu yeni arayüz, canlı yan yana önizleme, yedekler ve Oyun Rafı</span>
+            <span class="g-zoom-hint"><span data-lang="tr">Büyütmek için tıklayın</span></span>
+          </figcaption>
+        </figure>
+
+        <!-- 1. Why Ren'Py is tricky + Interactive Before/After comparison -->
         <section class="g-block g-prose" aria-labelledby="why">
           <h2 id="why"><span data-lang="tr">Ren'Py çevirisi neden zordur?</span></h2>
           <p data-lang="tr">Bir Ren'Py oyunu hikâyesini betik dosyalarında (<code>.rpy</code>) tutar. Yayımlanmış oyunlar bu dosyaları çoğu zaman yalnızca derlenmiş hâlde (<code>.rpyc</code>) ve sıklıkla <code>.rpa</code> arşivlerinin içinde getirir. Tek bir diyalog satırı şöyle görünebilir:</p>
           <pre class="g-code"><code>e "Welcome back, <span class="t">{b}</span><span class="t">[player_name]</span><span class="t">{/b}</span>! You have <span class="t">[gold]</span> coins."</code></pre>
-          <p data-lang="tr">Çevrilmesi gereken yalnızca kelimelerdir. <code>{b}…{/b}</code> bir metin etiketidir (kalın yazı); <code>[player_name]</code> ve <code>[gold]</code> ise oyunun siz oynarken doldurduğu değişkenlerdir. Bir çeviri servisi bunları değiştirir ya da silerse (örneğin <code>[gold]</code> değişkenini <code>[altın]</code> yaparsa) satır bozuk görünür ya da Ren'Py hata verip durur. Menü seçenekleri, düğme yazıları ve karakter adları da aynı özeni ister: Rose adlı bir karakterin adı &ldquo;Gül&rdquo; olmamalı.</p>
-          <p data-lang="tr">Ren'Py'nin ek diller için kendi sistemi vardır: oyunun <code>tl</code> klasöründeki çeviri dosyaları ve oyun içindeki dil ayarı. Lexi Game Translator çeviriyi tam olarak bu sisteme yazar; oyunun özgün hikâye dosyaları olduğu gibi kalır.</p>
+          <p data-lang="tr">Çevrilmesi gereken yalnızca konuşma kelimeleridir. <code>{b}…{/b}</code> bir metin etiketidir (kalın yazı); <code>[player_name]</code> ve <code>[gold]</code> ise oyunun siz oynarken doldurduğu değişkenlerdir. Bir çevirici bunları değiştirir ya da silerse (örneğin <code>[gold]</code> değişkenini <code>[altın]</code> yaparsa) satır bozuk görünür ya da Ren'Py hata verip durur. Karakter adları ve yazı tipleri de aynı özeni ister: <strong>Rose</strong> adlı bir karakterin adı &ldquo;Gül&rdquo; olmamalı; ayrıca yalnızca İngilizce harf içeren oyun fontları Türkçe, Kiril veya Uzak Doğu harflerini boş kutu olarak gösterir.</p>
+          <p data-lang="tr">Ren'Py'nin <code>game/tl/&lt;dil&gt;/</code> altında kendi yerel çeviri katmanı vardır. <strong>Lexi Game Translator</strong> etiketleri, değişkenleri ve karakter adlarını otomatik koruyarak ve eksik fontları yamalayarak doğrudan bu sisteme yazar; oyunun özgün betik dosyalarına dokunulmaz. Gerçek oyun içi farkı görmek için aşağıdaki kaydırıcıyı sürükleyin:</p>
+
+          <div class="compare" data-compare style="--pos: 30%">
+            <div class="compare__tabs" role="tablist" aria-label="Önce ve sonra örnekleri">
+              <button type="button" role="tab" id="cmp-tab-1" aria-selected="true" data-cmp-scene="names">
+                <span>01</span>
+                <b data-lang="tr">İsim Koruması (Rose)</b>
+              </button>
+              <button type="button" role="tab" id="cmp-tab-2" aria-selected="false" tabindex="-1" data-cmp-scene="ja">
+                <span>02</span>
+                <b data-lang="tr">Japonca Font Yaması</b>
+              </button>
+              <button type="button" role="tab" id="cmp-tab-3" aria-selected="false" tabindex="-1" data-cmp-scene="ko">
+                <span>03</span>
+                <b data-lang="tr">Korece Font Yaması</b>
+              </button>
+            </div>
+            <div class="compare__stage" role="slider" tabindex="0" aria-label="Öncesi ve sonrası karşılaştırma kaydırıcısı" aria-valuemin="0" aria-valuemax="100" aria-valuenow="30" data-cmp-stage>
+              <img class="compare__img compare__img--after" src="/img/compare/sonra_ad_tr.webp" width="1920" height="1080" loading="lazy" decoding="async" draggable="false" alt="Lexi İsim Koruması ile karakter adı Rose&#x27;un olduğu gibi korunduğu diyalog" data-cmp-after>
+              <img class="compare__img compare__img--before" src="/img/compare/once_ad_tr.webp" width="1920" height="1080" loading="lazy" decoding="async" draggable="false" alt="İsim koruması olmadan karakter adı Rose&#x27;un Gül olarak çevrildiği diyalog" data-cmp-before>
+              <div class="compare__badges" aria-hidden="true">
+                <span class="compare__badge compare__badge--before" data-cmp-badge-before>
+                  <span data-lang="tr">Korumasız — &ldquo;Gül&rdquo;</span>
+                </span>
+                <span class="compare__badge compare__badge--after" data-cmp-badge-after>
+                  <span data-lang="tr"><span lang="en">Lexi</span> ile — &ldquo;Rose&rdquo; korundu</span>
+                </span>
+              </div>
+              <div class="compare__divider" aria-hidden="true">
+                <span class="compare__handle">
+                  <span class="compare__chev">&#8249;</span>
+                  <span class="compare__chev">&#8250;</span>
+                </span>
+              </div>
+            </div>
+            <p class="compare__cap">
+              <span data-lang="tr">Görsel üzerinde sürükleyin veya sol/sağ yön tuşlarını kullanın — gerçek 1920&times;1080 oyun içi görüntüler</span>
+            </p>
+          </div>
         </section>
 
         <!-- 1b. Before you start -->
@@ -356,9 +408,9 @@
           <h2 id="before"><span data-lang="tr">Başlamadan önce</span></h2>
           <ul class="notes">
             <li><span data-lang="tr"><strong><span lang="en">Windows</span> 10 ya da 11 (64 bit)</strong> yüklü bir bilgisayar. Kurulum için yönetici yetkisi gerekmez.</span></li>
-            <li><span data-lang="tr">Bilgisayarınızda kurulu oyun: içinde <code>game</code> klasörü bulunan klasörü seçebilir ya da oyun klasörünü / <code>.exe</code> dosyasını doğrudan Lexi penceresine sürükleyip bırakabilirsiniz.</span></li>
+            <li><span data-lang="tr">Bilgisayarınızda klasöre çıkarılmış oyun: içinde <code>game</code> klasörü bulunan klasörü seçebilir ya da oyun klasörünü / <code>.exe</code> dosyasını doğrudan Lexi penceresine sürükleyip bırakabilirsiniz.</span></li>
             <li><span data-lang="tr">Biraz boş disk alanı. Lexi her çeviriden önce <code>game</code> klasörünün tamamının doğrulanmış kopyasını alır (varsayılan olarak son üç kilitsiz yedeği saklar ve ilk özgün yedeği otomatik kilitler); büyük bir oyun, saklanan her yedek için kabaca kendi boyutu kadar yer ister. Yedek sayısını <strong>Yedekler ve hafıza</strong> bölümünden ayarlayabilirsiniz.</span></li>
-            <li><span data-lang="tr">Çevrimiçi çeviri motorları için internet bağlantısı (ya da Lexi Pro'da çevrimdışı çeviri için Ollama, LM Studio veya llama.cpp ile yerel bir yapay zekâ modeli).</span></li>
+            <li><span data-lang="tr">Çevrimiçi çeviri motorları için internet bağlantısı — ya da Lexi Pro'da tamamen çevrimdışı çeviri için Ollama, LM Studio veya llama.cpp ile yerel bir yapay zekâ modeli.</span></li>
           </ul>
         </section>
 
@@ -368,41 +420,232 @@
           <ol class="g-steps">
             <li class="g-step">
               <h3><span data-lang="tr">Programı indirip kurun</span></h3>
-              <p data-lang="tr">Lexi Game Translator, <strong><span lang="en">Windows</span> 10 ve 11 (64 bit)</strong> için 12 yerleşik arayüz dili (Türkçe ve sağdan sola Arapça dahil) ve koyu/açık temalar sunan ücretsiz bir programdır. Kurulum dosyasını resmi <a href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener"><span lang="en">GitHub Releases</span> sayfasından</a> indirip çalıştırın. Kurulum dosyası henüz dijital olarak imzalanmadığı için Windows SmartScreen ilk seferde uyarı gösterebilir; neye tıklayacağınızı <a href="/tr/install-help/">kurulum yardımı sayfası</a> adım adım gösteriyor.</p>
+              <p data-lang="tr">Lexi Game Translator, <strong><span lang="en">Windows</span> 10 ve 11 (64 bit)</strong> için 12 yerleşik arayüz dili (Türkçe ve sağdan sola Arapça dahil) ve koyu/açık temalar sunan ücretsiz bir programdır. Kurulum dosyasını resmi <a href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener"><span lang="en">GitHub Releases</span> sayfasından</a> indirip çalıştırın.</p>
+              <p data-lang="tr">Kurulum dosyası henüz dijital olarak imzalanmadığı için Windows SmartScreen ilk çalıştırmada mavi uyarı ekranı gösterebilir; neye tıklayacağınızı <a href="/tr/install-help/">kurulum yardımı sayfası</a> adım adım gösterir.</p>
             </li>
             <li class="g-step">
-              <h3><span data-lang="tr">Oyun klasörünü seçin veya sürükleyin</span></h3>
-              <p data-lang="tr">Program ilk açıldığında <strong>Hızlı başlangıç</strong> sihirbazı açılır; dilediğiniz zaman programdaki <strong>Kılavuz</strong> sayfasından da başlatabilir ya da oyun klasörünü veya <code>.exe</code> dosyasını doğrudan pencereye sürükleyip bırakabilirsiniz. Lexi bunun bir Ren'Py oyunu olduğunu (diğer 17 desteklenen oyun motoruyla birlikte) kendisi anlar ve hemen tarar: <code>.rpa</code> arşivlerindeki ve derlenmiş <code>.rpyc</code> dosyalarındaki betikler dahil bütün satırları sayar. Tarama hiçbir dosyayı değiştirmez.</p>
+              <h3><span data-lang="tr">Oyun klasörünü veya .exe dosyasını seçin</span></h3>
+              <p data-lang="tr">Program ilk açıldığında <strong>Hızlı başlangıç</strong> sihirbazı size yol gösterir; istediğiniz zaman <strong>Kılavuz</strong> sayfasından tekrar açabilir ya da oyun klasörünü veya <code>.exe</code> dosyasını doğrudan Lexi penceresine sürükleyip bırakabilirsiniz.</p>
+              <p data-lang="tr">Lexi, Ren'Py 7 ve Ren'Py 8'i (diğer 17 oyun motoruyla birlikte) kendisi tanır ve salt-okunur tarama başlatır: <code>.rpy</code> betikleri, derlenmiş <code>.rpyc</code> dosyaları ve <code>.rpa</code> arşivlerindeki tüm satır sayılarını, konuşmacıları ve hafıza eşleşmelerini hiçbir dosyayı değiştirmeden gösterir.</p>
               <figure class="frame g-fig">
                 <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
-                <img src="/img/translator/03-scan.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator oyun tarama ekranı, bir Ren&#x27;Py oyunu tarandıktan sonra: satır sayıları ve taranan .rpy ve .rpyc dosyaları">
-                <figcaption><span data-lang="tr">Oyun tarama: bir Ren'Py oyununda bulunan satırlar</span></figcaption>
+                <a class="shot__link" href="/img/translator/03-scan.webp" data-lightbox>
+                  <img src="/img/translator/03-scan.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator oyun tarama ekranı, bir Ren&#x27;Py oyunu tarandıktan sonra: satır sayıları ve taranan .rpy ve .rpyc dosyaları">
+                </a>
+                <figcaption>
+                  <span data-lang="tr">Oyun tarama — çevirmeden önce dosyaları, satır sayılarını ve hafıza eşleşmelerini görün</span>
+                  <span class="g-zoom-hint"><span data-lang="tr">Büyüt</span></span>
+                </figcaption>
               </figure>
             </li>
             <li class="g-step">
               <h3><span data-lang="tr">Hedef dili ve çeviri motorunu seçin</span></h3>
-              <p data-lang="tr">30'dan fazla desteklenen dil arasından hedef dilinizi seçin. Basic'teki varsayılan motor tamamen ücretsiz ve anahtarsızdır: <strong><span lang="en">Google</span> ve <span lang="en">Microsoft Edge</span> paralel olarak birlikte çalışır</strong>; biri hız sınırına takılırsa diğeri ve otomatik yedek devam eder. Kendi API anahtarınız varsa Basic'te <strong>Bing / Microsoft Translator</strong> ve <strong>Yandex Translate</strong> de kullanılabilir. İsteğe bağlı yapay zekâ çevirisi — kendi anahtarınızla tek tık bulut hazır ayarları (Gemini, Groq, Mistral, OpenRouter, DeepSeek, Claude, Cerebras ve OpenAI) ya da yerel çevrimdışı modeller (Ollama, LM Studio, llama.cpp) — Patreon'daki <strong><span lang="en">Lexi Pro</span></strong> katmanıyla açılır ($6/ay; bilgisayar başına bir kez 3 günlük ücretsiz AI denemesi vardır). Ücretli bir iş başlamadan önce Lexi tahmini tutarı gösterir, onayınızı ister ve harcama tavanı koymanıza izin verir.</p>
+              <p data-lang="tr"><strong>30'dan fazla desteklenen dil</strong> arasından hedef dilinizi seçin. Hızlı ve zahmetsiz ücretsiz çeviri mi yoksa daha doğal yapay zekâ çevirisi mi istediğinize göre üç net seçenek sunulur:</p>
+              <div class="g-tier-strip">
+                <div class="g-tier-box">
+                  <span class="g-tier-box__k"><span data-lang="tr">1. Ücretsiz anahtarsız (<span lang="en">Basic</span>)</span></span>
+                  <p data-lang="tr"><strong>Google + Microsoft Edge</strong> otomatik yedekle paralel çalışır. Hesap yok, API anahtarı yok, satır sınırı yok.</p>
+                </div>
+                <div class="g-tier-box">
+                  <span class="g-tier-box__k"><span data-lang="tr">2. Anahtarlı makine (<span lang="en">Basic</span>)</span></span>
+                  <p data-lang="tr">Kendi API anahtarınızı girerseniz <strong>Bing / Microsoft Translator</strong> ve <strong>Yandex Translate</strong> de Basic'te açıktır.</p>
+                </div>
+                <div class="g-tier-box">
+                  <span class="g-tier-box__k"><span data-lang="tr">3. Bulut ve yerel <span lang="en">AI</span> (<span lang="en">Lexi Pro</span>)</span></span>
+                  <p data-lang="tr"><strong>Gemini, Groq, Mistral, OpenRouter, DeepSeek, Claude, Cerebras, OpenAI</strong> (kendi anahtarınız) veya çevrimdışı <strong>Ollama / LM Studio / llama.cpp</strong> için tek tık hazır ayar. Patreon $6/ay + 3 gün ücretsiz AI denemesi.</p>
+                </div>
+              </div>
+              <p data-lang="tr">Ücretli bir bulut yapay zekâ işi söz konusu olduğunda Lexi tahmini maliyeti başlamadan hesaplar, açık onayınızı bekler ve koyduğunuz harcama tavanını uygular.</p>
               <figure class="frame g-fig">
                 <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
-                <img src="/img/translator/04-engines-ai.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Çeviri ayarları ekranı: hedef dil, ücretsiz yerleşik motorlar ve isteğe bağlı yapay zekâ hazır ayarları">
-                <figcaption><span data-lang="tr">Çeviri ayarları: önce ücretsiz motorlar, yapay zekâ isteğe bağlı</span></figcaption>
+                <a class="shot__link" href="/img/translator/04-engines-ai.webp" data-lightbox>
+                  <img src="/img/translator/04-engines-ai.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Çeviri ayarları ekranı: hedef dil, ücretsiz yerleşik motorlar ve isteğe bağlı tek tık yapay zekâ hazır ayarları">
+                </a>
+                <figcaption>
+                  <span data-lang="tr">Çeviri ayarları — önce anahtarsız ücretsiz zincir, isteğe bağlı tek tık bulut/yerel <span lang="en">AI</span> hazır ayarları</span>
+                  <span class="g-zoom-hint"><span data-lang="tr">Büyüt</span></span>
+                </figcaption>
               </figure>
             </li>
             <li class="g-step">
-              <h3><span data-lang="tr">Çeviriyi başlatın</span></h3>
-              <p data-lang="tr"><strong>Çevir</strong> düğmesine basın ve bekleyin. Lexi herhangi bir şey yazmadan önce oyunun <strong><code>game</code> klasörünün doğrulanmış tam bir kopyasını</strong> yedek olarak alır. Metin çevrilirken etiketler, değişkenler ve karakter adları korunur. İstediğiniz an duraklatabilir ya da durdurabilirsiniz: biten satırlar çeviri hafızasında saklanır, bir sonraki çeviri kaldığı yerden devam eder.</p>
-              <p data-lang="tr">Çeviri <code>game/tl/&lt;dil&gt;/</code> klasörüne yazılır ve oyun klasörüne küçük bir dil seçici betiği eklenir. Oyunun kendi betik dosyaları düzenlenmez. Lexi ayrıca hem diskteki hem <code>.rpa</code> arşivlerinin içindeki yazı tiplerini denetler; hedef dilinizin harfleri (örneğin Türkçe ş, ğ, ı, İ ya da CJK/Kiril harfleri) eksikse yerleşik yedek yazı tipini otomatik ekler (sağdan sola diller için de RTL destek dosyası yazar). Oyunda <code>.srt</code> veya <code>.vtt</code> video altyazıları varsa zaman kodlarına dokunmadan onları da aynı işlemde çevirebilirsiniz.</p>
+              <h3><span data-lang="tr">Çeviriyi başlatın ve canlı ilerlemeyi izleyin</span></h3>
+              <p data-lang="tr"><strong>Çevir</strong> düğmesine basın. Lexi hiçbir şey yazmadan önce oyunun <strong><code>game</code> klasörünün doğrulanmış tam yedeğini</strong> alır ve ilk özgün yedeği otomatik kilitler. Çeviri sürerken satırları canlı olarak yan yana izleyebilir, hızı ve kalan süreyi görebilir, istediğiniz an <strong>Duraklat</strong> veya <strong>Durdur</strong> diyebilirsiniz — biten satırlar sürekli kaydedilir ve bir sonraki çalıştırma tam kaldığı satırdan devam eder.</p>
+              <p data-lang="tr">Çıktılar <code>game/tl/&lt;dil&gt;/</code> klasörüne ve küçük bir dil seçici betiğine yazılır; oyunun özgün betik dosyaları hiç değiştirilmez. Lexi ayrıca hem diskteki hem <code>.rpa</code> arşivlerindeki yazı tiplerini denetler; hedef dilinizin harfleri (Türkçe ş, ğ, ı, İ ya da CJK/Kiril/Arapça harfleri) eksikse yerleşik yedek yazı tipini otomatik ekler (sağdan sola diller için RTL desteği de yazar). <code>.srt</code> veya <code>.vtt</code> video altyazısı içeren oyunlarda altyazılar da zaman kodları bozulmadan aynı işlemde çevrilebilir.</p>
+              <figure class="frame g-fig">
+                <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+                <a class="shot__link" href="/img/translator/09-live-progress.webp" data-lightbox>
+                  <img src="/img/translator/09-live-progress.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator canlı çeviri ekranı: yüzde 68 ilerleme, saniyede 44,2 satır hız, Duraklat ve Durdur düğmeleri ve {b} ile [town] gibi Ren&#x27;Py etiketlerinin korunması">
+                </a>
+                <figcaption>
+                  <span data-lang="tr">Canlı ilerleme — anlık hız, Duraklat/Durdur ile kaldığı yerden devam, {b} etiketleri ve [değişkenler] korunur</span>
+                  <span class="g-zoom-hint"><span data-lang="tr">Büyüt</span></span>
+                </figcaption>
+              </figure>
             </li>
             <li class="g-step">
               <h3><span data-lang="tr">Oyunu açın ve dili değiştirin</span></h3>
-              <p data-lang="tr">Çeviri hazır olunca <strong>Oyunu aç</strong> düğmesine basın (daha sonra istediğiniz zaman <strong>Oyun Rafı</strong> üzerinden tek tıkla başlatabilirsiniz). Oyunun ana menüsünde küre simgeli <strong><span lang="en">Language</span></strong> düğmesine basıp Türkçeyi seçin. Oynarken <strong>Shift+L</strong> tuşlarıyla, oyunu kapatmadan çeviri ile özgün metin arasında geçiş yapabilirsiniz.</p>
+              <p data-lang="tr">İşlem bitince <strong>Oyunu aç</strong> düğmesine basın (çevirdiğiniz oyunları daha sonra <strong>Oyun Rafı</strong>'ndan tek tıkla başlatabilirsiniz). Oyunun ana menüsündeki küre simgeli <strong><span lang="en">Language</span></strong> düğmesinden Türkçeyi seçin. Oynarken <strong>Shift+L</strong> tuşlarına basarak oyunu kapatmadan çeviri ile özgün metin arasında anında geçiş yapabilirsiniz.</p>
             </li>
           </ol>
         </section>
 
-        <!-- 3. Tips -->
+        <!-- 3. New Interface Showcase -->
+        <section class="g-block g-prose" aria-labelledby="interface">
+          <h2 id="interface"><span data-lang="tr">Yeni arayüze yakından bakın: temalar, 12 dil ve kalite editörü</span></h2>
+          <p data-lang="tr">Lexi Game Translator'ın yenilenen masaüstü arayüzü renk paletini seçtiğiniz oyunun kapağına göre uyarlar; koyu temanın yanında yüksek kontrastlı <strong>Kâğıt (Paper)</strong> ve <strong>Gün Işığı (Daylight)</strong> açık temalarını ve özel duvar kâğıtlarını destekler; tam sağdan sola Arapça dahil <strong>12 arayüz dilinde</strong> çalışır ve yerleşik kalite editörüyle gelir. Tam boyutta görmek için herhangi bir ekrana tıklayın:</p>
+
+          <div class="g-gallery">
+            <figure class="frame">
+              <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+              <a class="shot__link" href="/img/translator/06-themes.webp" data-lightbox>
+                <img src="/img/translator/06-themes.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator&#x27;da sıcak yüksek kontrastlı Kâğıt (Paper) açık teması">
+              </a>
+              <figcaption>
+                <span class="g-gallery__title"><span data-lang="tr">Kâğıt (<span lang="en">Paper</span>) açık tema</span></span>
+                <span data-lang="tr">Uzun oturumlar için göz yormayan sıcak açık palet</span>
+              </figcaption>
+            </figure>
+
+            <figure class="frame">
+              <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+              <a class="shot__link" href="/img/translator/11-daylight-theme.webp" data-lightbox>
+                <img src="/img/translator/11-daylight-theme.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator&#x27;da yüksek kontrastlı Gün Işığı (Daylight) açık teması">
+              </a>
+              <figcaption>
+                <span class="g-gallery__title"><span data-lang="tr">Gün Işığı (<span lang="en">Daylight</span>) açık tema</span></span>
+                <span data-lang="tr">Yüksek kontrastlı ferah gündüz paleti ve uyumlu vurgular</span>
+              </figcaption>
+            </figure>
+
+            <figure class="frame">
+              <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+              <a class="shot__link" href="/img/translator/07-arabic-rtl.webp" data-lightbox>
+                <img src="/img/translator/07-arabic-rtl.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator&#x27;da sağdan sola yerel Arapça arayüz">
+              </a>
+              <figcaption>
+                <span class="g-gallery__title"><span data-lang="tr">12 arayüz dili ve Arapça <span lang="en">RTL</span></span></span>
+                <span data-lang="tr">TR, EN, AR (<span lang="en">RTL</span>), RU, ZH, JA, ES, PT-BR, DE, FR, KO, PL</span>
+              </figcaption>
+            </figure>
+
+            <figure class="frame">
+              <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+              <a class="shot__link" href="/img/translator/05-editor-qa.webp" data-lightbox>
+                <img src="/img/translator/05-editor-qa.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator kalite denetimi ve yerleşik satır editörü: Sorunları yeniden çevir ve CSV içe/dışa aktarım">
+              </a>
+              <figcaption>
+                <span class="g-gallery__title"><span data-lang="tr">Kalite denetimi, editör ve <span lang="en">CSV</span></span></span>
+                <span data-lang="tr">Sorunları süzün, tek tıkla yeniden çevirin ya da Excel'de düzenleyin</span>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <!-- 4. Other Popular Game Engines (18 total) -->
+        <section class="g-block g-prose" aria-labelledby="engines">
+          <h2 id="engines"><span data-lang="tr">Yalnızca Ren'Py değil: diğer popüler oyun motorları (18 motor)</span></h2>
+          <p data-lang="tr">Bu rehber adımları Ren'Py üzerinden anlatsa da, <strong>klasörü veya <code>.exe</code>'yi bırak → dili seç → Çevir'e bas</strong> akışı <strong>18 oyun motorunun</strong> tamamında aynıdır. Lexi motoru otomatik tanır ve arayüzü ona göre şekillendirir: sade motorlarda gereksiz eklenti karmaşası gösterilmez; kapalı paketli Unity ve Unreal oyunlarında ise <strong>Otopilot</strong> kurulumu ve yerel <strong>Canlı Köprü</strong> devreye girer.</p>
+
+          <div class="g-engines">
+            <article class="g-engine-card">
+              <div class="g-engine-card__body">
+                <span class="g-badge"><span data-lang="tr">RPG Maker 2000/2003 &middot; XP &middot; VX &middot; VX Ace &middot; MV &middot; MZ</span></span>
+                <h3><span data-lang="tr">RPG Maker serisi (6 nesil eksiksiz)</span></h3>
+                <p data-lang="tr">Herhangi bir RPG Maker klasörünü bırakın, Lexi sürümü kendisi tanısın: güncel <strong>MV / MZ</strong> JSON dosyalarından <strong>XP / VX / VX Ace</strong> Ruby Marshal ve <code>.rgss*</code> arşivlerine, klasik <strong>2000 / 2003</strong> LCF haritalarına (UTF-8 <code>RPG_RT.INI</code> desteği dahil) kadar hepsini destekler.</p>
+                <p data-lang="tr"><code>\C[1]</code>, <code>\N[2]</code> ve <code>\V[n]</code> gibi oyun içi kontrol kodları bozulmadan korunur; diyalog, eşya, yetenek ve menüler otomatik yedek, kalite denetimi, CSV ve yama <code>.zip</code> desteğiyle çevrilir.</p>
+              </div>
+              <figure class="frame">
+                <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+                <a class="shot__link" href="/img/translator/08-multi-engine.webp" data-lightbox>
+                  <img src="/img/translator/08-multi-engine.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator&#x27;da otomatik tanınan RPG Maker MZ oyunu: sade arayüz ve korunan \C[1], \N[2] kontrol kodları">
+                </a>
+                <figcaption>
+                  <span data-lang="tr">RPG Maker MZ — otomatik algılama, sade arayüz, kontrol kodları korunur</span>
+                  <span class="g-zoom-hint"><span data-lang="tr">Büyüt</span></span>
+                </figcaption>
+              </figure>
+            </article>
+
+            <article class="g-engine-card">
+              <div class="g-engine-card__body">
+                <span class="g-badge"><span data-lang="tr"><span lang="en">Unity</span> (Mono &amp; IL2CPP) &middot; Otopilot + Canlı Köprü</span></span>
+                <h3><span data-lang="tr">Unity oyunları (Mono ve IL2CPP)</span></h3>
+                <p data-lang="tr">Unity oyunları metinleri derlenmiş dosyalara ve paketlere gömer. Onayınızla Lexi <strong>Otopilot</strong>, resmi <strong>BepInEx</strong> ve <strong>XUnity.AutoTranslator</strong> paketlerini (SHA-256 doğrulamalı) otomatik kurar; <code>.assets</code>, <code>Assembly-CSharp.dll</code> veya IL2CPP <code>global-metadata.dat</code> içindeki metinleri önceden ayıklayıp çevirir.</p>
+                <p data-lang="tr"><strong>Oyunu Canlı Köprüyle Aç</strong> dediğinizde oynarken dinamik üretilen satırlar yerel <code>127.0.0.1</code> köprüsü üzerinden seçtiğiniz motor ve sözlükle anında çevrilir. Hile korumalı (EAC/BattlEye) oyunlara güvenlik gereği dokunulmaz; kurulan eklentiler tek tıkla temizce kaldırılır.</p>
+              </div>
+              <figure class="frame">
+                <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+                <a class="shot__link" href="/img/translator/10-unity-autopilot.webp" data-lightbox>
+                  <img src="/img/translator/10-unity-autopilot.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator&#x27;da Unity Mono Otopilot ekranı: hazır BepInEx ve XUnity eklentisi, çıkarılan paketli metinler ve Oyunu Canlı Köprüyle Aç düğmesi">
+                </a>
+                <figcaption>
+                  <span data-lang="tr"><span lang="en">Unity</span> Otopilot — <span lang="en">BepInEx</span> + <span lang="en">XUnity</span> kurulumu, ön çıkarma ve Canlı Köprü</span>
+                  <span class="g-zoom-hint"><span data-lang="tr">Büyüt</span></span>
+                </figcaption>
+              </figure>
+            </article>
+
+            <article class="g-engine-card">
+              <div class="g-engine-card__body">
+                <span class="g-badge"><span data-lang="tr"><span lang="en">Unreal Engine</span> 4 ve 5 &middot; <span lang="en">PAK</span>, <span lang="en">IoStore</span> ve <span lang="en">UE4SS</span></span></span>
+                <h3><span data-lang="tr">Unreal Engine 4 ve 5</span></h3>
+                <p data-lang="tr">Yerelleştirme dosyası (<code>.locres</code>) taşıyan oyunlarda Lexi gevşek veya şifresiz <code>.pak</code> arşivlerini okur; oyunun ana paketlerini bozmadan <code>~mods/</code> altına (UE 5 IoStore <code>.utoc</code>/<code>.ucas</code> desteğiyle) temiz bir yama paketi yazar.</p>
+                <p data-lang="tr">Yerelleştirme tablosu olmayan oyunlarda <strong>Otopilot</strong>, <strong>UE4SS</strong> kurulumunu yapar, oyun içi diyalog tablolarını toplar, yerel <strong>Canlı Köprü</strong>'yü bağlar ve Türkçe/aksanlı harflerin düzgün görünmesi için otomatik <strong>Font Yaması</strong> uygular.</p>
+              </div>
+              <figure class="frame">
+                <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+                <a class="shot__link" href="/img/translator/02-autopilot.webp" data-lightbox>
+                  <img src="/img/translator/02-autopilot.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator&#x27;da Unreal Engine Otopilot hazır ekranı: UE4SS eklentisi, otomatik font yaması, metin toplama ve Canlı Köprü">
+                </a>
+                <figcaption>
+                  <span data-lang="tr"><span lang="en">Unreal Engine</span> Otopilot — <span lang="en">UE4SS</span>, Canlı Köprü ve otomatik font yaması</span>
+                  <span class="g-zoom-hint"><span data-lang="tr">Büyüt</span></span>
+                </figcaption>
+              </figure>
+            </article>
+          </div>
+
+          <p class="g-subhead"><span data-lang="tr">Aynı programda desteklenen 8 görsel roman ve bağımsız motor daha</span></p>
+          <div class="g-engine-grid">
+            <div class="g-mini-engine">
+              <h4>Godot 3 &amp; 4</h4>
+              <p data-lang="tr">Gevşek dosyaları ve şifresiz <code>.pck</code> / gömülü <code>.exe</code> paketlerini çevirir — Dialogic 1/2, Dialogue Manager, JSON ve CSV tabloları dahil.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4>TyranoScript / TyranoBuilder</h4>
+              <p data-lang="tr">Hem gevşek hem Electron <code>app.asar</code> arşivi içindeki <code>.ks</code> senaryolarını Tyrano etiketlerini ve seçimleri bozmadan çevirir.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4>WOLF RPG Editor</h4>
+              <p data-lang="tr"><code>Data.wolf</code> arşivleri, <code>.mps</code> haritaları ve <code>.dat</code> veritabanlarını otomatik yedekleme ve değişken korumasıyla çevirir.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4>KiriKiri2 / KiriKiriZ</h4>
+              <p data-lang="tr">Çok katmanlı <code>.xp3</code> arşivleri ve <code>.ks</code> betiklerini etiket koruması ve karakter kodlaması desteğiyle çevirir.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4>HTML / Twine</h4>
+              <p data-lang="tr">Tek dosyalı <strong>SugarCube</strong> ve <strong>Harlowe</strong> etkileşimli kurgu <code>.html</code> oyunlarını makroları ve bağlantıları bozmadan çevirir (SugarCube arayüz yerelleştirmesi dahil).</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4>GameMaker</h4>
+              <p data-lang="tr"><code>data.win</code> / <code>game.unx</code> paketlerini, tekil NSIS <code>.exe</code> oyunlarını ve dış metin dosyalarını yedekli olarak çevirir.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4>QSP</h4>
+              <p data-lang="tr"><code>.qsp</code>, <code>.gam</code> ve <code>.qsps</code> metin tabanlı oyunları QSP ifadelerini ve HTML biçimlerini koruyarak çevirir.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4>SRPG Studio</h4>
+              <p data-lang="tr"><code>data.dts</code> arşivleri, <code>project.dat</code> hikâye/diyalog verileri ve gevşek yerelleştirme dosyalarını konuşmacı adı korumasıyla çevirir.</p>
+            </div>
+          </div>
+          <p style="margin-top:16px;" data-lang="tr">Tüm özellik özeti, tanıtım videosu ve plan karşılaştırması için <a href="/tr/lexi-game-translator/"><span lang="en">Lexi Game Translator</span> ürün sayfasına</a> göz atabilirsiniz.</p>
+        </section>
+
+        <!-- 5. Tips -->
         <section class="g-block" aria-labelledby="tips">
-          <h2 id="tips"><span data-lang="tr">Daha iyi bir çeviri için ipuçları</span></h2>
+          <h2 id="tips"><span data-lang="tr">Daha kaliteli bir çeviri için pratik ipuçları</span></h2>
           <dl class="index g-tips">
             <div>
               <dt><span data-lang="tr">Sözlük ve bağlam</span></dt>
@@ -424,16 +667,7 @@
               <dt><span data-lang="tr">Modlar, altyazı ve kuyruk</span></dt>
               <dd><span data-lang="tr"><strong>Araçlar</strong> bölümünde Lexi; Ren'Py modlarını (<code>.rpy</code> / <code>.rpa</code>) geri alınabilir yedekle çevirebilir, <code>.srt</code>/<code>.vtt</code> video altyazılarını çevirebilir, tek tıkla <code>.zip</code> yama dışa aktarabilir ve ücretsiz motorlarla birden fazla oyunu toplu çeviri kuyruğuna alabilir.</span></dd>
             </div>
-            <div>
-              <dt><span data-lang="tr">18 oyun motoru</span></dt>
-              <dd><span data-lang="tr">Bu rehber Ren'Py'ye odaklanır; ancak aynı program toplam <strong>18 oyun motorunu</strong> otomatik tanır: RPG Maker (2000–MZ), Unity (Mono ve IL2CPP), Unreal Engine 4 ve 5, Godot 3 ve 4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker ve SRPG Studio. Ayrıntılar <a href="/tr/lexi-game-translator/"><span lang="en">Lexi Game Translator</span> sayfasında</a>.</span></dd>
-            </div>
           </dl>
-          <figure class="frame g-fig" style="margin-top:28px;">
-            <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
-            <img src="/img/translator/05-editor-qa.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Lexi Game Translator&#x27;da kalite denetimi ve satır düzenleyici, Sorunları yeniden çevir düğmesiyle">
-            <figcaption><span data-lang="tr">Kalite ve düzenleme: sorunlu satırları bulun ve düzeltin</span></figcaption>
-          </figure>
 
           <aside class="g-note" aria-labelledby="g-note-title">
             <h2 id="g-note-title"><span data-lang="tr">Kişisel kullanım ve paylaşım</span></h2>
@@ -443,7 +677,7 @@
       </div>
     </section>
 
-    <!-- 4. FAQ (same text as the FAQPage JSON-LD above) -->
+    <!-- 6. FAQ (same text as the FAQPage JSON-LD above) -->
     <section class="sec faq" id="faq" aria-labelledby="faq-title">
       <div class="wrap faq__grid">
         <header class="sec__head">
@@ -487,12 +721,12 @@
       </div>
     </section>
 
-    <!-- 5. CTA -->
+    <!-- 7. CTA -->
     <section class="sec g-cta" aria-labelledby="cta-title">
       <div class="wrap">
         <div class="g-cta__box">
           <h2 id="cta-title"><span data-lang="tr">Kendi dilinizde oynamaya hazır mısınız<em>?</em></span></h2>
-          <p data-lang="tr">Lexi Game Translator, Windows 10 ve 11 için ücretsiz indirilebilir. Basic için hesap gerekmez.</p>
+          <p data-lang="tr">Lexi Game Translator, Windows 10 ve 11 için ücretsiz indirilebilir — 18 oyun motoru, anahtarsız ücretsiz çeviri, otomatik yedekleme; Basic için hesap gerekmez.</p>
           <div class="g-cta__actions">
             <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
               <span data-lang="tr"><span lang="en">Windows</span> için İndir</span>
@@ -589,6 +823,6 @@
     apply(current, false);
   })();
 </script>
-<script type="module">import { setupDropdowns, setupMenu } from '/dropdowns.js'; setupMenu(); setupDropdowns();</script>
+<script type="module" src="/renpy-translation-guide/page.js"></script>
 </body>
 </html>
