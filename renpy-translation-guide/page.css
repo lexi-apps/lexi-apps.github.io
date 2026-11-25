@@ -21,7 +21,8 @@
 .g-hero-fig { margin: clamp(28px, 4.5vh, 44px) 0 0; max-width: 1060px; }
 .g-fig { margin: 18px 0 4px; max-width: 920px; }
 .g-fig figcaption, .g-fig figcaption span,
-.g-hero-fig figcaption, .g-hero-fig figcaption span { white-space: normal; }
+.g-hero-fig figcaption, .g-hero-fig figcaption span,
+.frame figcaption, .frame figcaption span { white-space: normal; }
 .shot__link { display: block; cursor: zoom-in; position: relative; border: 0 !important; }
 .shot__link img { display: block; width: 100%; height: auto; transition: opacity .2s; }
 .shot__link:hover img { opacity: .94; }
