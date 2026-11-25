@@ -78,7 +78,8 @@ export function setupMenu(opts = {}) {
   if (!panel) return noop;
   const root = document.documentElement;
   const mq = window.matchMedia(MENU_MQ);
-  const lock = typeof opts.lock === 'function' ? opts.lock : () => {};
+  setupHeaderFit(top, panel, mq);
+  const lock =typeof opts.lock === 'function' ? opts.lock : () => {};
   panel.setAttribute('data-lenis-prevent', ''); // the sheet scrolls natively even while Lenis is stopped
   let inerted = [];
   const isOpen = () => top.classList.contains('is-open');
@@ -135,4 +136,50 @@ export function setupMenu(opts = {}) {
   if (mq.addEventListener) mq.addEventListener('change', onWide);
   else if (mq.addListener) mq.addListener(onWide);
   return { close: () => set(false, false) };
+}
+
+// Wide screens (above MENU_MQ): the header row must fit on one line. Long product names and the
+// longer Turkish labels can make it too wide, so it is compacted step by step, only as much as needed:
+// data-fit="1|2|3" on .top (see style.css). Level 0 = the normal header. A level is good when nothing
+// sticks out on the right and the brand name needs at most two lines (as before); if no level manages
+// that, the first level where everything fits is used.
+function setupHeaderFit(top, panel, mq) {
+  const brandText = top.querySelector('.brand > span');
+  const apply = (lv) => { if (lv) top.setAttribute('data-fit', String(lv)); else top.removeAttribute('data-fit'); };
+  const fits = () => {
+    const limit = top.getBoundingClientRect().right - parseFloat(getComputedStyle(top).paddingRight) + 0.5;
+    return [panel, ...panel.children].every((el) => el.getBoundingClientRect().right <= limit);
+  };
+  // the brand text is a flex item (a block), so count its lines by height
+  const brandOk = () => {
+    if (!brandText) return true;
+    const cs = getComputedStyle(brandText);
+    if (cs.display === 'inline') return brandText.getClientRects().length <= 2;
+    const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2;
+    return brandText.getBoundingClientRect().height < lh * 2.5;
+  };
+  const fit = () => {
+    apply(0);
+    if (mq.matches) return;
+    let firstFit = -1;
+    for (let lv = 0; lv <= 3; lv += 1) {
+      apply(lv);
+      if (!fits()) continue;
+      if (brandOk()) return;
+      if (firstFit < 0) firstFit = lv;
+    }
+    apply(firstFit < 0 ? 3 : firstFit);
+  };
+  let queued = false;
+  const later = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; fit(); });
+  };
+  fit();
+  window.addEventListener('resize', later);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(later);
+  // text changes (accent name, language) can change the width
+  new MutationObserver(later).observe(top, { subtree: true, childList: true, characterData: true });
+  new MutationObserver(later).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] });
 }

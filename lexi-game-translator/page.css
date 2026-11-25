@@ -128,6 +128,8 @@
   .compare__tabs { gap: 8px; }
   .compare__tabs button { padding: 7px 11px; font-size: 10.5px; letter-spacing: 0.08em; }
   .compare__badge { padding: 4px 7px; font-size: 8.5px; letter-spacing: 0.02em; gap: 5px; max-width: 47%; }
+  /* narrow phones: the badge text wraps onto a second line instead of being cut off with "..." */
+  .compare__badge { white-space: normal; text-wrap: balance; border-radius: 9px; }
   .compare__badge::before { width: 5px; height: 5px; }
   .compare__handle { width: 38px; height: 38px; }
   .compare__chev { font-size: 15px; }

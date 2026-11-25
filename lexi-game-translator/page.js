@@ -178,7 +178,18 @@ function setupCompare() {
       const en = el.querySelector('[data-lang="en"]');
       const tr = el.querySelector('[data-lang="tr"]');
       if (en) en.textContent = textObj.en;
-      if (tr) tr.textContent = textObj.tr;
+      if (tr) {
+        // the brand name "Lexi" gets lang="en": the badge is uppercase, and Turkish rules would print "LEXİ"
+        tr.textContent = '';
+        textObj.tr.split(/(\bLexi\b)/).forEach((part) => {
+          if (!part) return;
+          if (part !== 'Lexi') { tr.appendChild(document.createTextNode(part)); return; }
+          const s = document.createElement('span');
+          s.lang = 'en';
+          s.textContent = part;
+          tr.appendChild(s);
+        });
+      }
     };
 
     const selectScene = (key, focusTab) => {
