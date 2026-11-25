@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Bağlantı testi · Lexi Apps</title>
+<style>
+body{font-family:system-ui,Segoe UI,Arial,sans-serif;font-size:20px;line-height:1.45;margin:0;padding:16px;background:#fff;color:#111}
+h1{font-size:28px;margin:0 0 12px}
+.box{border:2px solid #888;border-radius:10px;padding:12px;margin:12px 0;word-break:break-word}
+.box b{display:block;font-size:22px;margin-bottom:4px}
+.ok{border-color:#1a7f37;background:#e9f8ee}.bad{border-color:#c62828;background:#fdecec}.wait{background:#f3f3f3}
+#verdict{font-size:26px;font-weight:bold}
+small{display:block;font-size:16px;color:#444;margin-top:8px}
+</style>
+</head>
+<body>
+<h1>Lexi Apps – Bağlantı testi</h1>
+<div class="box wait" id="verdict">Test çalışıyor…</div>
+<div class="box wait" id="a"><b>A) Yeni kontrol (CORS): pages.dev /lexi-probe.json</b><span>çalışıyor…</span></div>
+<div class="box wait" id="b"><b>B) Eski kontrol (no-cors): pages.dev /favicon.ico</b><span>çalışıyor…</span></div>
+<div class="box wait" id="c"><b>C) Kontrol: bu sitenin kendi /favicon.ico dosyası</b><span>çalışıyor…</span></div>
+<div class="box" id="d"><b>D) Cihaz ve zaman</b><span id="dtxt"></span></div>
+<small>Bu sayfa hiçbir yere yönlendirmez. Ekran görüntüsünü gönderebilirsiniz.</small>
+<script>
+(function () {
+  var MAIN = 'https://lexi-apps.pages.dev', TMO = 6000;
+  function $(id) { return document.getElementById(id); }
+  function show(id, ok, text, ms) {
+    var el = $(id), sp = el.lastChild; el.className = 'box ' + (ok ? 'ok' : 'bad');
+    sp.textContent = (ok ? 'BAŞARILI' : 'BAŞARISIZ') + ' (' + ms + ' ms)\n' + text;
+    sp.style.whiteSpace = 'pre-wrap';
+  }
+  function err(e) { return (e && e.name ? e.name : 'Error') + ': ' + (e && e.message ? e.message : String(e)); }
+  function run(id, url, mode, detail) {
+    var t0 = Date.now(), ctl = new AbortController(), tm = setTimeout(function () { ctl.abort(); }, TMO), st = '';
+    return fetch(url + '?probe=' + t0, { mode: mode, cache: 'no-store', credentials: 'omit', signal: ctl.signal })
+      .then(function (r) {
+        if (mode === 'no-cors') {
+          clearTimeout(tm); show(id, true, 'yanıt geldi (opaque; içeriği okunamaz)', Date.now() - t0); return true;
+        }
+        st = 'HTTP ' + r.status + ' | content-type: ' + (r.headers.get('content-type') || '-');
+        return r.text().then(function (t) {
+          clearTimeout(tm);
+          var ok = r.ok;
+          if (ok && detail) { try { ok = JSON.parse(t).site === 'lexi-apps'; } catch (e) { ok = false; } }
+          show(id, ok, st + (detail ? '\ngövde: ' + t.slice(0, 80) : ''), Date.now() - t0); return ok;
+        });
+      })
+      .catch(function (e) {
+        clearTimeout(tm);
+        show(id, false, (st ? st + '\n' : '') + 'hata: ' + err(e), Date.now() - t0); return false;
+      });
+  }
+  $('dtxt').textContent = '\n' + navigator.userAgent + '\n' + new Date().toString() + ' (' + new Date().toISOString() + ')';
+  $('dtxt').style.whiteSpace = 'pre-wrap';
+  var pa = run('a', MAIN + '/lexi-probe.json', 'cors', true);
+  run('b', MAIN + '/favicon.ico', 'no-cors', false);
+  run('c', location.origin + '/favicon.ico', 'cors', false);
+  pa.then(function (ok) {
+    var v = $('verdict'); v.className = 'box ' + (ok ? 'ok' : 'bad');
+    v.textContent = ok ? 'Ana siteye ulaşılabiliyor (yönlendirme yapılırdı)' : 'Ana siteye ulaşılamıyor (bu kopyada kalınır)';
+  });
+})();
+</script>
+</body>
+</html>

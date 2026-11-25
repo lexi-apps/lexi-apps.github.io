@@ -6,11 +6,12 @@
 window.lexiRedirecting = true; location.replace("/lexi-game-translator/" + location.search + location.hash);
 </script>
 <script data-lexi-probe>
-/* Mirror only: if the main site (pages.dev) is reachable, send the visitor there;
-   if it is blocked, remember that for this tab session and stay on the mirror. */
+/* Mirror only: if the main site (pages.dev) provably answers, send the visitor there;
+   otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
+   tab session and stay on the mirror. */
 (function () {
   try {
-    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site';
+    var MAIN = 'https://lexi-apps.pages.dev', KEY = 'lexi-main-site-v2';
     if (window.lexiRedirecting) return;           // a local redirect page is already moving on
     var ss = null;
     try { ss = window.sessionStorage; } catch (e) {}
@@ -23,20 +24,25 @@ window.lexiRedirecting = true; location.replace("/lexi-game-translator/" + locat
     if (!window.fetch || !window.AbortController) return;
     // Test hook, local preview only: ?probe=fail simulates the ISP block.
     var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-    var target = (local && q.get('probe') === 'fail')
-      ? 'https://lexi-probe-test.invalid/' : MAIN + '/favicon.ico';
+    var base = (local && q.get('probe') === 'fail') ? 'https://lexi-probe-test.invalid' : MAIN;
     var ctl = new AbortController();
     var timer = setTimeout(function () { ctl.abort(); }, 2500);
-    fetch(target + '?probe=' + Date.now(), { mode: 'no-cors', cache: 'no-store', signal: ctl.signal })
-      .then(function () {                         // reachable: same page on the main site
-        clearTimeout(timer);
+    var fail = function () {                      // blocked, timed out or not our site: stay here
+      clearTimeout(timer);
+      try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+    };
+    // CORS fetch: only a real answer from our own site (JSON marker) counts, not an opaque one.
+    fetch(base + '/lexi-probe.json?probe=' + Date.now(),
+          { mode: 'cors', cache: 'no-store', credentials: 'omit', signal: ctl.signal })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        if (!d || d.site !== 'lexi-apps') throw 0;
+        clearTimeout(timer);                      // proven reachable: same page on the main site
         q.delete('stay'); q.delete('probe');
         var s = q.toString();
         location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
-      }, function () {                            // blocked or timed out: stay here
-        clearTimeout(timer);
-        try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
-      });
+      })
+      .catch(fail);
   } catch (e) {}
 })();
 </script>
