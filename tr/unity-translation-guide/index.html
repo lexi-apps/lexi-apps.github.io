@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="tr" class="no-gl is-ready">
+<head>
+<meta charset="utf-8">
+<script data-lexi-probe>
+/* Mirror only: if the main site provably answers, send the visitor there;
+   otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
+   tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var base = (local && q.get('probe') === 'fail') ? 'https://lexi-probe-test.invalid' : MAIN;
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    var fail = function () {                      // blocked, timed out or not our site: stay here
+      clearTimeout(timer);
+      try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+    };
+    // CORS fetch: only a real answer from our own site (JSON marker) counts, not an opaque one.
+    fetch(base + '/lexi-probe.json?probe=' + Date.now(),
+          { mode: 'cors', cache: 'no-store', credentials: 'omit', signal: ctl.signal })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        if (!d || d.site !== 'lexi-apps') throw 0;
+        clearTimeout(timer);                      // proven reachable: same page on the main site
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      })
+      .catch(fail);
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unity Oyunu Nasıl Çevrilir? Adım Adım Türkçe Yama Rehberi (Mono ve IL2CPP)</title>
+<meta name="description" content="Unity oyunlarını ücretsiz Lexi Game Translator ile adım adım Türkçeye çevirin: Otopilot onayınızla BepInEx ve XUnity.AutoTranslator&#x27;ı kurar, paketli metinleri salt-okunur çıkarır ve oynarken yeni satırları canlı çevirir.">
+<link rel="canonical" href="https://lexiapps.dev/tr/unity-translation-guide/">
+<link rel="alternate" hreflang="en" href="https://lexiapps.dev/unity-translation-guide/">
+<link rel="alternate" hreflang="tr" href="https://lexiapps.dev/tr/unity-translation-guide/">
+<link rel="alternate" hreflang="x-default" href="https://lexiapps.dev/unity-translation-guide/">
+<meta name="theme-color" content="#05070a">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lexi Apps">
+<meta property="og:title" content="Unity Oyunu Nasıl Çevrilir? Adım Adım Türkçe Yama Rehberi">
+<meta property="og:description" content="Unity oyunlarını ücretsiz Lexi Game Translator ile Türkçeye çevirin: tek tıkla BepInEx + XUnity kurulumu, salt-okunur metin çıkarma ve yerel Canlı Köprü; oyun dosyalarına dokunulmaz.">
+<meta property="og:url" content="https://lexiapps.dev/tr/unity-translation-guide/">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://lexiapps.dev/img/translator/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lexi Game Translator uygulaması: çevrilmiş bir oyunun genel bakış ekranı">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Unity Oyunu Nasıl Çevrilir? Adım Adım Türkçe Yama Rehberi">
+<meta name="twitter:description" content="Unity oyunlarını ücretsiz Lexi Game Translator ile Türkçeye çevirin: tek tıkla BepInEx + XUnity kurulumu, salt-okunur metin çıkarma ve yerel Canlı Köprü.">
+<meta name="twitter:image" content="https://lexiapps.dev/img/translator/share.png">
+<script type="application/ld+json" data-lang="tr">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "Unity oyunu nasıl çevrilir? Adım adım Türkçe yama rehberi",
+      "description": "Unity oyunlarını ücretsiz Lexi Game Translator ile adım adım Türkçeye çevirin: Otopilot onayınızla BepInEx ve XUnity.AutoTranslator'ı kurar, paketli metinleri salt-okunur çıkarır ve oynarken yeni satırları canlı çevirir.",
+      "inLanguage": "tr",
+      "url": "https://lexiapps.dev/tr/unity-translation-guide/",
+      "mainEntityOfPage": "https://lexiapps.dev/tr/unity-translation-guide/",
+      "image": "https://lexiapps.dev/img/translator/share.png",
+      "datePublished": "2026-11-27",
+      "dateModified": "2026-11-27",
+      "author": {
+        "@type": "Organization",
+        "name": "Lexi Apps",
+        "url": "https://lexiapps.dev/tr/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Lexi Apps",
+        "url": "https://lexiapps.dev/tr/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://lexiapps.dev/logo.svg"
+        }
+      },
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "Lexi Game Translator",
+        "operatingSystem": "Windows 10, Windows 11",
+        "applicationCategory": "UtilitiesApplication",
+        "url": "https://lexiapps.dev/tr/lexi-game-translator/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Lexi Apps",
+          "item": "https://lexiapps.dev/tr/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Lexi Game Translator",
+          "item": "https://lexiapps.dev/tr/lexi-game-translator/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Unity çeviri rehberi",
+          "item": "https://lexiapps.dev/tr/unity-translation-guide/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Lexi Game Translator ücretsiz mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet. Basic katmanı ücretsizdir; hesap ya da giriş istemez ve anahtarsız yerleşik Google + Microsoft Edge zinciriyle çevirir (kendi API anahtarınızla Bing ve Yandex de açıktır). Yapay zekâ çevirisi isteğe bağlıdır ve Patreon'daki Lexi Pro ($6/ay) katmanıyla açılır; bilgisayar başına bir kez 3 günlük ücretsiz AI denemesi vardır. BepInEx ve XUnity.AutoTranslator ücretsiz, açık kaynaklı araçlardır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Mono ve IL2CPP oyunlarında çalışır mı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet. Lexi bir Unity oyununun Mono mu IL2CPP mi kullandığını ve 32 mi 64 bit mi olduğunu kendisi tanır; indirmeyi onayladığınızda uygun resmi BepInEx ve XUnity.AutoTranslator paketlerini kurar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Lexi oyunun kendi dosyalarını değiştirir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayır. .assets, paket (bundle), .dll ve global-metadata.dat dosyaları yalnızca okunur, asla yazılmaz. Lexi oyun klasörüne BepInEx ve XUnity.AutoTranslator dosyalarını ekler, kurduğu her dosyayı kaydeder, üzerine yazacağı dosyaları yedekler ve Kaldır ile hepsini siler; çevirileriniz korunur."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Çevrimiçi ya da hile korumalı oyunları çevirebilir miyim?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Hayır. Lexi oyun klasöründe EasyAntiCheat ya da BattlEye gibi bir hile koruma yazılımı bulursa otomatik eklenti kurulumu engellenir. BepInEx gibi mod yükleyiciler tek oyunculu oyunlar içindir."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Harfler kutu olarak görünüyor. Ne yapmalıyım?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Unity oyunları yalnızca geliştiricinin ihtiyaç duyduğu harfleri içerir. Lexi'nin Unity denetimi, oyunun TextMeshPro kullanıp kullanmadığını ve XUnity.AutoTranslator'da yedek yazı tipi ayarlı olup olmadığını gösterir. TextMeshPro oyunlarında harflerinizi içeren bir TextMeshPro yazı tipi paketini BepInEx'in font klasörüne koymanız gerekir; Lexi Unity oyunları için yazı tipi indirmez."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Oynarken internet gerekir mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Önceden çevrilmiş satırlar oyun klasöründeki dosyalardan yüklenir. Oynarken ekrana gelen yeni metinler, seçtiğiniz motorla Canlı Köprü üzerinden çevrilir: çevrimiçi motorlar internet ister, Lexi Pro'daki yerel yapay zekâ modeli ise çevrimdışı çalışır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Türkçe yamamı başkalarıyla paylaşabilir miyim?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Lexi çeviriyi .zip yama dosyası olarak dışa aktarabilir; ancak oyunun metinleri geliştiricisine aittir. Çeviriyi kendi kullanımınız için yapın; Türkçe yamayı herkese açık paylaşmadan önce oyunun geliştiricisinden izin alın."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/renpy-translation-guide/page.css">
+<script>
+  (function () {
+    var A = {
+      ember:  ['#ff5a36', '#0a0605'],
+      acid:   ['#c8ff2e', '#0a0d02'],
+      amber:  ['#ffb224', '#0d0902'],
+      ice:    ['#5ad8ff', '#02090d'],
+      signal: ['#ff2e4d', '#0a0204'],
+      mono:   ['#f2f5f7', '#05070a']
+    };
+    var k = 'ember';
+    try { k = localStorage.getItem('lexi-accent') || k; } catch (e) {}
+    if (!A[k]) k = 'ember';
+    var d = document.documentElement;
+    d.style.setProperty('--accent', A[k][0]);
+    d.style.setProperty('--on-accent', A[k][1]);
+    d.setAttribute('data-accent', k);
+    window.__lexiAccents = A;
+    d.classList.add('js');
+  })();
+</script>
+</head>
+<body>
+<a class="skip-link" href="#top"><span data-lang="tr">İçeriğe geç</span></a>
+
+<div class="fallback-core" aria-hidden="true"><i></i><i></i></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="/tr/" aria-label="Lexi Apps, ana sayfaya dön" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-btn__icon" aria-hidden="true"></span><span class="menu-btn__label"><span data-lang="tr">Menü</span></span></button>
+  <div class="top__panel" id="menu">
+    <nav aria-label="Ana menü">
+      <a class="nav-home" href="/tr/"><span aria-hidden="true">←</span> <span data-lang="tr">Ana Sayfa</span></a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span><span data-lang="tr">Uygulamalar</span></span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="/tr/lexi-game-translator/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI GAME TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/tr/lexi-download-manager/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/tr/lexi-dictate/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--discord" href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" title="Discord topluluğuna katıl">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span lang="en">Discord</span>
+      </a>
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Bana bir kahve ısmarla">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span lang="en">Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Patreon&#x27;da destek ol">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span lang="en">Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Dil">
+        <span id="lang-cur">TR</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item" id="lang-en" data-set-lang="en" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">EN</span><span lang="en">English</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="dd__item is-on" id="lang-tr" data-set-lang="tr" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">TR</span><span>Türkçe</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Vurgu rengi">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top" tabindex="-1" class="guide">
+  <div class="deep">
+    <article>
+    <section class="sec" aria-labelledby="g-title" style="padding-top:140px;padding-bottom:0;">
+      <div class="wrap">
+        <header class="sec__head g-head">
+          <nav aria-label="Sayfa yolu">
+            <p class="g-crumbs"><a href="/tr/" lang="en">Lexi Apps</a><span aria-hidden="true">/</span><a href="/tr/lexi-game-translator/" lang="en">Lexi Game Translator</a><span aria-hidden="true">/</span><span><span data-lang="tr"><span lang="en">Unity</span> çeviri rehberi</span></span></p>
+          </nav>
+          <p class="eyebrow"><span data-lang="tr">Rehber <span>/</span> <span lang="en">Unity</span> (Mono ve IL2CPP) <span>/</span> Adım adım</span></p>
+          <h1 id="g-title"><span data-lang="tr"><span lang="en">Unity</span> oyunu nasıl çevrilir? Adım adım Türkçe yama rehberi<em>.</em></span></h1>
+          <p class="sec__lede" data-lang="tr">Unity, bağımsız ve ticari oyunlarda en çok kullanılan motorlardan biridir — ve metinler genellikle derlenmiş dosyaların içine paketlendiği için çevirisi en zor olanlardandır. Bu rehber nedenini anlatıyor ve <strong>Lexi Game Translator</strong>'ın <strong>Otopilot</strong> özelliğinin ücretsiz, açık kaynaklı <strong>BepInEx</strong> ve <strong>XUnity.AutoTranslator</strong> araçlarını sizin yerinize nasıl kurduğunu, paketli metinleri önceden nasıl çevirdiğini ve oynarken yeni satırları oyunun kendi dosyalarını değiştirmeden nasıl canlı çevirdiğini adım adım gösteriyor.</p>
+          <nav class="g-toc" aria-label="Bu sayfada">
+            <a href="#why"><span data-lang="tr">Neden zor?</span></a>
+            <a href="#before"><span data-lang="tr">Başlamadan önce</span></a>
+            <a href="#steps"><span data-lang="tr">Adım adım</span></a>
+            <a href="#fonts"><span data-lang="tr">Yazı tipleri</span></a>
+            <a href="#tips"><span data-lang="tr">İpuçları</span></a>
+            <a href="#faq"><span data-lang="tr">SSS</span></a>
+          </nav>
+        </header>
+
+        <figure class="frame g-hero-fig">
+          <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+          <a class="shot__link" href="/img/translator/10-unity-autopilot.webp" data-lightbox>
+            <img src="/img/translator/10-unity-autopilot.webp" width="2160" height="1350" decoding="async" alt="Lexi Game Translator&#x27;da Unity Mono Otopilot kartı: hazır BepInEx ve XUnity eklentisi, çıkarılmış paketli metinler, Şimdi Çevir ve Oyunu Canlı Köprüyle Aç düğmeleri">
+          </a>
+          <figcaption>
+            <span data-lang="tr"><span lang="en">Unity</span> Otopilot — eklenti hazır, paketli metinler çıkarıldı, Canlı Köprü bir tık uzakta</span>
+            <span class="g-zoom-hint"><span data-lang="tr">Büyütmek için tıklayın</span></span>
+          </figcaption>
+        </figure>
+
+        <!-- 1. Why Unity is tricky -->
+        <section class="g-block g-prose" aria-labelledby="why">
+          <h2 id="why"><span data-lang="tr"><span lang="en">Unity</span> çevirisi neden zordur?</span></h2>
+          <p data-lang="tr">Bir Unity oyununda açıp düzenleyebileceğiniz tek bir betik dosyası yoktur. Metinler birbirinden çok farklı üç yerde durabilir:</p>
+          <div class="g-engine-grid">
+            <div class="g-mini-engine">
+              <h4><span data-lang="tr">Yerelleştirme dosyaları</span></h4>
+              <p data-lang="tr">Bazı oyunlar okunabilir <code>.po</code>, <code>.csv</code> ya da <code>.json</code> dil dosyalarıyla gelir; genellikle <code>&lt;Oyun&gt;_Data/StreamingAssets</code> altında. Bu, işin kolay olduğu durumdur.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4><span data-lang="tr">Paketli varlıklar</span></h4>
+              <p data-lang="tr">Diyalogların ve arayüz yazılarının çoğu ikili <code>.assets</code> dosyalarına ya da <code>data.unity3d</code> gibi, çoğu zaman sıkıştırılmış varlık paketlerine gömülüdür.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4><span data-lang="tr">Derlenmiş kod</span></h4>
+              <p data-lang="tr">Doğrudan oyunun koduna yazılmış metinler <code>Assembly-CSharp.dll</code> (Mono derlemeleri) ya da <code>GameAssembly.dll</code> yanındaki <code>global-metadata.dat</code> (IL2CPP derlemeleri) içinde kalır.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4><span data-lang="tr">Yazı tipleri</span></h4>
+              <p data-lang="tr">Unity oyunları — özellikle TextMeshPro kullananlar — çoğu zaman yalnızca geliştiricinin ihtiyaç duyduğu harfleri içerir; yeni harfler boş kutu olarak görünür.</p>
+            </div>
+          </div>
+          <p style="margin-top:18px;" data-lang="tr">Bu dosyaları doğrudan düzenlemek risklidir ve her oyun güncellemesinde bozulur. Kendini kanıtlamış yol, çalışma anında çeviridir: <strong>BepInEx</strong>, oyuna <strong>XUnity.AutoTranslator</strong>'ı yükler; o da ekrandaki yazıları düz metin dosyalarındaki çevirilerle değiştirir. Bunu elle kurmak; Mono ya da IL2CPP ve 32 ya da 64 bit için doğru BepInEx paketini seçmeyi, bir INI dosyasını düzenlemeyi ve metinleri toplamayı gerektirir — Lexi'nin <strong>Otopilot</strong> özelliği tam olarak bunu otomatikleştirir.</p>
+        </section>
+
+        <!-- 2. Before you start -->
+        <section class="g-block g-prose" aria-labelledby="before">
+          <h2 id="before"><span data-lang="tr">Başlamadan önce</span></h2>
+          <ul class="notes">
+            <li><span data-lang="tr"><strong><span lang="en">Windows</span> 10 ya da 11 (64 bit)</strong> yüklü bir bilgisayar. Kurulum için yönetici yetkisi gerekmez.</span></li>
+            <li><span data-lang="tr">Bilgisayarınızda kurulu oyun — oyunun <code>.exe</code> dosyasını ve <code>&lt;Oyun&gt;_Data</code> klasörünü içeren klasör. Klasörü ya da <code>.exe</code>'yi Lexi penceresine bırakabilirsiniz.</span></li>
+            <li><span data-lang="tr"><strong>Tek oyunculu</strong> bir oyun. Hile koruması olan oyunlar (örneğin EasyAntiCheat ya da BattlEye) tanınır ve otomatik kurulum engellenir — mod yükleyicilerin çevrimiçi oyunlarda yeri yoktur.</span></li>
+            <li><span data-lang="tr">İnternet bağlantısı: bir kez, onayınızdan sonra BepInEx ve XUnity.AutoTranslator'ı resmi kaynaklarından indirmek için; bir de çevrimiçi çeviri motorları için.</span></li>
+          </ul>
+        </section>
+
+        <!-- 3. Step by step -->
+        <section class="g-block" aria-labelledby="steps">
+          <h2 id="steps"><span data-lang="tr"><span lang="en">Lexi Game Translator</span> ile adım adım <span lang="en">Unity</span> çevirisi</span></h2>
+          <ol class="g-steps">
+            <li class="g-step">
+              <h3><span data-lang="tr">Programı indirip kurun</span></h3>
+              <p data-lang="tr">Lexi Game Translator, <strong><span lang="en">Windows</span> 10 ve 11 (64 bit)</strong> için ücretsiz bir programdır. Kurulum dosyasını resmi <a href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener"><span lang="en">GitHub Releases</span> sayfasından</a> indirip çalıştırın. Windows SmartScreen ilk çalıştırmada mavi bir uyarı gösterirse neye tıklayacağınızı <a href="/tr/install-help/">kurulum yardımı sayfası</a> anlatır.</p>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="tr">Oyun klasörünü seçin ya da bırakın</span></h3>
+              <p data-lang="tr">Lexi oyunun Unity olduğunu ve <strong>Mono</strong> mu yoksa <strong>IL2CPP</strong> derlemesi mi olduğunu tanır, hile korumasını denetler ve oyunun neye ihtiyacı olduğunu söyleyen bir <strong>Otopilot</strong> kartı gösterir. Oyun okunabilir yerelleştirme dosyalarıyla geliyorsa hiçbir eklenti gerekmez: Lexi bu dosyaları doğrudan çevirir — 3. adıma geçip <strong>Çevir</strong>'e basın.</p>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="tr">Hedef dili ve çeviri motorunu seçin</span></h3>
+              <p data-lang="tr"><strong>30'dan fazla desteklenen dil</strong> arasından hedef dilinizi seçin. Anahtarsız <strong>Google + Microsoft Edge</strong> zinciri Basic'te ücretsizdir; Bing ve Yandex kendi API anahtarınızla çalışır, Lexi Pro ise kendi anahtarınızla bulut yapay zekâ ya da çevrimdışı yerel modeller (Ollama, LM Studio, llama.cpp) ekler. Ücretli bulut yapay zekâ her zaman önce tahmini tutarı gösterir ve onayınızı bekler.</p>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="tr">Hazırla ve Çevir'e basın</span></h3>
+              <p data-lang="tr">Paketli bir oyunda Otopilot'un <strong>Hazırla ve Çevir</strong> düğmesi üç adım çalıştırır:</p>
+              <div class="g-tier-strip">
+                <div class="g-tier-box">
+                  <span class="g-tier-box__k"><span data-lang="tr">1. Eklenti</span></span>
+                  <p data-lang="tr">İndirmeyi onayladığınızda uygun resmi <strong>BepInEx</strong> ve <strong>XUnity.AutoTranslator</strong> paketleri indirilir, bilinen SHA-256 parmak izleriyle doğrulanır ve oyun klasörüne kurulur.</p>
+                </div>
+                <div class="g-tier-box">
+                  <span class="g-tier-box__k"><span data-lang="tr">2. Paketli metinleri çıkar</span></span>
+                  <p data-lang="tr">Lexi metinleri <code>.assets</code> dosyalarından ve paketlerden, <code>Assembly-CSharp.dll</code> ya da <code>global-metadata.dat</code> dosyasından salt-okunur biçimde okur ve teknik gürültüyü ayıklar.</p>
+                </div>
+                <div class="g-tier-box">
+                  <span class="g-tier-box__k"><span data-lang="tr">3. Çevir</span></span>
+                  <p data-lang="tr">Satırlar seçtiğiniz motorla çevrilir ve <code>BepInEx/Translation/&lt;dil&gt;/Text/</code> altına XUnity çeviri dosyaları olarak yazılır.</p>
+                </div>
+              </div>
+              <p data-lang="tr">Oyunun kendi <code>.assets</code>, paket, <code>.dll</code> ve <code>.dat</code> dosyalarına asla yazılmaz. Eklenti kurulumunun eklediği her dosya kayda geçer; üzerine yazılacak mevcut bir dosya varsa önce yedeklenir.</p>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="tr">Oyunu Canlı Köprüyle açın</span></h3>
+              <p data-lang="tr">Her satır önceden bulunamaz — sizin yazdığınız adlar, oyunun ürettiği mesajlar, sonradan yüklenen metinler. <strong>Oyunu Canlı Köprüyle Aç</strong> düğmesine basın: Lexi <code>127.0.0.1</code> üzerinde küçük bir yerel sunucu başlatır (dışarıdan bağlantı kabul etmez); XUnity.AutoTranslator'ın oynarken karşılaştığı her yeni metin seçtiğiniz motor ve sözlükle çevrilir ve bir dahaki sefer için saklanır. Oyun kapanınca köprü kendiliğinden durur.</p>
+            </li>
+          </ol>
+        </section>
+
+        <!-- 4. Fonts -->
+        <section class="g-block g-prose" aria-labelledby="fonts">
+          <h2 id="fonts"><span data-lang="tr">Yazı tipleri ve boş kutular</span></h2>
+          <p data-lang="tr">Çevrilmiş metinde boş kutular görünüyorsa oyunun yazı tipinde harfleriniz yoktur. XUnity.AutoTranslator yazı tiplerini çalışma anında değiştirebilir: klasik Unity arayüz yazılarında bir geçersiz kılma yazı tipi kullanır; <strong>TextMeshPro</strong> yazılarında ise harflerinizi içeren, BepInEx'in font klasörüne konmuş ve yedek yazı tipi olarak ayarlanmış bir TextMeshPro yazı tipi paketine ihtiyaç duyar. <strong>Canlı Çeviri Köprüsü</strong> panelindeki <strong>Denetle</strong>; oyunun TextMeshPro kullanıp kullanmadığını, hangi TextMeshPro yazı tiplerinin bulunduğunu, yedek yazı tipinin ayarlı olup olmadığını ve bir çeviri dosyasının kodlamasının yanlış olup olmadığını gösterir; <strong>INI uygula</strong> ayarları yazar. Lexi Unity oyunları için yazı tipi indirmez; harflerinizi içeren bir TextMeshPro yazı tipini sizin eklemeniz gerekir.</p>
+        </section>
+
+        <!-- 5. Tips -->
+        <section class="g-block" aria-labelledby="tips">
+          <h2 id="tips"><span data-lang="tr">Pratik ipuçları</span></h2>
+          <dl class="index g-tips">
+            <div>
+              <dt><span data-lang="tr">Önce biraz oynayın</span></dt>
+              <dd><span data-lang="tr">Çıkarma işlemi metinlerin çoğunu bulur ama bazıları yalnızca oynarken ortaya çıkar. Canlı Köprüyle yapılan ilk oturum menüleri, adları ve mesajları tamamlar; Lexi bu çevirileri saklar; motora yeniden gönderilmezler.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="tr">Kalite ve <span lang="en">CSV</span></span></dt>
+              <dd><span data-lang="tr"><strong>Kalite ve düzenleme</strong> sayfası boş, çevrilmemiş ya da bozuk satırları bulur; dilediğiniz satırı yerleşik editörde düzeltebilir ya da <strong>CSV</strong> olarak dışa/içe aktarabilirsiniz. <code>&lt;color=…&gt;</code> gibi zengin metin etiketleri ve <code>{0}</code> gibi yer tutucular olduğu gibi korunur.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="tr">Eklentiyi kaldırma</span></dt>
+              <dd><span data-lang="tr"><strong>Kaldır</strong>, Lexi'nin kurduğu tüm BepInEx ve XUnity dosyalarını siler ve üzerine yazdığı dosyaları geri koyar. <code>BepInEx/Translation</code> altındaki çevirileriniz korunur.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="tr">Oyun güncellemeleri</span></dt>
+              <dd><span data-lang="tr">Bir güncellemeden sonra oyunu Lexi'de yeniden açıp Otopilot'u çalıştırın. Biten satırlar çeviri hafızasından gelir; motora yalnızca yeni metinler gider.</span></dd>
+            </div>
+          </dl>
+
+          <aside class="g-note" aria-labelledby="g-note-title">
+            <h2 id="g-note-title"><span data-lang="tr">Kişisel kullanım ve paylaşım</span></h2>
+            <p data-lang="tr">Bu şekilde yapılan çeviri kişisel kullanımınız içindir. Oyunun hikâyesi, metinleri ve görselleri geliştiricisine aittir; Türkçe yamayı herkese açık paylaşmadan önce (örneğin Lexi'nin <code>.zip</code> yama dışa aktarımıyla) oyunun geliştiricisinden izin alın. Mod yükleyicileri yalnızca tek oyunculu oyunlarda kullanın.</p>
+          </aside>
+        </section>
+      </div>
+    </section>
+
+    <!-- 6. FAQ (same text as the FAQPage JSON-LD above) -->
+    <section class="sec faq" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq__grid">
+        <header class="sec__head">
+          <p class="eyebrow"><span data-lang="tr">SSS <span>/</span> <span lang="en">Unity</span> çeviri</span></p>
+          <h2 id="faq-title"><span data-lang="tr">Kısa yanıtlar<em>.</em></span></h2>
+        </header>
+        <div class="faq__list">
+          <details>
+            <summary><span data-lang="tr">Lexi Game Translator ücretsiz mi?</span></summary>
+            <p data-lang="tr">Evet. Basic katmanı ücretsizdir; hesap ya da giriş istemez ve anahtarsız yerleşik Google + Microsoft Edge zinciriyle çevirir (kendi API anahtarınızla Bing ve Yandex de açıktır). Yapay zekâ çevirisi isteğe bağlıdır ve Patreon'daki Lexi Pro ($6/ay) katmanıyla açılır; bilgisayar başına bir kez 3 günlük ücretsiz AI denemesi vardır. BepInEx ve XUnity.AutoTranslator ücretsiz, açık kaynaklı araçlardır.</p>
+          </details>
+          <details>
+            <summary><span data-lang="tr">Mono ve IL2CPP oyunlarında çalışır mı?</span></summary>
+            <p data-lang="tr">Evet. Lexi bir Unity oyununun Mono mu IL2CPP mi kullandığını ve 32 mi 64 bit mi olduğunu kendisi tanır; indirmeyi onayladığınızda uygun resmi BepInEx ve XUnity.AutoTranslator paketlerini kurar.</p>
+          </details>
+          <details>
+            <summary><span data-lang="tr">Lexi oyunun kendi dosyalarını değiştirir mi?</span></summary>
+            <p data-lang="tr">Hayır. .assets, paket (bundle), .dll ve global-metadata.dat dosyaları yalnızca okunur, asla yazılmaz. Lexi oyun klasörüne BepInEx ve XUnity.AutoTranslator dosyalarını ekler, kurduğu her dosyayı kaydeder, üzerine yazacağı dosyaları yedekler ve Kaldır ile hepsini siler; çevirileriniz korunur.</p>
+          </details>
+          <details>
+            <summary><span data-lang="tr">Çevrimiçi ya da hile korumalı oyunları çevirebilir miyim?</span></summary>
+            <p data-lang="tr">Hayır. Lexi oyun klasöründe EasyAntiCheat ya da BattlEye gibi bir hile koruma yazılımı bulursa otomatik eklenti kurulumu engellenir. BepInEx gibi mod yükleyiciler tek oyunculu oyunlar içindir.</p>
+          </details>
+          <details>
+            <summary><span data-lang="tr">Harfler kutu olarak görünüyor. Ne yapmalıyım?</span></summary>
+            <p data-lang="tr">Unity oyunları yalnızca geliştiricinin ihtiyaç duyduğu harfleri içerir. Lexi'nin Unity denetimi, oyunun TextMeshPro kullanıp kullanmadığını ve XUnity.AutoTranslator'da yedek yazı tipi ayarlı olup olmadığını gösterir. TextMeshPro oyunlarında harflerinizi içeren bir TextMeshPro yazı tipi paketini BepInEx'in font klasörüne koymanız gerekir; Lexi Unity oyunları için yazı tipi indirmez.</p>
+          </details>
+          <details>
+            <summary><span data-lang="tr">Oynarken internet gerekir mi?</span></summary>
+            <p data-lang="tr">Önceden çevrilmiş satırlar oyun klasöründeki dosyalardan yüklenir. Oynarken ekrana gelen yeni metinler, seçtiğiniz motorla Canlı Köprü üzerinden çevrilir: çevrimiçi motorlar internet ister, Lexi Pro'daki yerel yapay zekâ modeli ise çevrimdışı çalışır.</p>
+          </details>
+          <details>
+            <summary><span data-lang="tr">Türkçe yamamı başkalarıyla paylaşabilir miyim?</span></summary>
+            <p data-lang="tr">Lexi çeviriyi .zip yama dosyası olarak dışa aktarabilir; ancak oyunun metinleri geliştiricisine aittir. Çeviriyi kendi kullanımınız için yapın; Türkçe yamayı herkese açık paylaşmadan önce oyunun geliştiricisinden izin alın.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CTA -->
+    <section class="sec g-cta" aria-labelledby="cta-title">
+      <div class="wrap">
+        <div class="g-cta__box">
+          <h2 id="cta-title"><span data-lang="tr">Kendi dilinizde oynamaya hazır mısınız<em>?</em></span></h2>
+          <p data-lang="tr">Lexi Game Translator, Windows 10 ve 11 için ücretsiz indirilebilir — 18 oyun motoru, anahtarsız ücretsiz çeviri, otomatik yedekleme; Basic için hesap gerekmez.</p>
+          <div class="g-cta__actions">
+            <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
+              <span data-lang="tr"><span lang="en">Windows</span> için İndir</span>
+              <span aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="btn" href="/tr/lexi-game-translator/">
+              <span data-lang="tr"><span lang="en">Lexi Game Translator</span> sayfası</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="more" href="/tr/install-help/">
+              <span data-lang="tr">Kurulum yardımı</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+          <p class="g-subhead"><span data-lang="tr">Diğer çeviri rehberleri</span></p>
+          <div class="g-engine-grid">
+            <div class="g-mini-engine">
+              <h4><a href="/tr/renpy-translation-guide/"><span data-lang="tr">Ren'Py oyunu nasıl çevrilir?</span></a></h4>
+              <p data-lang="tr">Görsel romanlar: etiketler, değişkenler ve yazı tipleri; oyun içi dil düğmesiyle.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4><a href="/tr/rpg-maker-translation-guide/"><span data-lang="tr">RPG Maker oyunu nasıl çevrilir?</span></a></h4>
+              <p data-lang="tr">MV, MZ, VX Ace, VX, XP ve 2000/2003: kontrol kodları, eklentiler ve kodlamalar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </article>
+  </div>
+</main>
+
+<footer class="foot">
+  <a class="brand" href="/tr/" aria-label="Lexi Apps" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <ul>
+    <li><a href="/tr/"><span data-lang="tr">Ana Site</span></a></li>
+    <li><a href="/tr/lexi-game-translator/" lang="en">Lexi Game Translator</a></li>
+    <li><a href="/tr/install-help/"><span data-lang="tr">Kurulum yardımı</span></a></li>
+    <li><a href="/tr/renpy-translation-guide/"><span data-lang="tr">Ren'Py rehberi</span></a></li>
+    <li><a href="/tr/rpg-maker-translation-guide/"><span data-lang="tr">RPG Maker rehberi</span></a></li>
+    <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" lang="en">Discord</a></li>
+    <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener" lang="en">Patreon</a></li>
+    <li><a href="mailto:lexiapps@protonmail.com" lang="en">lexiapps@protonmail.com</a></li>
+  </ul>
+  <p lang="en">&copy; 2026 Lexi Apps</p>
+</footer>
+
+<script>
+  /* Generated by build_site.py: this is the TR version of the page.
+     The EN/TR menu saves the choice and opens the other language's URL (same #hash).
+     A stored preference is NOT applied on load: each URL always shows its own language. */
+  function setLang(lang, save) {
+    var page = 'tr';
+    var urls = { en: '/unity-translation-guide/', tr: '/tr/unity-translation-guide/' };
+    if (!urls[lang]) lang = page;
+    if (save) {
+      try { localStorage.setItem('lexi-user-lang', lang); } catch (e) {}
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    }
+    if (lang !== page) {
+      window.location.href = urls[lang] + window.location.search + window.location.hash;
+      return;
+    }
+    document.documentElement.setAttribute('lang', page);
+    var enBtn = document.getElementById('lang-en');
+    var trBtn = document.getElementById('lang-tr');
+    var cur = document.getElementById('lang-cur');
+    if (enBtn) enBtn.classList.toggle('is-on', page === 'en');
+    if (trBtn) trBtn.classList.toggle('is-on', page === 'tr');
+    if (cur) cur.textContent = page.toUpperCase();
+  }
+  setLang('tr', false);
+  /* EN/TR buttons: listeners, not onclick="" attributes (the CSP blocks inline handlers). */
+  Array.from(document.querySelectorAll('[data-set-lang]')).forEach(function (btn) {
+    btn.addEventListener('click', function () { setLang(btn.getAttribute('data-set-lang'), true); });
+  });
+</script>
+<script>
+  (function () {
+    var A = window.__lexiAccents;
+    var root = document.documentElement;
+    var current = root.getAttribute('data-accent') || 'ember';
+    var out = document.getElementById('accent-name');
+    function apply(key, save) {
+      var a = A[key] || A.ember;
+      root.style.setProperty('--accent', a[0]);
+      root.style.setProperty('--on-accent', a[1]);
+      root.setAttribute('data-accent', key);
+      if (out) out.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+      Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+        btn.classList.toggle('is-on', btn.getAttribute('data-accent-choice') === key);
+      });
+      if (save) { try { localStorage.setItem('lexi-accent', key); } catch (e) {} }
+    }
+    Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        apply(btn.getAttribute('data-accent-choice'), true);
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      });
+    });
+    apply(current, false);
+  })();
+</script>
+<script type="module" src="/renpy-translation-guide/page.js"></script>
+</body>
+</html>

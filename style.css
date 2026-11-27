@@ -293,6 +293,34 @@ h1 .line > span { display: inline-block; }
 .lede { max-width: 46ch; font-size: clamp(1rem, 1.25vw, 1.2rem); color: #c3d0d9; }
 .lede em { color: #fff; border-bottom: 1px solid var(--accent); }
 .cta { margin-top: 38px; }
+/* home hero: the three apps as direct links (each opens its page in a new tab); the main app is filled */
+.pick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 36px; max-width: 780px; }
+.pick li { display: flex; }
+.pick__item {
+  position: relative; flex: 1; display: flex; flex-direction: column; gap: 7px;
+  padding: 15px 38px 15px 16px; border: 1px solid rgba(223, 234, 241, 0.32);
+  background: rgba(5, 7, 10, 0.6);
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+}
+.pick__name { font: 600 12.5px/1.3 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: #fff; }
+.pick__what { font-size: 14px; line-height: 1.35; color: #a9b7c1; word-spacing: 0.08em; }
+.pick__go { position: absolute; top: 14px; right: 14px; font: 500 14px/1 var(--mono); color: var(--accent); transition: transform 0.25s; }
+.pick__item:hover { border-color: var(--ice); background: rgba(223, 234, 241, 0.1); }
+.pick__item:hover .pick__go { transform: translate(2px, -2px); }
+.pick__item--main { background: var(--accent); border-color: var(--accent); }
+.pick__item--main .pick__name, .pick__item--main .pick__go { color: var(--on-accent); }
+.pick__item--main .pick__what { color: var(--on-accent); opacity: 0.8; }
+.pick__item--main:hover { background: #fff; border-color: #fff; }
+.pick__item--main:hover .pick__name, .pick__item--main:hover .pick__what, .pick__item--main:hover .pick__go { color: var(--bg); }
+[data-accent="mono"] .pick__item--main:hover { background: rgba(5, 7, 10, 0.6); border-color: var(--ice); }
+[data-accent="mono"] .pick__item--main:hover .pick__name, [data-accent="mono"] .pick__item--main:hover .pick__go { color: var(--ice); }
+[data-accent="mono"] .pick__item--main:hover .pick__what { color: #a9b7c1; }
+.hero__all { margin-top: 18px; }
+@media (max-width: 700px) {
+  .pick { grid-template-columns: 1fr; gap: 8px; margin-top: 28px; }
+  .pick__item { gap: 4px; padding: 12px 38px 12px 14px; }
+  .pick__go { top: 12px; }
+}
 .hero__scroll {
   position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%);
   font: 400 11px/1 var(--mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); white-space: nowrap;
@@ -308,7 +336,7 @@ h1 .line > span { display: inline-block; }
 @media (max-height: 720px) { .hero { padding-top: 96px; padding-bottom: 72px; } }
 /* stacked hero: same condition as freeBox() in main.js */
 @media (max-width: 700px), (max-aspect-ratio: 1/1) {
-  .hero { align-items: flex-end; padding-bottom: 110px; }
+  .hero { align-items: flex-end; padding-bottom: 72px; } /* the three app links sit low; no scroll hint here */
   .hero::before { background: linear-gradient(0deg, rgba(5, 7, 10, 0.9) 35%, rgba(5, 7, 10, 0) 78%); }
   .hero__inner { max-width: 100%; }
   .hero__scroll { display: none; }
@@ -351,6 +379,9 @@ h3 { font-size: clamp(1.7rem, 2.6vw, 2.5rem); line-height: 1.04; font-stretch: 1
 .app__lede { color: #c9d5dd; max-width: 44ch; margin-bottom: 24px; }
 .app__lede code { font: 500 0.92em var(--mono); color: #fff; border-bottom: 1px solid var(--accent); }
 .app__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+/* home app cards: the page and download buttons side by side */
+.apps__grid--three .app__actions { gap: 12px 10px; }
+.apps__grid--three .app__actions .btn { padding: 16px 18px; gap: 12px; }
 .more { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; font: 500 12px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; border-bottom: 1px solid var(--line); transition: border-color 0.25s, color 0.25s; }
 .more:hover { border-color: var(--accent); color: #fff; }
 .spec { margin: auto 0 34px; border-top: 1px solid var(--line); }

@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en" class="no-gl is-ready">
+<head>
+<meta charset="utf-8">
+<script data-lexi-probe>
+/* Mirror only: if the main site provably answers, send the visitor there;
+   otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
+   tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var base = (local && q.get('probe') === 'fail') ? 'https://lexi-probe-test.invalid' : MAIN;
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    var fail = function () {                      // blocked, timed out or not our site: stay here
+      clearTimeout(timer);
+      try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+    };
+    // CORS fetch: only a real answer from our own site (JSON marker) counts, not an opaque one.
+    fetch(base + '/lexi-probe.json?probe=' + Date.now(),
+          { mode: 'cors', cache: 'no-store', credentials: 'omit', signal: ctl.signal })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        if (!d || d.site !== 'lexi-apps') throw 0;
+        clearTimeout(timer);                      // proven reachable: same page on the main site
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      })
+      .catch(fail);
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to Translate an RPG Maker Game (MV, MZ, VX Ace, XP, 2000/2003) — Lexi Game Translator</title>
+<meta name="description" content="A free, step-by-step guide to translating RPG Maker MV, MZ, VX Ace, VX, XP and 2000/2003 games with Lexi Game Translator: control codes stay intact, plugin code is left alone and every changed file is backed up first.">
+<link rel="canonical" href="https://lexiapps.dev/rpg-maker-translation-guide/">
+<link rel="alternate" hreflang="en" href="https://lexiapps.dev/rpg-maker-translation-guide/">
+<link rel="alternate" hreflang="tr" href="https://lexiapps.dev/tr/rpg-maker-translation-guide/">
+<link rel="alternate" hreflang="x-default" href="https://lexiapps.dev/rpg-maker-translation-guide/">
+<meta name="theme-color" content="#05070a">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lexi Apps">
+<meta property="og:title" content="How to Translate an RPG Maker Game (MV, MZ, VX Ace, XP, 2000/2003)">
+<meta property="og:description" content="Translate an RPG Maker game into your language for free with Lexi Game Translator, without breaking control codes like \C[1] or \N[2], plugin commands or the game's data files.">
+<meta property="og:url" content="https://lexiapps.dev/rpg-maker-translation-guide/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:image" content="https://lexiapps.dev/img/translator/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lexi Game Translator app: overview of a translated game">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Translate an RPG Maker Game (MV, MZ, VX Ace, XP, 2000/2003)">
+<meta name="twitter:description" content="Translate an RPG Maker game into your language for free with Lexi Game Translator, without breaking control codes, plugin commands or data files.">
+<meta name="twitter:image" content="https://lexiapps.dev/img/translator/share.png">
+<script type="application/ld+json" data-lang="en">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      "headline": "How to translate an RPG Maker game (MV, MZ, VX Ace, XP, 2000/2003)",
+      "description": "A free, step-by-step guide to translating RPG Maker MV, MZ, VX Ace, VX, XP and 2000/2003 games with Lexi Game Translator: control codes stay intact, plugin code is left alone and every changed file is backed up first.",
+      "inLanguage": "en",
+      "url": "https://lexiapps.dev/rpg-maker-translation-guide/",
+      "mainEntityOfPage": "https://lexiapps.dev/rpg-maker-translation-guide/",
+      "image": "https://lexiapps.dev/img/translator/share.png",
+      "datePublished": "2026-11-27",
+      "dateModified": "2026-11-27",
+      "author": { "@type": "Organization", "name": "Lexi Apps", "url": "https://lexiapps.dev/" },
+      "publisher": { "@type": "Organization", "name": "Lexi Apps", "url": "https://lexiapps.dev/", "logo": { "@type": "ImageObject", "url": "https://lexiapps.dev/logo.svg" } },
+      "about": { "@type": "SoftwareApplication", "name": "Lexi Game Translator", "operatingSystem": "Windows 10, Windows 11", "applicationCategory": "UtilitiesApplication", "url": "https://lexiapps.dev/lexi-game-translator/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Lexi Apps", "item": "https://lexiapps.dev/" },
+        { "@type": "ListItem", "position": 2, "name": "Lexi Game Translator", "item": "https://lexiapps.dev/lexi-game-translator/" },
+        { "@type": "ListItem", "position": 3, "name": "RPG Maker translation guide", "item": "https://lexiapps.dev/rpg-maker-translation-guide/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is Lexi Game Translator free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The Basic tier is free, needs no account or sign-in, and translates with the keyless built-in Google and Microsoft Edge chain (plus Bing and Yandex if you provide your own API key). AI translation is optional and unlocked with Lexi Pro ($6/month on Patreon), with a one-time 3-day free AI trial per computer." } },
+        { "@type": "Question", "name": "Which RPG Maker versions work?", "acceptedAnswer": { "@type": "Answer", "text": "RPG Maker MV, MZ, VX Ace, VX, XP and 2000/2003. Lexi detects the version from the game folder. It reads MV/MZ data files and js/plugins.js, games packed with NW.js (package.nw or a ZIP attached to the .exe), and the .rgssad, .rgss2a and .rgss3a archives of XP, VX and VX Ace directly." } },
+        { "@type": "Question", "name": "Does Lexi change my game files?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. RPG Maker has no separate translation folder, so the translation is written into the game's own data files (or into its archive). Before writing, Lexi copies every file it changes into a backup folder inside the game folder and locks the first backup automatically. Restore in Backups and memory brings the original back." } },
+        { "@type": "Question", "name": "Can I switch back to the original language?", "acceptedAnswer": { "@type": "Answer", "text": "RPG Maker translations have no in-game language switch. To go back, restore the original backup in Backups and memory. Finished lines stay in Lexi's translation memory, so you do not have to translate them again later." } },
+        { "@type": "Question", "name": "Letters show as boxes or are missing. What can I do?", "acceptedAnswer": { "@type": "Answer", "text": "Lexi checks the fonts in the game's fonts folder and, for 2000/2003 games, the text encoding. If letters of your language are missing and it uses accented Latin letters, Autopilot suggests Smart Deaccent. It keeps ç, ö and ü and writes only the Turkish letters ğ, ş, ı and İ as g, s, i and I. Lexi does not swap RPG Maker fonts automatically." } },
+        { "@type": "Question", "name": "Why are some texts still in the original language?", "acceptedAnswer": { "@type": "Answer", "text": "Text drawn into pictures, text written inside plugin or script code, plugin commands and script calls are not translated. Lexi skips code on purpose so the game keeps working." } },
+        { "@type": "Question", "name": "Can I share my translation with others?", "acceptedAnswer": { "@type": "Answer", "text": "Lexi can export a translation patch as a .zip file, but the game's text belongs to its developer. Translate for your own use, and ask the developer for permission before you share a translated patch publicly." } }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/renpy-translation-guide/page.css">
+<script>
+  (function () {
+    var A = {
+      ember:  ['#ff5a36', '#0a0605'],
+      acid:   ['#c8ff2e', '#0a0d02'],
+      amber:  ['#ffb224', '#0d0902'],
+      ice:    ['#5ad8ff', '#02090d'],
+      signal: ['#ff2e4d', '#0a0204'],
+      mono:   ['#f2f5f7', '#05070a']
+    };
+    var k = 'ember';
+    try { k = localStorage.getItem('lexi-accent') || k; } catch (e) {}
+    if (!A[k]) k = 'ember';
+    var d = document.documentElement;
+    d.style.setProperty('--accent', A[k][0]);
+    d.style.setProperty('--on-accent', A[k][1]);
+    d.setAttribute('data-accent', k);
+    window.__lexiAccents = A;
+    d.classList.add('js');
+  })();
+</script>
+</head>
+<body>
+<a class="skip-link" href="#top"><span data-lang="en">Skip to content</span></a>
+
+<div class="fallback-core" aria-hidden="true"><i></i><i></i></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="/" aria-label="Lexi Apps, back to home" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-btn__icon" aria-hidden="true"></span><span class="menu-btn__label"><span data-lang="en">Menu</span></span></button>
+  <div class="top__panel" id="menu">
+    <nav aria-label="Primary">
+      <a class="nav-home" href="/"><span aria-hidden="true">←</span> <span data-lang="en">Home</span></a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span><span data-lang="en">Apps</span></span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="/lexi-game-translator/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI GAME TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-download-manager/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-dictate/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--discord" href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" title="Join Discord Community">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span lang="en">Discord</span>
+      </a>
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Buy Me a Coffee">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span lang="en">Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Support on Patreon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span lang="en">Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Language">
+        <span id="lang-cur">EN</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" id="lang-en" data-set-lang="en" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">EN</span><span lang="en">English</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="dd__item" id="lang-tr" data-set-lang="tr" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">TR</span><span>Türkçe</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Accent color">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top" tabindex="-1" class="guide">
+  <div class="deep">
+    <article>
+    <section class="sec" aria-labelledby="g-title" style="padding-top:140px;padding-bottom:0;">
+      <div class="wrap">
+        <header class="sec__head g-head">
+          <nav aria-label="Breadcrumb">
+            <p class="g-crumbs"><a href="/" lang="en">Lexi Apps</a><span aria-hidden="true">/</span><a href="/lexi-game-translator/" lang="en">Lexi Game Translator</a><span aria-hidden="true">/</span><span><span data-lang="en">RPG Maker translation guide</span></span></p>
+          </nav>
+          <p class="eyebrow"><span data-lang="en">Guide <span>/</span> RPG Maker <span>/</span> Step by step</span></p>
+          <h1 id="g-title"><span data-lang="en">How to translate an RPG Maker game, step by step<em>.</em></span></h1>
+          <p class="sec__lede" data-lang="en">RPG Maker powers thousands of indie RPGs and story games. This guide explains where an RPG Maker game keeps its text, what can go wrong when you translate it, and how to translate <strong>MV, MZ, VX Ace, VX, XP and 2000/2003</strong> games into your language for free with <strong>Lexi Game Translator</strong> — without breaking control codes, plugin commands or the game's data files.</p>
+          <nav class="g-toc" aria-label="On this page">
+            <a href="#why"><span data-lang="en">Why it's tricky</span></a>
+            <a href="#before"><span data-lang="en">Before you start</span></a>
+            <a href="#steps"><span data-lang="en">Step by step</span></a>
+            <a href="#fonts"><span data-lang="en">Fonts &amp; letters</span></a>
+            <a href="#tips"><span data-lang="en">Tips</span></a>
+            <a href="#faq"><span data-lang="en">FAQ</span></a>
+          </nav>
+        </header>
+
+        <figure class="frame g-hero-fig">
+          <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+          <a class="shot__link" href="/img/translator/08-multi-engine.webp" data-lightbox>
+            <img src="/img/translator/08-multi-engine.webp" width="2160" height="1350" decoding="async" alt="Lexi Game Translator overview screen with an RPG Maker MZ game detected automatically and a live preview where control codes such as \C[1] and \N[2] stay unchanged">
+          </a>
+          <figcaption>
+            <span data-lang="en">RPG Maker MZ — detected automatically, control codes kept in the live preview</span>
+            <span class="g-zoom-hint"><span data-lang="en">Click to zoom</span></span>
+          </figcaption>
+        </figure>
+
+        <!-- 1. Why RPG Maker is tricky -->
+        <section class="g-block g-prose" aria-labelledby="why">
+          <h2 id="why"><span data-lang="en">Why translating an RPG Maker game is tricky</span></h2>
+          <p data-lang="en">RPG Maker games do not have a separate translation folder. Dialogue, choices, item and skill names, menu words and battle messages all live inside the game's own data files — and every generation stores them differently:</p>
+          <div class="g-engine-grid">
+            <div class="g-mini-engine">
+              <h4>RPG Maker MV &amp; MZ</h4>
+              <p data-lang="en">JSON files in <code>www/data/</code> (MV) or <code>data/</code> (MZ): <code>Map001.json</code>, <code>CommonEvents.json</code>, <code>Items.json</code>, <code>System.json</code> and more. Plugin settings live in <code>js/plugins.js</code>. Some games pack everything into <code>package.nw</code> or into the <code>.exe</code> itself.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4>RPG Maker VX Ace, VX &amp; XP</h4>
+              <p data-lang="en">Binary Ruby files (<code>.rvdata2</code>, <code>.rvdata</code>, <code>.rxdata</code>) in the <code>Data</code> folder — in released games usually packed into one <code>.rgss3a</code>, <code>.rgss2a</code> or <code>.rgssad</code> archive that ordinary editors cannot open.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4>RPG Maker 2000 &amp; 2003</h4>
+              <p data-lang="en">Binary <code>RPG_RT.ldb</code> (database), <code>RPG_RT.lmt</code> (map tree) and <code>MapXXXX.lmu</code> (maps). Text is stored in old code pages such as Shift-JIS or Windows-1252, which cannot hold every letter of every language.</p>
+            </div>
+          </div>
+          <p style="margin-top:18px;" data-lang="en">On top of that, a single message line is full of <strong>control codes</strong>:</p>
+          <pre class="g-code"><code><span class="t">\C[2]</span><span class="t">\N[1]</span><span class="t">\C[0]</span>, you found <span class="t">\V[5]</span> gold coins!</code></pre>
+          <p data-lang="en"><code>\C[2]</code> changes the text color, <code>\N[1]</code> prints the name of actor 1 and <code>\V[5]</code> shows the value of variable 5. If a translator drops a bracket or turns <code>\N[1]</code> into <code>\n[1]</code>, the line shows the wrong name or garbage. And not every string in the data is meant to be translated: face and picture file names, plugin commands and script calls look like text but are code — translate them and the game can no longer find its images or crashes.</p>
+          <p data-lang="en"><strong>Lexi Game Translator</strong> knows these formats. It reads only player-facing text, keeps control codes and placeholders such as <code>%1</code> exactly as they are, never touches file names, plugin commands or script calls, and refuses to write a translated line in which a code got lost.</p>
+        </section>
+
+        <!-- 2. Before you start -->
+        <section class="g-block g-prose" aria-labelledby="before">
+          <h2 id="before"><span data-lang="en">Before you start</span></h2>
+          <ul class="notes">
+            <li><span data-lang="en">A PC with <strong>Windows 10 or 11 (64-bit)</strong>. The installer does not need administrator rights.</span></li>
+            <li><span data-lang="en">The game extracted on your PC — the folder that contains <code>Game.exe</code> (or <code>RPG_RT.exe</code> for 2000/2003). You can also drag and drop the folder or its <code>.exe</code> straight onto the Lexi window.</span></li>
+            <li><span data-lang="en">Some free disk space: before writing, Lexi copies every file it is about to change into a backup folder inside the game folder.</span></li>
+            <li><span data-lang="en">An internet connection for the online translation engines — or a local AI model with Ollama, LM Studio, or llama.cpp for fully offline translation in Lexi Pro.</span></li>
+            <li><span data-lang="en">If the game is still being updated, translate the version you actually play. When it updates, you simply scan and translate again (see the tips below).</span></li>
+          </ul>
+        </section>
+
+        <!-- 3. Step by step -->
+        <section class="g-block" aria-labelledby="steps">
+          <h2 id="steps"><span data-lang="en">Translate an RPG Maker game with <span lang="en">Lexi Game Translator</span></span></h2>
+          <ol class="g-steps">
+            <li class="g-step">
+              <h3><span data-lang="en">Download and install the app</span></h3>
+              <p data-lang="en">Lexi Game Translator is a free app for <strong>Windows 10 and 11 (64-bit)</strong>. Download the installer from the official <a href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">GitHub Releases page</a> and run it. If Windows SmartScreen shows a blue warning the first time, the <a href="/install-help/">install help page</a> shows what to click.</p>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="en">Pick or drop the game folder</span></h3>
+              <p data-lang="en">Select the game folder (or drop it, or its <code>.exe</code>, onto the window). Lexi recognizes the exact generation — MV, MZ, VX Ace, VX, XP or 2000/2003 — and runs a read-only scan: it counts the lines and shows which files they come from without changing anything. Packed games are read directly: NW.js packages (<code>package.nw</code> or a ZIP attached to the <code>.exe</code>) and <code>.rgss3a</code> / <code>.rgss2a</code> / <code>.rgssad</code> archives need no extra unpacking tool.</p>
+              <p data-lang="en">What gets collected: dialogue and scrolling text, choices, speaker names (MZ), actor names and profiles, classes, items, weapons, armor, skills, states and their battle messages, enemies, map display names, menu terms from <code>System.json</code>, and plugin parameters that look like player-facing text. External YAML dialogue files used by some MV/MZ games are read too.</p>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="en">Choose your target language and translation engine</span></h3>
+              <p data-lang="en">Pick your target language from <strong>30+ supported languages</strong> and an engine:</p>
+              <div class="g-tier-strip">
+                <div class="g-tier-box">
+                  <span class="g-tier-box__k"><span data-lang="en">1. Free keyless (Basic)</span></span>
+                  <p data-lang="en"><strong>Google + Microsoft Edge</strong> run in parallel with automatic fallback. No account, no API key, unlimited lines.</p>
+                </div>
+                <div class="g-tier-box">
+                  <span class="g-tier-box__k"><span data-lang="en">2. Own key machine (Basic)</span></span>
+                  <p data-lang="en"><strong>Bing / Microsoft Translator</strong> and <strong>Yandex Translate</strong> are also unlocked in Basic when you enter your own API key.</p>
+                </div>
+                <div class="g-tier-box">
+                  <span class="g-tier-box__k"><span data-lang="en">3. Cloud &amp; local AI (Lexi Pro)</span></span>
+                  <p data-lang="en">1-click presets for cloud AI with your own key, or offline <strong>Ollama / LM Studio / llama.cpp</strong>. Patreon $6/mo + 3-day free AI trial.</p>
+                </div>
+              </div>
+              <p data-lang="en">Whenever a cloud AI job could incur API costs, Lexi calculates the estimated amount up front, waits for your explicit approval, and enforces any spending cap you set.</p>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="en">Press Translate</span></h3>
+              <p data-lang="en">Press <strong>Translate</strong> and watch the lines appear live. Before anything is written, Lexi copies each file it will change into a <strong>backup</strong> folder inside the game folder and automatically locks your first backup, so the original can always be restored. You can pause or stop at any time; finished lines are kept and the next run continues from there.</p>
+              <p data-lang="en">The translation is then written in place: into the JSON files and <code>plugins.js</code> for MV/MZ (or back into the NW.js package), into the <code>.rgss*</code> archive or <code>Data</code> files for VX Ace/VX/XP, and into the <code>.ldb</code>/<code>.lmt</code>/<code>.lmu</code> files for 2000/2003. Every line is checked first — if a control code or placeholder is missing from the translation, that line is not written.</p>
+              <figure class="frame g-fig">
+                <i class="frame__c frame__c--tl" aria-hidden="true"></i><i class="frame__c frame__c--tr" aria-hidden="true"></i><i class="frame__c frame__c--bl" aria-hidden="true"></i><i class="frame__c frame__c--br" aria-hidden="true"></i>
+                <a class="shot__link" href="/img/translator/04-engines-ai.webp" data-lightbox>
+                  <img src="/img/translator/04-engines-ai.webp" width="2160" height="1350" loading="lazy" decoding="async" alt="Translation settings screen with target language, the free built-in engines and optional 1-click AI presets">
+                </a>
+                <figcaption>
+                  <span data-lang="en">Translation settings — keyless free chain first, AI presets optional</span>
+                  <span class="g-zoom-hint"><span data-lang="en">Click to zoom</span></span>
+                </figcaption>
+              </figure>
+            </li>
+            <li class="g-step">
+              <h3><span data-lang="en">Launch the game and check</span></h3>
+              <p data-lang="en">Press <strong>Launch game</strong> and play the first scenes, open the menu and start a battle. Because RPG Maker has no separate translation layer, there is no in-game language switch: the game simply starts in your language. To go back to the original, restore the first backup in <strong>Backups and memory</strong>.</p>
+            </li>
+          </ol>
+        </section>
+
+        <!-- 4. Fonts and encodings -->
+        <section class="g-block g-prose" aria-labelledby="fonts">
+          <h2 id="fonts"><span data-lang="en">Fonts, encodings and missing letters</span></h2>
+          <p data-lang="en">Many RPG Maker games ship their own font in a <code>fonts</code> folder, and that font may not contain the letters of your language — they then appear as empty boxes or disappear. Old 2000/2003 games add a second problem: their code page may not be able to store those letters at all.</p>
+          <p data-lang="en">Lexi checks both. For 2000/2003 it keeps the original encoding when your translation fits into it, and otherwise saves the text as UTF-8 and records that in <code>RPG_RT.ini</code>. If the game's fonts or encoding are missing letters and your language uses accented Latin letters, the <strong>Autopilot</strong> card lists the missing letters and suggests <strong>Smart Deaccent</strong>. It is made for Turkish: <em>ç, ö</em> and <em>ü</em>, which most fonts already have, stay as they are, and only <em>ğ, ş, ı</em> and <em>İ</em> are written as <em>g, s, i</em> and <em>I</em>; tags and codes stay untouched. Lexi does not replace RPG Maker fonts automatically, so if you would rather keep every accent, swapping the game's font for one that contains your letters is a manual job.</p>
+        </section>
+
+        <!-- 5. Tips -->
+        <section class="g-block" aria-labelledby="tips">
+          <h2 id="tips"><span data-lang="en">Practical tips for a cleaner translation</span></h2>
+          <dl class="index g-tips">
+            <div>
+              <dt><span data-lang="en">Names &amp; glossary</span></dt>
+              <dd><span data-lang="en">Lexi picks up actor names from the database (and speaker names in MZ) and keeps them unchanged, so a hero called <strong>Rose</strong> does not turn into a flower. Use the <strong>Glossary</strong> to fix recurring terms — town names, spells, items — so they read the same everywhere.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="en">What stays untranslated</span></dt>
+              <dd><span data-lang="en">Text drawn into pictures (title screens, signs) is part of the image, not data. Text written inside plugin <code>.js</code> code or custom Ruby scripts is code, so Lexi leaves it alone; in VX Ace/VX/XP only the built-in <code>Vocab</code> messages are taken from the scripts. Plugin commands and script calls are skipped on purpose.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="en">Quality &amp; CSV</span></dt>
+              <dd><span data-lang="en">The <strong>Quality and editing</strong> page finds empty, untranslated or broken lines. <strong>Retranslate problems</strong> sends only those lines again, and you can fix any line in the built-in editor or export/import <strong>CSV</strong> to review it in Excel or LibreOffice.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="en">Game updates</span></dt>
+              <dd><span data-lang="en">An update usually replaces the data files with new originals. Scan and translate again: finished lines come back from the translation memory, and only new or changed lines go to the engine.</span></dd>
+            </div>
+            <div>
+              <dt><span data-lang="en">Backups</span></dt>
+              <dd><span data-lang="en">Open <strong>Backups and memory</strong> and press <strong>Restore</strong> to put the files back as they were on the chosen date; a safety backup of the current state is made first. Your first backup is locked automatically, and you can lock others to keep them.</span></dd>
+            </div>
+          </dl>
+
+          <aside class="g-note" aria-labelledby="g-note-title">
+            <h2 id="g-note-title"><span data-lang="en">Personal use and sharing</span></h2>
+            <p data-lang="en">A translation made this way is for your own use. The game's story, text and art belong to its developer, so before you share a translated patch publicly (for example with Lexi's patch <code>.zip</code> export), ask the developer for permission.</p>
+          </aside>
+        </section>
+      </div>
+    </section>
+
+    <!-- 6. FAQ (same text as the FAQPage JSON-LD above) -->
+    <section class="sec faq" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq__grid">
+        <header class="sec__head">
+          <p class="eyebrow"><span data-lang="en">FAQ <span>/</span> RPG Maker translation</span></p>
+          <h2 id="faq-title"><span data-lang="en">Short answers<em>.</em></span></h2>
+        </header>
+        <div class="faq__list">
+          <details>
+            <summary><span data-lang="en">Is Lexi Game Translator free?</span></summary>
+            <p data-lang="en">Yes. The Basic tier is free, needs no account or sign-in, and translates with the keyless built-in Google and Microsoft Edge chain (plus Bing and Yandex if you provide your own API key). AI translation is optional and unlocked with Lexi Pro ($6/month on Patreon), with a one-time 3-day free AI trial per computer.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Which RPG Maker versions work?</span></summary>
+            <p data-lang="en">RPG Maker MV, MZ, VX Ace, VX, XP and 2000/2003. Lexi detects the version from the game folder. It reads MV/MZ data files and <code>js/plugins.js</code>, games packed with NW.js (<code>package.nw</code> or a ZIP attached to the <code>.exe</code>), and the <code>.rgssad</code>, <code>.rgss2a</code> and <code>.rgss3a</code> archives of XP, VX and VX Ace directly.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Does Lexi change my game files?</span></summary>
+            <p data-lang="en">Yes. RPG Maker has no separate translation folder, so the translation is written into the game's own data files (or into its archive). Before writing, Lexi copies every file it changes into a backup folder inside the game folder and locks the first backup automatically. Restore in Backups and memory brings the original back.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Can I switch back to the original language?</span></summary>
+            <p data-lang="en">RPG Maker translations have no in-game language switch. To go back, restore the original backup in Backups and memory. Finished lines stay in Lexi's translation memory, so you do not have to translate them again later.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Letters show as boxes or are missing. What can I do?</span></summary>
+            <p data-lang="en">Lexi checks the fonts in the game's fonts folder and, for 2000/2003 games, the text encoding. If letters of your language are missing and it uses accented Latin letters, Autopilot suggests Smart Deaccent. It keeps ç, ö and ü and writes only the Turkish letters ğ, ş, ı and İ as g, s, i and I. Lexi does not swap RPG Maker fonts automatically.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Why are some texts still in the original language?</span></summary>
+            <p data-lang="en">Text drawn into pictures, text written inside plugin or script code, plugin commands and script calls are not translated. Lexi skips code on purpose so the game keeps working.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Can I share my translation with others?</span></summary>
+            <p data-lang="en">Lexi can export a translation patch as a .zip file, but the game's text belongs to its developer. Translate for your own use, and ask the developer for permission before you share a translated patch publicly.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CTA -->
+    <section class="sec g-cta" aria-labelledby="cta-title">
+      <div class="wrap">
+        <div class="g-cta__box">
+          <h2 id="cta-title"><span data-lang="en">Ready to play in your language<em>?</em></span></h2>
+          <p data-lang="en">Lexi Game Translator is free to download for Windows 10 and 11 — 18 engines, keyless free translation, automatic backups, no account required for Basic.</p>
+          <div class="g-cta__actions">
+            <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
+              <span data-lang="en">Download for Windows</span>
+              <span aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="btn" href="/lexi-game-translator/">
+              <span data-lang="en">About <span lang="en">Lexi Game Translator</span></span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="more" href="/install-help/">
+              <span data-lang="en">Install help</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+          <p class="g-subhead"><span data-lang="en">More translation guides</span></p>
+          <div class="g-engine-grid">
+            <div class="g-mini-engine">
+              <h4><a href="/renpy-translation-guide/"><span data-lang="en">How to translate a Ren'Py game</span></a></h4>
+              <p data-lang="en">Visual novels: tags, variables and fonts, with an in-game language switch.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h4><a href="/unity-translation-guide/"><span data-lang="en">How to translate a Unity game</span></a></h4>
+              <p data-lang="en">Mono and IL2CPP games with Autopilot, BepInEx, XUnity.AutoTranslator and Live Bridge.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </article>
+  </div>
+</main>
+
+<footer class="foot">
+  <a class="brand" href="/" aria-label="Lexi Apps" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <ul>
+    <li><a href="/"><span data-lang="en">Main Site</span></a></li>
+    <li><a href="/lexi-game-translator/" lang="en">Lexi Game Translator</a></li>
+    <li><a href="/install-help/"><span data-lang="en">Install help</span></a></li>
+    <li><a href="/renpy-translation-guide/"><span data-lang="en">Ren'Py guide</span></a></li>
+    <li><a href="/unity-translation-guide/"><span data-lang="en">Unity guide</span></a></li>
+    <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" lang="en">Discord</a></li>
+    <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener" lang="en">Patreon</a></li>
+    <li><a href="mailto:lexiapps@protonmail.com" lang="en">lexiapps@protonmail.com</a></li>
+  </ul>
+  <p lang="en">&copy; 2026 Lexi Apps</p>
+</footer>
+
+<script>
+  /* Generated by build_site.py: this is the EN version of the page.
+     The EN/TR menu saves the choice and opens the other language's URL (same #hash).
+     A stored preference is NOT applied on load: each URL always shows its own language. */
+  function setLang(lang, save) {
+    var page = 'en';
+    var urls = { en: '/rpg-maker-translation-guide/', tr: '/tr/rpg-maker-translation-guide/' };
+    if (!urls[lang]) lang = page;
+    if (save) {
+      try { localStorage.setItem('lexi-user-lang', lang); } catch (e) {}
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    }
+    if (lang !== page) {
+      window.location.href = urls[lang] + window.location.search + window.location.hash;
+      return;
+    }
+    document.documentElement.setAttribute('lang', page);
+    var enBtn = document.getElementById('lang-en');
+    var trBtn = document.getElementById('lang-tr');
+    var cur = document.getElementById('lang-cur');
+    if (enBtn) enBtn.classList.toggle('is-on', page === 'en');
+    if (trBtn) trBtn.classList.toggle('is-on', page === 'tr');
+    if (cur) cur.textContent = page.toUpperCase();
+  }
+  setLang('en', false);
+  /* EN/TR buttons: listeners, not onclick="" attributes (the CSP blocks inline handlers). */
+  Array.from(document.querySelectorAll('[data-set-lang]')).forEach(function (btn) {
+    btn.addEventListener('click', function () { setLang(btn.getAttribute('data-set-lang'), true); });
+  });
+</script>
+<script>
+  (function () {
+    var A = window.__lexiAccents;
+    var root = document.documentElement;
+    var current = root.getAttribute('data-accent') || 'ember';
+    var out = document.getElementById('accent-name');
+    function apply(key, save) {
+      var a = A[key] || A.ember;
+      root.style.setProperty('--accent', a[0]);
+      root.style.setProperty('--on-accent', a[1]);
+      root.setAttribute('data-accent', key);
+      if (out) out.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+      Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+        btn.classList.toggle('is-on', btn.getAttribute('data-accent-choice') === key);
+      });
+      if (save) { try { localStorage.setItem('lexi-accent', key); } catch (e) {} }
+    }
+    Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        apply(btn.getAttribute('data-accent-choice'), true);
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      });
+    });
+    apply(current, false);
+  })();
+</script>
+<script type="module" src="/renpy-translation-guide/page.js"></script>
+</body>
+</html>
