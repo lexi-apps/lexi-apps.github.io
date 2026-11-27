@@ -293,6 +293,11 @@ h1 .line > span { display: inline-block; }
 .lede { max-width: 46ch; font-size: clamp(1rem, 1.25vw, 1.2rem); color: #c3d0d9; }
 .lede em { color: #fff; border-bottom: 1px solid var(--accent); }
 .cta { margin-top: 38px; }
+/* Small install/trust note under the hero download buttons of product pages. */
+.dl-note { margin-top: 18px; max-width: 62ch; font-size: 13.5px; line-height: 1.55; color: var(--dim); }
+.dl-note a { color: #c3d0d9; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.dl-note a:hover, .dl-note a:focus-visible { color: #fff; }
+.dl-note > span[aria-hidden] { margin: 0 4px; }
 /* home hero: the three apps as direct links (each opens its page in a new tab); the main app is filled */
 .pick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 36px; max-width: 780px; }
 .pick li { display: flex; }
@@ -771,4 +776,7 @@ html[lang="tr"] [data-lang="tr"] { display: revert !important; }
 .guide-card:hover .guide-card__go { border-color: var(--accent); color: #fff; }
 .guide-card:hover .guide-card__go > span:last-child { transform: translateX(3px); }
 .guide-card:focus-visible { outline-offset: 3px; }
-@media (max-width: 900px) { .guides__grid { grid-template-columns: 1fr; } }
+.guide-card--all { background: color-mix(in srgb, var(--accent) 9%, rgba(5, 7, 10, 0.82)); }
+.guide-card--all .guide-card__go { color: var(--accent); }
+@media (max-width: 900px) { .guides__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .guides__grid { grid-template-columns: 1fr; } }

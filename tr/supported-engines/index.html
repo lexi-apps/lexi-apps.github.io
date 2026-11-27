@@ -1,0 +1,735 @@
+<!doctype html>
+<html lang="tr" class="no-gl is-ready">
+<head>
+<meta charset="utf-8">
+<script data-lexi-probe>
+/* Mirror only: if the main site provably answers, send the visitor there;
+   otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
+   tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var base = (local && q.get('probe') === 'fail') ? 'https://lexi-probe-test.invalid' : MAIN;
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    var fail = function () {                      // blocked, timed out or not our site: stay here
+      clearTimeout(timer);
+      try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+    };
+    // CORS fetch: only a real answer from our own site (JSON marker) counts, not an opaque one.
+    fetch(base + '/lexi-probe.json?probe=' + Date.now(),
+          { mode: 'cors', cache: 'no-store', credentials: 'omit', signal: ctl.signal })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        if (!d || d.site !== 'lexi-apps') throw 0;
+        clearTimeout(timer);                      // proven reachable: same page on the main site
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      })
+      .catch(fail);
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desteklenen Oyun Motorları: Lexi Game Translator Oyunumla Çalışır mı?</title>
+<meta name="description" content="Lexi Game Translator&#x27;ın desteklediği 18 oyun motoru — Ren&#x27;Py, RPG Maker, Unity, Unreal Engine, Godot, Tyrano, WOLF RPG, KiriKiri, QSP, Twine, GameMaker ve SRPG Studio — her birini tanıtan dosyalar, neyin çevrildiği ve dürüst sınırlarla.">
+<link rel="canonical" href="https://lexiapps.dev/tr/supported-engines/">
+<link rel="alternate" hreflang="en" href="https://lexiapps.dev/supported-engines/">
+<link rel="alternate" hreflang="tr" href="https://lexiapps.dev/tr/supported-engines/">
+<link rel="alternate" hreflang="x-default" href="https://lexiapps.dev/supported-engines/">
+<meta name="theme-color" content="#05070a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lexi Apps">
+<meta property="og:title" content="Desteklenen Oyun Motorları — Lexi Game Translator">
+<meta property="og:description" content="Lexi Game Translator oyununuzla çalışır mı? Desteklenen 18 motor, oyun klasöründen nasıl tanındıkları, neyin çevrildiği ve sınırlar.">
+<meta property="og:url" content="https://lexiapps.dev/tr/supported-engines/">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image" content="https://lexiapps.dev/img/translator/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lexi Game Translator uygulaması: çevrilmiş bir oyunun genel bakış ekranı">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Desteklenen Oyun Motorları — Lexi Game Translator">
+<meta name="twitter:description" content="Lexi Game Translator oyununuzla çalışır mı? Desteklenen 18 motor, nasıl tanındıkları, neyin çevrildiği ve sınırlar.">
+<meta name="twitter:image" content="https://lexiapps.dev/img/translator/share.png">
+<script type="application/ld+json" data-lang="tr">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Desteklenen oyun motorları — Lexi Game Translator",
+      "description": "Lexi Game Translator'ın desteklediği 18 oyun motoru — Ren'Py, RPG Maker, Unity, Unreal Engine, Godot, Tyrano, WOLF RPG, KiriKiri, QSP, Twine, GameMaker ve SRPG Studio — her birini tanıtan dosyalar, neyin çevrildiği ve dürüst sınırlarla.",
+      "inLanguage": "tr",
+      "url": "https://lexiapps.dev/tr/supported-engines/",
+      "dateModified": "2026-11-27",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Lexi Apps",
+        "url": "https://lexiapps.dev/tr/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://lexiapps.dev/logo.svg"
+        }
+      },
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "Lexi Game Translator",
+        "operatingSystem": "Windows 10, Windows 11",
+        "applicationCategory": "UtilitiesApplication",
+        "url": "https://lexiapps.dev/tr/lexi-game-translator/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Lexi Apps",
+          "item": "https://lexiapps.dev/tr/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Lexi Game Translator",
+          "item": "https://lexiapps.dev/tr/lexi-game-translator/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Desteklenen motorlar",
+          "item": "https://lexiapps.dev/tr/supported-engines/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Lexi'nin oyunumla çalışıp çalışmadığını nasıl anlarım?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oyun klasörünü Lexi'ye bırakın. Lexi motoru oyunun dosyalarından tanır, genel bakış ekranında gösterir ve çevirebileceği satırları sayan salt-okunur bir tarama yapar. Çevir'e basana kadar oyunda hiçbir şey değişmez."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Oyunumun motoru listede yoksa ne olur?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Lexi klasörde desteklenen 18 motordan birini tanımazsa oyunu desteklenmiyor olarak gösterir ve oyuna çeviri yazmaz."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Lexi şifreli oyunlarla çalışır mı?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Lexi oyunun açıkça ya da motorun standart anahtarıyla sakladığı verileri okur. Şifreli ya da parolalı veriler, örneğin AES ile şifrelenmiş Unreal .pak dosyaları, şifreli KiriKiri .xp3 girdileri, parolalı WOLF RPG arşivleri ya da şifreli Godot .pck girdileri doğrudan okunamaz. Lexi bu korumaları kırmaya çalışmaz; Unreal oyunlarında bunun yerine UE4SS yolunu kullanabilir."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/renpy-translation-guide/page.css">
+<link rel="stylesheet" href="/supported-engines/page.css">
+<script>
+  (function () {
+    var A = {
+      ember:  ['#ff5a36', '#0a0605'],
+      acid:   ['#c8ff2e', '#0a0d02'],
+      amber:  ['#ffb224', '#0d0902'],
+      ice:    ['#5ad8ff', '#02090d'],
+      signal: ['#ff2e4d', '#0a0204'],
+      mono:   ['#f2f5f7', '#05070a']
+    };
+    var k = 'ember';
+    try { k = localStorage.getItem('lexi-accent') || k; } catch (e) {}
+    if (!A[k]) k = 'ember';
+    var d = document.documentElement;
+    d.style.setProperty('--accent', A[k][0]);
+    d.style.setProperty('--on-accent', A[k][1]);
+    d.setAttribute('data-accent', k);
+    window.__lexiAccents = A;
+    d.classList.add('js');
+  })();
+</script>
+</head>
+<body>
+<a class="skip-link" href="#top"><span data-lang="tr">İçeriğe geç</span></a>
+
+<div class="fallback-core" aria-hidden="true"><i></i><i></i></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="/tr/" aria-label="Lexi Apps, ana sayfaya dön" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-btn__icon" aria-hidden="true"></span><span class="menu-btn__label"><span data-lang="tr">Menü</span></span></button>
+  <div class="top__panel" id="menu">
+    <nav aria-label="Ana menü">
+      <a class="nav-home" href="/tr/"><span aria-hidden="true">←</span> <span data-lang="tr">Ana Sayfa</span></a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span><span data-lang="tr">Uygulamalar</span></span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="/tr/lexi-game-translator/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI GAME TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/tr/lexi-download-manager/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/tr/lexi-dictate/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span><span data-lang="tr">Rehberler</span></span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="/tr/renpy-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span><span data-lang="tr"><span lang="en">Ren'Py</span> rehberi</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/tr/rpg-maker-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span><span data-lang="tr"><span lang="en">RPG Maker</span> rehberi</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/tr/unity-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span><span data-lang="tr"><span lang="en">Unity</span> rehberi</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/tr/unreal-engine-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">04</span><span><span data-lang="tr"><span lang="en">Unreal Engine</span> rehberi</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/tr/wolf-rpg-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">05</span><span><span data-lang="tr"><span lang="en">WOLF RPG</span> rehberi</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item is-on" href="/tr/supported-engines/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">06</span><span><span data-lang="tr">18 motorun tamamı</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--discord" href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" title="Discord topluluğuna katıl">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span lang="en">Discord</span>
+      </a>
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Bana bir kahve ısmarla">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span lang="en">Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Patreon&#x27;da destek ol">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span lang="en">Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Dil">
+        <span id="lang-cur">TR</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item" id="lang-en" data-set-lang="en" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">EN</span><span lang="en">English</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="dd__item is-on" id="lang-tr" data-set-lang="tr" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">TR</span><span>Türkçe</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Vurgu rengi">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top" tabindex="-1" class="guide">
+  <div class="deep">
+    <section class="sec" aria-labelledby="g-title" style="padding-top:140px;padding-bottom:0;">
+      <div class="wrap">
+        <header class="sec__head g-head">
+          <nav aria-label="Sayfa yolu">
+            <p class="g-crumbs"><a href="/tr/" lang="en">Lexi Apps</a><span aria-hidden="true">/</span><a href="/tr/lexi-game-translator/" lang="en">Lexi Game Translator</a><span aria-hidden="true">/</span><span><span data-lang="tr">Desteklenen motorlar</span></span></p>
+          </nav>
+          <p class="eyebrow"><span data-lang="tr"><span lang="en">Lexi Game Translator</span> <span>/</span> 18 motor <span>/</span> Uyumluluk</span></p>
+          <h1 id="g-title"><span data-lang="tr"><span lang="en">Lexi</span> oyunumla çalışır mı<em>?</em></span></h1>
+          <p class="sec__lede" data-lang="tr"><strong>Lexi Game Translator</strong> 18 oyun motorunu destekler. Aşağıda her birini oyun klasöründe tanıtan dosyaları, Lexi'nin neyi çevirdiğini ve bilmeniz gereken sınırları bulacaksınız — böylece bir şey indirmeden önce oyununuzu kontrol edebilirsiniz.</p>
+          <div class="eng-facts">
+            <div>
+              <b><span data-lang="tr">Otomatik tanınır</span></b>
+              <p data-lang="tr">Oyun klasörünü bırakın: Lexi motoru dosyalarından tanır ve önce salt-okunur bir tarama yapar. Çevir'e basana kadar hiçbir şey değişmez.</p>
+            </div>
+            <div>
+              <b><span data-lang="tr">Önce yedeklenir</span></b>
+              <p data-lang="tr">Lexi oyun dosyalarına yazmadan önce değiştireceklerini oyun klasöründeki bir yedek klasörüne kopyalar ve ilk yedeğinizi kilitler.</p>
+            </div>
+            <div>
+              <b><span data-lang="tr">Kodlar korunur</span></b>
+              <p data-lang="tr">Her motorun kendi kontrol kodu, etiket ve değişken listesi vardır. Bunlardan biri kaybolmuş bir çeviri satırı yazılmaz.</p>
+            </div>
+          </div>
+        </header>
+
+        <section class="g-block" aria-labelledby="list-title" style="max-width:none;">
+          <h2 id="list-title"><span data-lang="tr">Desteklenen 18 motorun tamamı</span></h2>
+          <div class="eng-tools" data-eng-tools hidden>
+            <input class="eng-filter" id="eng-filter" type="search" autocomplete="off" spellcheck="false" placeholder="Süz: motor, dosya ya da klasör (ör. .pak, www/data)" aria-label="Motor listesini süz">
+            <p class="eng-count" aria-live="polite"><span data-lang="tr">18 motordan <b data-eng-n>18</b> tanesi</span></p>
+          </div>
+          <div class="eng-cols" aria-hidden="true">
+            <span><span data-lang="tr">Motor</span></span>
+            <span><span data-lang="tr">Nasıl tanınır</span></span>
+            <span><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></span>
+            <span><span data-lang="tr">Sınırlar</span></span>
+          </div>
+          <ol class="eng-list">
+          <li class="eng" id="renpy" data-k="renpy ren'py visual novel rpy rpyc rpa">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">01</span>
+              <h3 lang="en">Ren'Py</h3>
+              <a class="eng__guide" href="/tr/renpy-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr"><code>.rpy</code>, <code>.rpyc</code> ya da <code>.rpa</code> dosyaları içeren bir <code>game/</code> klasörü; genellikle yanında bir <code>renpy/</code> klasörü olur.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Diyaloglar, seçenekler ve arayüz metinleri; <code>.rpa</code> arşivlerindeki derlenmiş <code>.rpyc</code> betiklerinden de. Ayrı bir çeviri olarak <code>game/tl/&lt;dil&gt;/</code> klasörüne yazılır; oyun içi dil düğmesi eklenir.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Oyunun kendi betikleri düzenlenmez. Ücretsiz <span lang="en">Basic</span>'te oyun içi dil menüsünde küçük bir “Translated with Lexi” satırı görünür.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-mz" data-k="rpg maker mz rmmz json data plugins package.nw nwjs">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">02</span>
+              <h3 lang="en">RPG Maker MZ</h3>
+              <a class="eng__guide" href="/tr/rpg-maker-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr"><code>data/System.json</code> ile birlikte <code>js/rmmz_core.js</code> — ya da aynı dosyaların <code>package.nw</code> içine veya <code>.exe</code>'nin içine paketlenmiş hâli.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Diyaloglar, seçenekler, konuşmacı adları, veritabanı adları ve açıklamaları, menü terimleri ve metne benzeyen eklenti parametreleri — yedek alındıktan sonra JSON dosyalarına ve <code>js/plugins.js</code>'e yazılır.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Eklenti <code>.js</code> kodundaki metinler, eklenti komutları ve betik çağrıları bilerek atlanır. Oyun içi dil düğmesi yoktur.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-mv" data-k="rpg maker mv www data json plugins package.nw nwjs">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">03</span>
+              <h3 lang="en">RPG Maker MV</h3>
+              <a class="eng__guide" href="/tr/rpg-maker-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr"><code>www/data/System.json</code> (ya da <code>js/rpg_core.js</code> ile birlikte <code>data/</code>) — veya <code>package.nw</code> ya da <code>.exe</code> içine paketlenmiş hâli.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Diyaloglar, seçenekler, veritabanı adları ve açıklamaları, menü terimleri ve metne benzeyen eklenti parametreleri — yedek alındıktan sonra JSON dosyalarına ve <code>js/plugins.js</code>'e yazılır. <code>\C[1]</code> gibi kontrol kodları korunur.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Eklenti <code>.js</code> kodundaki metinler, eklenti komutları ve betik çağrıları bilerek atlanır. Oyun içi dil düğmesi yoktur.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-vxace" data-k="rpg maker vx ace rgss3a rvdata2 ruby">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">04</span>
+              <h3 lang="en">RPG Maker VX Ace</h3>
+              <a class="eng__guide" href="/tr/rpg-maker-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr"><code>Game.exe</code> yanında bir <code>.rgss3a</code> arşivi ya da <code>Data/</code> içinde <code>.rvdata2</code> dosyaları.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Diyaloglar, seçenekler, veritabanı adları ve açıklamaları ve yerleşik <code>Vocab</code> mesajları — arşivden ya da <code>Data</code> dosyalarından okunur ve oraya geri yazılır.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Özel Ruby betiklerinin içindeki metinler koddur, çevrilmez (yalnızca <code>Vocab</code>). Oyun içi dil düğmesi yoktur.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-vx" data-k="rpg maker vx rgss2a rvdata ruby">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">05</span>
+              <h3 lang="en">RPG Maker VX</h3>
+              <a class="eng__guide" href="/tr/rpg-maker-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">Bir <code>.rgss2a</code> arşivi ya da <code>Data/</code> içinde <code>.rvdata</code> dosyaları.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Diyaloglar, seçenekler, veritabanı adları ve açıklamaları ve yerleşik <code>Vocab</code> mesajları — arşivin ya da <code>Data</code> dosyalarının içinde.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Özel Ruby betiklerinin içindeki metinler çevrilmez. Oyun içi dil düğmesi yoktur.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-xp" data-k="rpg maker xp rgssad rxdata ruby">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">06</span>
+              <h3 lang="en">RPG Maker XP</h3>
+              <a class="eng__guide" href="/tr/rpg-maker-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">Bir <code>.rgssad</code> arşivi ya da <code>Data/</code> içinde <code>.rxdata</code> dosyaları.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Diyaloglar, seçenekler, veritabanı adları ve açıklamaları — arşivin ya da <code>Data</code> dosyalarının içinde.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Özel Ruby betiklerinin içindeki metinler çevrilmez. Oyun içi dil düğmesi yoktur.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-2k" data-k="rpg maker 2000 2003 2k rpg_rt ldb lmt lmu">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">07</span>
+              <h3 lang="en">RPG Maker 2000 / 2003</h3>
+              <a class="eng__guide" href="/tr/rpg-maker-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr"><code>RPG_RT.ldb</code> ile birlikte <code>RPG_RT.lmt</code>, <code>RPG_RT.exe</code>, <code>RPG_RT.ini</code> ya da <code>Map*.lmu</code> haritaları.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr"><code>.ldb</code>, <code>.lmt</code> ve <code>.lmu</code> dosyalarındaki diyaloglar, seçenekler ve veritabanı terimleri.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Eski kod sayfaları (Shift-JIS, Windows-1252) her harfi taşıyamaz: metin sığıyorsa Lexi özgün kodlamayı korur, sığmıyorsa UTF-8 kaydeder ve bunu <code>RPG_RT.ini</code>'ye işler; Otopilot Akıllı Sadeleştirme önerebilir.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="unity-mono" data-k="unity mono assembly-csharp bepinex xunity assets _data">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">08</span>
+              <h3 lang="en">Unity (Mono)</h3>
+              <a class="eng__guide" href="/tr/unity-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">İçinde <code>Managed/Assembly-CSharp.dll</code> bulunan bir <code>&lt;Oyun&gt;_Data</code> klasörü.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Okunabilir dil dosyaları (<code>.po</code>, <code>.csv</code>, <code>.json</code>) doğrudan. Yoksa Otopilot onayınızla BepInEx ve XUnity.AutoTranslator'ı kurar, paketli metinleri <code>.assets</code> ve <code>Assembly-CSharp.dll</code> dosyalarından salt-okunur çıkarır; Canlı Köprü oynarken yeni satırları çevirir.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Hile korumalı oyunlarda kurulum engellenir. TextMeshPro kullanan oyunlar harflerinizi içeren bir yazı tipi varlığı ister; Lexi Unity için yazı tipi indirmez.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="unity-il2cpp" data-k="unity il2cpp gameassembly global-metadata bepinex xunity">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">09</span>
+              <h3 lang="en">Unity (IL2CPP)</h3>
+              <a class="eng__guide" href="/tr/unity-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr"><code>.exe</code> yanında <code>GameAssembly.dll</code> ya da <code>&lt;Oyun&gt;_Data</code> içinde bir <code>il2cpp_data</code> klasörü.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Mono ile aynı: dil dosyaları doğrudan ya da BepInEx ve XUnity.AutoTranslator ile Otopilot; paketli metinler <code>.assets</code> ve <code>global-metadata.dat</code> dosyalarından salt-okunur çıkarılır, ayrıca Canlı Köprü.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Hile korumalı oyunlarda kurulum engellenir. Oyunun <code>.assets</code>, <code>.dll</code> ve metadata dosyaları yalnızca okunur, asla yazılmaz.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="unreal" data-k="unreal engine ue4 ue5 pak locres ue4ss iostore utoc ucas">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">10</span>
+              <h3 lang="en">Unreal Engine 4 / 5</h3>
+              <a class="eng__guide" href="/tr/unreal-engine-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">İçinde <code>.pak</code> dosyaları olan bir <code>Content/Paks</code> klasörü, bir <code>Content/Localization</code> klasörü ya da <code>Engine/Binaries</code>.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Açık <code>.locres</code>/<code>.po</code> tabloları (gevşek ya da şifresiz bir <code>.pak</code> içinde); ayrı bir <code>~mods/</code> yamasına yazılır. Kapalı oyunlar: Otopilot UE4SS'i kurar, metni oyun çalışırken toplar ve ekranda değiştirir. İsteğe bağlı font yaması.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Hile koruması (EasyAntiCheat, BattlEye) UE4SS yolunu engeller. AES ile şifrelenmiş ya da Oodle ile sıkıştırılmış veriler doğrudan okunamaz. UE4SS 64 bit bir <code>*-Win64-Shipping.exe</code> ister.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="godot" data-k="godot pck project.godot tscn tres dialogic dialogue manager po csv">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">11</span>
+              <h3 lang="en">Godot 3 / 4</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">Bir <code>project.godot</code> dosyası, bir <code>.pck</code> dosyası ya da içine <code>.pck</code> gömülmüş bir oyun <code>.exe</code>'si.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr"><code>.po</code> ve yerelleştirme <code>.csv</code> dosyaları, <code>.tscn</code>/<code>.tres</code> sahnelerindeki metinler, JSON, Dialogic zaman çizelgeleri ve Dialogue Manager <code>.dialogue</code> dosyaları — gevşek ya da yedek alındıktan sonra yamalanan <code>.pck</code> içinde.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Şifreli <code>.pck</code> girdileri atlanır. Dil başına <code>.po</code> dosyası olan oyunlarda Lexi sizin dilinizi ekler, diğerlerine dokunmaz.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="tyrano" data-k="tyrano tyranoscript tyranobuilder ks scenario electron app.asar">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">12</span>
+              <h3 lang="en">TyranoScript / TyranoBuilder</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">Bir <code>tyrano/</code> klasörü (<code>resources/app/</code> altında da), Tyrano içeren bir <code>resources/app.asar</code> ya da Tyrano yükleyen bir <code>index.html</code> yanında <code>data/scenario/</code>.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Senaryo <code>.ks</code> betikleri: diyaloglar, seçenek düğmeleri ve <code>[glink]</code> ya da <code>[ptext]</code> gibi etiketlerdeki metinler — gevşek ya da Electron <code>app.asar</code> içinde.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Tyrano etiketleri olduğu gibi kalır; içinde bir etiketin kaybolduğu satır yazılmaz.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="wolf-rpg" data-k="wolf rpg editor wolf data.wolf mps dat commonevent database">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">13</span>
+              <h3 lang="en">WOLF RPG Editor</h3>
+              <a class="eng__guide" href="/tr/wolf-rpg-translation-guide/"><span data-lang="tr">Adım adım rehber</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">Bir <code>Data.wolf</code> (ya da başka bir <code>.wolf</code>) arşivi veya <code>Data/BasicData</code> ve <code>Data/MapData</code> klasörleri.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Harita ve ortak olaylardaki mesajlar ve seçenekler, metin işlemleri ve olay çağrılarındaki yazılar ve veritabanı metin alanları — <code>Data</code> klasöründe ya da <code>.wolf</code> arşivinin içinde.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Parolalı <code>.wolf</code> arşivleri ve <span lang="en">WOLF RPG Editor Pro</span> dosyaları atlanır. Editor 2 oyunları Shift-JIS kullanır; Otopilot Akıllı Sadeleştirme önerebilir.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="kirikiri" data-k="kirikiri krkr kag xp3 ks tjs visual novel">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">14</span>
+              <h3 lang="en">KiriKiri (KAG)</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr"><code>.xp3</code> arşivleri, <code>startup.tjs</code>, bir <code>krkr*.exe</code> ya da <code>.ks</code> betikleriyle birlikte <code>data/system/Config.tjs</code>.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">KAG <code>.ks</code> senaryo betikleri — diyaloglar, konuşmacı adları ve <code>[link]</code> seçenekleri — gevşek ya da okunabilir <code>.xp3</code> arşivlerinde; <code>patch.xp3</code> katmanları dikkate alınır.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Şifreli <code>.xp3</code> girdileri okunamaz. Özgün kodlama korunur; harflerinizi taşıyamayan bir Shift-JIS betiği UTF-16 olarak kaydedilir.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="qsp" data-k="qsp quest soft player gam qsps text adventure">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">15</span>
+              <h3 lang="en">QSP</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">Bir <code>.qsp</code>, <code>.gam</code> ya da <code>.qsps</code> oyun dosyası.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr"><code>*pl</code>, <code>pl</code> ya da <code>msg</code> gibi komutlarla yazdırılan metinler, doğrudan yazdırılan dizgiler ve eylem adları; oyun dosyasına geri yazılır.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Konum adları, resim yolları, atlamalar, koşullar ve değişkenler asla değiştirilmez. Harflerinizi taşıyamayan eski Windows-1251 dosyası yeni UTF-16 QSP biçiminde kaydedilir.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="html-twine" data-k="html twine sugarcube harlowe interactive fiction">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">16</span>
+              <h3 lang="en">HTML / Twine</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">Bir Twine hikâye <code>.html</code> dosyası (Twine 2 hikâye verisi ya da Twine 1 depolama alanı); oyun klasöründe, <code>www/</code> ya da <code>resources/app/</code> içinde.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">SugarCube ve Harlowe hikâyelerinin pasajları, bağlantıları ve makro metinleri ile SugarCube'un yerleşik arayüz metinleri — <code>.html</code> dosyasına yazılır.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Makrolar, bağlantılar ve kod çalışmaya devam eder; içinde bir makronun ya da bağlantının kaybolduğu satır yazılmaz.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="gamemaker" data-k="gamemaker game maker data.win game.unx yoyo studio">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">17</span>
+              <h3 lang="en">GameMaker</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">Bir <code>data.win</code> (ya da <code>game.unx</code>, <code>game.ios</code>, <code>game.droid</code>) veya tek dosyalık bir GameMaker: Studio 1.4 <code>.exe</code>'si.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr">Oyunun dizgi tablosundaki doğal dil metinleri (varlık ve sembol adları hariç) ve harici JSON, CSV, TXT ya da INI dil dosyaları — yedek alındıktan sonra yamalanır.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr">Yazı tipleri oyunun içindedir; Lexi bunları harfleriniz için denetler, harf eksikse Otopilot Akıllı Sadeleştirme önerebilir.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="srpg-studio" data-k="srpg studio data.dts project.dat localization srpgs tactics">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">18</span>
+              <h3 lang="en">SRPG Studio</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="tr">Nasıl tanınır</span></dt><dd><span data-lang="tr">Bir <code>data.dts</code> arşivi, bir <code>.srpgs</code> proje dosyası, <code>runtime.rts</code> ya da <code>Localization</code> veya <code>Script</code> gibi klasörlerle birlikte <code>project.dat</code>.</span></dd></div>
+              <div><dt><span data-lang="tr"><span lang="en">Lexi</span> neyi çevirir</span></dt><dd><span data-lang="tr"><code>Localization/</code> dosyaları, <code>Plugin</code>/<code>Script</code> <code>.js</code> dosyalarındaki arayüz metinleri, <code>Material</code> içindeki metinler ve okunabildiğinde <code>project.dat</code> içindeki hikâye ve veritabanı — gevşek ya da <code>data.dts</code> içinde.</span></dd></div>
+              <div><dt><span data-lang="tr">Sınırlar</span></dt><dd><span data-lang="tr"><code>project.dat</code> özel bir şifreleme kullanıyorsa ve <code>Localization</code> klasörü yoksa yalnızca betiklerdeki arayüz metinleri çevrilebilir — Lexi bunu açıkça bildirir.</span></dd></div>
+            </dl>
+          </li>
+          </ol>
+          <p class="eng-empty" data-eng-empty hidden><span data-lang="tr">Eşleşen motor yok. Oyun klasörünüzdeki bir dosya adını deneyin; örneğin <code>.exe</code>, <code>.pak</code> ya da <code>data</code>.</span></p>
+        </section>
+
+        <section class="g-block g-prose eng-notes" aria-labelledby="notes-title">
+          <h2 id="notes-title"><span data-lang="tr">Her motor için bilinmesi gerekenler</span></h2>
+          <ul class="notes">
+            <li><span data-lang="tr"><strong>Resimler metin değildir.</strong> Tarama, oyunun metin olarak sakladığı yazıları toplar. Görsellere çizilmiş kelimeler — başlık ekranları, tabelalar, çizime işlenmiş düğmeler — pikseldir ve taramaya girmez.</span></li>
+            <li><span data-lang="tr"><strong>Hiçbir koruma kırılmaz.</strong> Lexi oyunun açıkça ya da motorun standart anahtarıyla sakladığı verileri okur. Şifreli ya da parolalı veriler atlanır; çevrilecek bir şey bulamadığında Lexi nedenini söyler.</span></li>
+            <li><span data-lang="tr"><strong>Yalnızca tek oyunculu.</strong> Unity ve Unreal oyunlarında oyun klasöründe hile koruması (EasyAntiCheat ya da BattlEye) bulunursa eklenti kurulumu engellenir.</span></li>
+            <li><span data-lang="tr"><strong>Eksik harfler.</strong> Oyunun yazı tipleri ya da metin kodlaması harflerinizi gösteremiyorsa Otopilot bunu bildirir: Unreal oyunlarına font yaması, Ren'Py oyunlarına yerleşik yedek yazı tipi eklenebilir; birçok başka motorda Akıllı Sadeleştirme önerilir.</span></li>
+            <li><span data-lang="tr"><strong>Çeviriniz, kendi kullanımınız için.</strong> Oyunun metinleri geliştiricisine aittir. Kendi kullanımınız için çevirin; Türkçe yamayı herkese açık paylaşmadan önce geliştiriciye sorun.</span></li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <!-- FAQ (same text as the FAQPage JSON-LD above) -->
+    <section class="sec faq" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq__grid">
+        <header class="sec__head">
+          <p class="eyebrow"><span data-lang="tr">SSS <span>/</span> Uyumluluk</span></p>
+          <h2 id="faq-title"><span data-lang="tr">Kısa yanıtlar<em>.</em></span></h2>
+        </header>
+        <div class="faq__list">
+          <details>
+            <summary><span data-lang="tr">Lexi'nin oyunumla çalışıp çalışmadığını nasıl anlarım?</span></summary>
+            <p data-lang="tr">Oyun klasörünü Lexi'ye bırakın. Lexi motoru oyunun dosyalarından tanır, genel bakış ekranında gösterir ve çevirebileceği satırları sayan salt-okunur bir tarama yapar. Çevir'e basana kadar oyunda hiçbir şey değişmez.</p>
+          </details>
+          <details>
+            <summary><span data-lang="tr">Oyunumun motoru listede yoksa ne olur?</span></summary>
+            <p data-lang="tr">Lexi klasörde desteklenen 18 motordan birini tanımazsa oyunu desteklenmiyor olarak gösterir ve oyuna çeviri yazmaz.</p>
+          </details>
+          <details>
+            <summary><span data-lang="tr">Lexi şifreli oyunlarla çalışır mı?</span></summary>
+            <p data-lang="tr">Lexi oyunun açıkça ya da motorun standart anahtarıyla sakladığı verileri okur. Şifreli ya da parolalı veriler, örneğin AES ile şifrelenmiş Unreal .pak dosyaları, şifreli KiriKiri .xp3 girdileri, parolalı WOLF RPG arşivleri ya da şifreli Godot .pck girdileri doğrudan okunamaz. Lexi bu korumaları kırmaya çalışmaz; Unreal oyunlarında bunun yerine UE4SS yolunu kullanabilir.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CTA -->
+    <section class="sec g-cta" aria-labelledby="cta-title">
+      <div class="wrap">
+        <div class="g-cta__box">
+          <h2 id="cta-title"><span data-lang="tr">Kendi dilinizde oynamaya hazır mısınız<em>?</em></span></h2>
+          <p data-lang="tr">Lexi Game Translator, Windows 10 ve 11 için ücretsiz indirilebilir — 18 oyun motoru, anahtarsız ücretsiz çeviri, otomatik yedekleme; Basic için hesap gerekmez.</p>
+          <div class="g-cta__actions">
+            <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
+              <span data-lang="tr"><span lang="en">Windows</span> için İndir</span>
+              <span aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="btn" href="/tr/lexi-game-translator/">
+              <span data-lang="tr"><span lang="en">Lexi Game Translator</span> sayfası</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="more" href="/tr/install-help/">
+              <span data-lang="tr">Kurulum yardımı</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+          <p class="g-subhead"><span data-lang="tr">Diğer çeviri rehberleri</span></p>
+          <div class="g-engine-grid">
+            <div class="g-mini-engine">
+              <h3><a href="/tr/renpy-translation-guide/"><span data-lang="tr">Ren'Py oyunu nasıl çevrilir?</span></a></h3>
+              <p data-lang="tr">Görsel romanlar: etiketler, değişkenler ve yazı tipleri; oyun içi dil düğmesiyle.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h3><a href="/tr/rpg-maker-translation-guide/"><span data-lang="tr">RPG Maker oyunu nasıl çevrilir?</span></a></h3>
+              <p data-lang="tr">MV, MZ, VX Ace, VX, XP ve 2000/2003: kontrol kodları, eklentiler ve kodlamalar.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h3><a href="/tr/unity-translation-guide/"><span data-lang="tr"><span lang="en">Unity</span> oyunu nasıl çevrilir?</span></a></h3>
+              <p data-lang="tr">Otopilot, BepInEx, XUnity.AutoTranslator ve Canlı Köprü ile Mono ve IL2CPP oyunları.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h3><a href="/tr/unreal-engine-translation-guide/"><span data-lang="tr"><span lang="en">Unreal Engine</span> oyunu nasıl çevrilir?</span></a></h3>
+              <p data-lang="tr">UE4 ve UE5: .locres tabloları, ayrı bir ~mods yaması, UE4SS ile Otopilot ve font yaması.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h3><a href="/tr/wolf-rpg-translation-guide/"><span data-lang="tr"><span lang="en">WOLF RPG Editor</span> oyunu nasıl çevrilir?</span></a></h3>
+              <p data-lang="tr">Data.wolf, haritalar, ortak olaylar ve veritabanları; Shift-JIS denetimiyle.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <a class="brand" href="/tr/" aria-label="Lexi Apps" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <ul>
+    <li><a href="/tr/"><span data-lang="tr">Ana Site</span></a></li>
+    <li><a href="/tr/lexi-game-translator/" lang="en">Lexi Game Translator</a></li>
+    <li><a href="/tr/install-help/"><span data-lang="tr">Kurulum yardımı</span></a></li>
+    <li><a href="/tr/supported-engines/"><span data-lang="tr">Desteklenen motorlar</span></a></li>
+    <li><a href="/tr/renpy-translation-guide/"><span data-lang="tr"><span lang="en">Ren'Py</span> rehberi</span></a></li>
+    <li><a href="/tr/rpg-maker-translation-guide/"><span data-lang="tr"><span lang="en">RPG Maker</span> rehberi</span></a></li>
+    <li><a href="/tr/unity-translation-guide/"><span data-lang="tr"><span lang="en">Unity</span> rehberi</span></a></li>
+    <li><a href="/tr/unreal-engine-translation-guide/"><span data-lang="tr"><span lang="en">Unreal Engine</span> rehberi</span></a></li>
+    <li><a href="/tr/wolf-rpg-translation-guide/"><span data-lang="tr"><span lang="en">WOLF RPG</span> rehberi</span></a></li>
+    <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" lang="en">Discord</a></li>
+    <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener" lang="en">Patreon</a></li>
+    <li><a href="mailto:lexiapps@protonmail.com" lang="en">lexiapps@protonmail.com</a></li>
+  </ul>
+  <p lang="en">&copy; 2026 Lexi Apps</p>
+</footer>
+
+<script>
+  /* Generated by build_site.py: this is the TR version of the page.
+     The EN/TR menu saves the choice and opens the other language's URL (same #hash).
+     A stored preference is NOT applied on load: each URL always shows its own language. */
+  function setLang(lang, save) {
+    var page = 'tr';
+    var urls = { en: '/supported-engines/', tr: '/tr/supported-engines/' };
+    if (!urls[lang]) lang = page;
+    if (save) {
+      try { localStorage.setItem('lexi-user-lang', lang); } catch (e) {}
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    }
+    if (lang !== page) {
+      window.location.href = urls[lang] + window.location.search + window.location.hash;
+      return;
+    }
+    document.documentElement.setAttribute('lang', page);
+    var enBtn = document.getElementById('lang-en');
+    var trBtn = document.getElementById('lang-tr');
+    var cur = document.getElementById('lang-cur');
+    if (enBtn) enBtn.classList.toggle('is-on', page === 'en');
+    if (trBtn) trBtn.classList.toggle('is-on', page === 'tr');
+    if (cur) cur.textContent = page.toUpperCase();
+  }
+  setLang('tr', false);
+  /* EN/TR buttons: listeners, not onclick="" attributes (the CSP blocks inline handlers). */
+  Array.from(document.querySelectorAll('[data-set-lang]')).forEach(function (btn) {
+    btn.addEventListener('click', function () { setLang(btn.getAttribute('data-set-lang'), true); });
+  });
+</script>
+<script>
+  (function () {
+    var A = window.__lexiAccents;
+    var root = document.documentElement;
+    var current = root.getAttribute('data-accent') || 'ember';
+    var out = document.getElementById('accent-name');
+    function apply(key, save) {
+      var a = A[key] || A.ember;
+      root.style.setProperty('--accent', a[0]);
+      root.style.setProperty('--on-accent', a[1]);
+      root.setAttribute('data-accent', key);
+      if (out) out.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+      Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+        btn.classList.toggle('is-on', btn.getAttribute('data-accent-choice') === key);
+      });
+      if (save) { try { localStorage.setItem('lexi-accent', key); } catch (e) {} }
+    }
+    Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        apply(btn.getAttribute('data-accent-choice'), true);
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      });
+    });
+    apply(current, false);
+  })();
+</script>
+<script type="module" src="/renpy-translation-guide/page.js"></script>
+<script src="/supported-engines/page.js" defer></script>
+</body>
+</html>

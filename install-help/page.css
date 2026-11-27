@@ -35,3 +35,6 @@
 .ih-win__more.ih-hl::after { display: none; }
 .ih-win__more.ih-hl { outline-offset: 2px; }
 @media (max-width: 560px) { .ih-step { padding-left: 18px; padding-top: 74px; } .ih-win__btn { flex: 1; min-width: 0; } }
+/* Page title is an <h1> (one per page) but keeps the site-wide <h2> section-title look (style.css h2 rules). */
+#ih-title { font-size: clamp(2.2rem, 5.4vw, 5.4rem); line-height: 0.95; letter-spacing: -0.015em; font-stretch: 118%; margin: 18px 0 0; text-shadow: 0 0 40px var(--bg); }
+@media (max-width: 380px) { #ih-title { font-size: min(2.2rem, 9.6vw); } }

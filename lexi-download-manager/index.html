@@ -69,6 +69,26 @@
  }
 }
 </script>
+<script type="application/ld+json" data-lang="en">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Lexi Apps",
+      "item": "https://lexiapps.dev/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Lexi Download Manager",
+      "item": "https://lexiapps.dev/lexi-download-manager/"
+    }
+  ]
+}
+</script>
 <meta name="theme-color" content="#05070a">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lexi Apps">
@@ -189,6 +209,18 @@
               <span class="dd__item-left"><span class="dd__num">03</span><span><span data-lang="en">Unity guide</span></span></span>
               <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
             </a>
+            <a class="dd__item" href="/unreal-engine-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">04</span><span><span data-lang="en">Unreal Engine guide</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/wolf-rpg-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">05</span><span><span data-lang="en">WOLF RPG guide</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/supported-engines/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">06</span><span><span data-lang="en">All 18 engines</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
           </div>
         </div>
       </div>
@@ -272,7 +304,7 @@
         <span class="line"><span class="r" style="--i:3"><span data-lang="en">fast<em>.</em></span></span></span>
       </h1>
       <p class="lede r" style="--i:4" data-lang="en">A free download manager for Windows 10 &amp; 11 (64-bit). Multi-part acceleration, 3-stage floating progress dialog, zero native Save-As popups, multiple queues, 25+ built-in file hosts across 200+ official mirrors, smart Debrid routing, 1,000+ video sites with clip trimming, live <em>HLS stream capture</em>, torrents, optional Click'n'Load 2, and official Chrome Web Store &amp; Firefox extensions. No ads, no account.</p>
-      <div class="cta r" style="--i:5" style="display:flex;flex-wrap:wrap;gap:14px;">
+      <div class="cta r" style="--i:5;display:flex;flex-wrap:wrap;gap:14px;">
         <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-download-manager/releases/latest" rel="noopener">
           <span data-lang="en">Download for Windows</span>
           <span aria-hidden="true">&nearr;</span>
@@ -286,6 +318,7 @@
           <span aria-hidden="true">&nearr;</span>
         </a>
       </div>
+      <p class="dl-note r" style="--i:5" data-lang="en">Windows may show a SmartScreen warning the first time, which is normal for new indie apps that are not code-signed yet. <a href="/install-help/">Here&rsquo;s why and how to continue safely&nbsp;&rarr;</a> <span aria-hidden="true">&middot;</span> <a href="privacy.html">Privacy</a></p>
     </div>
     <p class="hero__scroll r" style="--i:6" aria-hidden="true">
       <span data-lang="en">Scroll to enter the core</span>
@@ -510,35 +543,35 @@
             </figcaption>
           </figure>
           <figure class="shot" id="shot-2" role="tabpanel" aria-labelledby="shot-tab-2">
-            <a class="shot__link" href="assets/screenshots/dialog-stage1.png" data-lightbox><img class="shot__img--compact" src="assets/screenshots/dialog-stage1.png" loading="lazy" decoding="async" alt="Lexi Download Manager 3-stage floating download dialog — Stage 1 Save confirmation with live free disk space and recent folder chips."></a>
+            <a class="shot__link" href="assets/screenshots/dialog-stage1.png" data-lightbox><img class="shot__img--compact" src="assets/screenshots/dialog-stage1.png" width="560" height="500" loading="lazy" decoding="async" alt="Lexi Download Manager 3-stage floating download dialog — Stage 1 Save confirmation with live free disk space and recent folder chips."></a>
             <figcaption>
               <span><span data-lang="en">Fig. 02 / 08</span></span>
               <b data-lang="en" style="font-weight:inherit">Floating dialog (Stage 1) — zero browser Save-As popups; live free disk space, recent folders, queue picker, and Browser Handback.</b>
             </figcaption>
           </figure>
           <figure class="shot" id="shot-3" role="tabpanel" aria-labelledby="shot-tab-3">
-            <a class="shot__link" href="assets/screenshots/dialog-stage2.png" data-lightbox><img class="shot__img--compact" src="assets/screenshots/dialog-stage2.png" loading="lazy" decoding="async" alt="Lexi Download Manager 3-stage floating download dialog — Stage 2 Live multi-part progress with SVG transfer speed graph and segment bars."></a>
+            <a class="shot__link" href="assets/screenshots/dialog-stage2.png" data-lightbox><img class="shot__img--compact" src="assets/screenshots/dialog-stage2.png" width="560" height="500" loading="lazy" decoding="async" alt="Lexi Download Manager 3-stage floating download dialog — Stage 2 Live multi-part progress with SVG transfer speed graph and segment bars."></a>
             <figcaption>
               <span><span data-lang="en">Fig. 03 / 08</span></span>
               <b data-lang="en" style="font-weight:inherit">Floating dialog (Stage 2) — real-time multi-part transfer rate chart, parallel segment bars, and inline speed limit.</b>
             </figcaption>
           </figure>
           <figure class="shot" id="shot-4" role="tabpanel" aria-labelledby="shot-tab-4">
-            <a class="shot__link" href="assets/screenshots/dialog-stage3.png" data-lightbox><img class="shot__img--compact" src="assets/screenshots/dialog-stage3.png" loading="lazy" decoding="async" alt="Lexi Download Manager 3-stage floating download dialog — Stage 3 Completed summary with one-click Open File and Open Folder."></a>
+            <a class="shot__link" href="assets/screenshots/dialog-stage3.png" data-lightbox><img class="shot__img--compact" src="assets/screenshots/dialog-stage3.png" width="560" height="500" loading="lazy" decoding="async" alt="Lexi Download Manager 3-stage floating download dialog — Stage 3 Completed summary with one-click Open File and Open Folder."></a>
             <figcaption>
               <span><span data-lang="en">Fig. 04 / 08</span></span>
               <b data-lang="en" style="font-weight:inherit">Floating dialog (Stage 3) — clean completion summary with SHA-256 &amp; Defender check plus one-click Open File / Folder.</b>
             </figcaption>
           </figure>
           <figure class="shot" id="shot-5" role="tabpanel" aria-labelledby="shot-tab-5">
-            <a class="shot__link" href="assets/screenshots/extension-popup.webp" data-lightbox><img src="assets/screenshots/extension-popup.webp" loading="lazy" decoding="async" alt="Lexi Download Manager bundled browser extension popup with HLS stream detection and per-site toggle."></a>
+            <a class="shot__link" href="assets/screenshots/extension-popup.webp" data-lightbox><img src="assets/screenshots/extension-popup.webp" width="1280" height="800" loading="lazy" decoding="async" alt="Lexi Download Manager bundled browser extension popup with HLS stream detection and per-site toggle."></a>
             <figcaption>
               <span><span data-lang="en">Fig. 05 / 08</span></span>
               <b data-lang="en" style="font-weight:inherit">Bundled browser extension — live connection indicator, playing HLS stream capture, and per-site interception toggle.</b>
             </figcaption>
           </figure>
           <figure class="shot" id="shot-6" role="tabpanel" aria-labelledby="shot-tab-6">
-            <a class="shot__link" href="assets/screenshots/link-grabber.webp" data-lightbox><img src="assets/screenshots/link-grabber.webp" loading="lazy" decoding="async" alt="Lexi Download Manager Batch Link Grabber capturing and filtering page links."></a>
+            <a class="shot__link" href="assets/screenshots/link-grabber.webp" data-lightbox><img src="assets/screenshots/link-grabber.webp" width="1280" height="800" loading="lazy" decoding="async" alt="Lexi Download Manager Batch Link Grabber capturing and filtering page links."></a>
             <figcaption>
               <span><span data-lang="en">Fig. 06 / 08</span></span>
               <b data-lang="en" style="font-weight:inherit">Batch Link Grabber (Alt+Shift+G) — filter and queue up to 2,000 page links by extension or pattern in one click.</b>

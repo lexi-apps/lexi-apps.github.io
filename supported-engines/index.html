@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en" class="no-gl is-ready">
+<head>
+<meta charset="utf-8">
+<script data-lexi-probe>
+/* Mirror only: if the main site provably answers, send the visitor there;
+   otherwise (blocked, timeout, ISP block page, wrong content) remember that for this
+   tab session and stay on the mirror. */
+(function () {
+  try {
+    var MAIN = 'https://lexiapps.dev', KEY = 'lexi-main-site-v3';
+    if (window.lexiRedirecting) return;           // a local redirect page is already moving on
+    var ss = null;
+    try { ss = window.sessionStorage; } catch (e) {}
+    var q = new URLSearchParams(location.search);
+    if (q.get('stay') === '1') {                  // ?stay=1 : stay on the mirror for this session
+      try { ss && ss.setItem(KEY, 'stay'); } catch (e) {}
+      return;
+    }
+    try { if (ss && ss.getItem(KEY)) return; } catch (e) {}   // 'stay' or 'unreachable'
+    if (!window.fetch || !window.AbortController) return;
+    // Test hook, local preview only: ?probe=fail simulates the ISP block.
+    var local = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var base = (local && q.get('probe') === 'fail') ? 'https://lexi-probe-test.invalid' : MAIN;
+    var ctl = new AbortController();
+    var timer = setTimeout(function () { ctl.abort(); }, 2500);
+    var fail = function () {                      // blocked, timed out or not our site: stay here
+      clearTimeout(timer);
+      try { ss && ss.setItem(KEY, 'unreachable'); } catch (e) {}
+    };
+    // CORS fetch: only a real answer from our own site (JSON marker) counts, not an opaque one.
+    fetch(base + '/lexi-probe.json?probe=' + Date.now(),
+          { mode: 'cors', cache: 'no-store', credentials: 'omit', signal: ctl.signal })
+      .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+      .then(function (d) {
+        if (!d || d.site !== 'lexi-apps') throw 0;
+        clearTimeout(timer);                      // proven reachable: same page on the main site
+        q.delete('stay'); q.delete('probe');
+        var s = q.toString();
+        location.replace(MAIN + location.pathname + (s ? '?' + s : '') + location.hash);
+      })
+      .catch(fail);
+  } catch (e) {}
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supported Game Engines: Does Lexi Game Translator Work With My Game?</title>
+<meta name="description" content="All 18 game engines Lexi Game Translator supports — Ren'Py, RPG Maker, Unity, Unreal Engine, Godot, Tyrano, WOLF RPG, KiriKiri, QSP, Twine, GameMaker and SRPG Studio — with the files that identify each one, what gets translated and the honest limits.">
+<link rel="canonical" href="https://lexiapps.dev/supported-engines/">
+<link rel="alternate" hreflang="en" href="https://lexiapps.dev/supported-engines/">
+<link rel="alternate" hreflang="tr" href="https://lexiapps.dev/tr/supported-engines/">
+<link rel="alternate" hreflang="x-default" href="https://lexiapps.dev/supported-engines/">
+<meta name="theme-color" content="#05070a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lexi Apps">
+<meta property="og:title" content="Supported Game Engines — Lexi Game Translator">
+<meta property="og:description" content="Does Lexi Game Translator work with your game? All 18 supported engines, how to recognise them from the game folder, what gets translated and the limits.">
+<meta property="og:url" content="https://lexiapps.dev/supported-engines/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="tr_TR">
+<meta property="og:image" content="https://lexiapps.dev/img/translator/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lexi Game Translator app: overview of a translated game">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Supported Game Engines — Lexi Game Translator">
+<meta name="twitter:description" content="Does Lexi Game Translator work with your game? All 18 supported engines, how to recognise them, what gets translated and the limits.">
+<meta name="twitter:image" content="https://lexiapps.dev/img/translator/share.png">
+<script type="application/ld+json" data-lang="en">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "name": "Supported game engines — Lexi Game Translator",
+      "description": "All 18 game engines Lexi Game Translator supports, with the files that identify each one, what gets translated and the honest limits.",
+      "inLanguage": "en",
+      "url": "https://lexiapps.dev/supported-engines/",
+      "dateModified": "2026-11-27",
+      "publisher": { "@type": "Organization", "name": "Lexi Apps", "url": "https://lexiapps.dev/", "logo": { "@type": "ImageObject", "url": "https://lexiapps.dev/logo.svg" } },
+      "about": { "@type": "SoftwareApplication", "name": "Lexi Game Translator", "operatingSystem": "Windows 10, Windows 11", "applicationCategory": "UtilitiesApplication", "url": "https://lexiapps.dev/lexi-game-translator/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Lexi Apps", "item": "https://lexiapps.dev/" },
+        { "@type": "ListItem", "position": 2, "name": "Lexi Game Translator", "item": "https://lexiapps.dev/lexi-game-translator/" },
+        { "@type": "ListItem", "position": 3, "name": "Supported engines", "item": "https://lexiapps.dev/supported-engines/" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "How do I know if Lexi works with my game?", "acceptedAnswer": { "@type": "Answer", "text": "Drop the game folder onto Lexi. It recognises the engine from the game's files, shows it on the overview screen and runs a read-only scan that counts the lines it can translate. Nothing in the game is changed until you press Translate." } },
+        { "@type": "Question", "name": "What if my game's engine is not on the list?", "acceptedAnswer": { "@type": "Answer", "text": "If Lexi does not recognise one of the 18 supported engines in the folder, it shows the game as not supported and does not write a translation into it." } },
+        { "@type": "Question", "name": "Does Lexi work with encrypted games?", "acceptedAnswer": { "@type": "Answer", "text": "Lexi reads what a game stores openly or with the engine's standard key. Encrypted or password-protected data, such as AES-encrypted Unreal .pak files, encrypted KiriKiri .xp3 entries, password-protected WOLF RPG archives or encrypted Godot .pck entries, cannot be read directly. Lexi does not try to break such protection; for Unreal games it can use the UE4SS route instead." } }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/renpy-translation-guide/page.css">
+<link rel="stylesheet" href="/supported-engines/page.css">
+<script>
+  (function () {
+    var A = {
+      ember:  ['#ff5a36', '#0a0605'],
+      acid:   ['#c8ff2e', '#0a0d02'],
+      amber:  ['#ffb224', '#0d0902'],
+      ice:    ['#5ad8ff', '#02090d'],
+      signal: ['#ff2e4d', '#0a0204'],
+      mono:   ['#f2f5f7', '#05070a']
+    };
+    var k = 'ember';
+    try { k = localStorage.getItem('lexi-accent') || k; } catch (e) {}
+    if (!A[k]) k = 'ember';
+    var d = document.documentElement;
+    d.style.setProperty('--accent', A[k][0]);
+    d.style.setProperty('--on-accent', A[k][1]);
+    d.setAttribute('data-accent', k);
+    window.__lexiAccents = A;
+    d.classList.add('js');
+  })();
+</script>
+</head>
+<body>
+<a class="skip-link" href="#top"><span data-lang="en">Skip to content</span></a>
+
+<div class="fallback-core" aria-hidden="true"><i></i><i></i></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<header class="top">
+  <a class="brand" href="/" aria-label="Lexi Apps, back to home" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu"><span class="menu-btn__icon" aria-hidden="true"></span><span class="menu-btn__label"><span data-lang="en">Menu</span></span></button>
+  <div class="top__panel" id="menu">
+    <nav aria-label="Primary">
+      <a class="nav-home" href="/"><span aria-hidden="true">←</span> <span data-lang="en">Home</span></a>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span><span data-lang="en">Apps</span></span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="/lexi-game-translator/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span lang="en">LEXI GAME TRANSLATOR</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-download-manager/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span lang="en">LEXI DOWNLOAD MANAGER</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="dd__item" href="/lexi-dictate/" target="_blank" rel="noopener" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span lang="en">LEXIDICTATE</span></span>
+              <span class="dd__ext" aria-hidden="true">&nearr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="dd">
+        <button type="button" class="dd__btn">
+          <span><span data-lang="en">Guides</span></span>
+          <i class="dd__caret" aria-hidden="true"></i>
+        </button>
+        <div class="dd__menu" role="menu">
+          <div class="dd__box">
+            <a class="dd__item" href="/renpy-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">01</span><span><span data-lang="en">Ren'Py guide</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/rpg-maker-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">02</span><span><span data-lang="en">RPG Maker guide</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/unity-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">03</span><span><span data-lang="en">Unity guide</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/unreal-engine-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">04</span><span><span data-lang="en">Unreal Engine guide</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/wolf-rpg-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">05</span><span><span data-lang="en">WOLF RPG guide</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item is-on" href="/supported-engines/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">06</span><span><span data-lang="en">All 18 engines</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="top__support">
+      <a class="sup-btn sup-btn--discord" href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" title="Join Discord Community">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span lang="en">Discord</span>
+      </a>
+      <a class="sup-btn sup-btn--bmac" href="https://buymeacoffee.com/lexiapps" target="_blank" rel="noopener" title="Buy Me a Coffee">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1v1a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8h15zm1 6a2 2 0 0 0 0-4h-1v4h1zM6 3h2v3H6V3zm4 0h2v3h-2V3zm4 0h2v3h-2V3z"/></svg>
+        <span lang="en">Buy Me a Coffee</span>
+      </a>
+      <a class="sup-btn sup-btn--patreon" href="https://www.patreon.com/cw/LexiApps" target="_blank" rel="noopener" title="Support on Patreon">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.386 2c-3.974 0-7.2 3.226-7.2 7.2s3.226 7.2 7.2 7.2 7.2-3.226 7.2-7.2-3.226-7.2-7.2-7.2zM1.414 2v20h3.52V2h-3.52z"/></svg>
+        <span lang="en">Patreon</span>
+      </a>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Language">
+        <span id="lang-cur">EN</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" id="lang-en" data-set-lang="en" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">EN</span><span lang="en">English</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="dd__item" id="lang-tr" data-set-lang="tr" role="menuitem">
+            <span class="dd__item-left"><span class="dd__num">TR</span><span>Türkçe</span></span>
+            <i class="dd__check" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dd dd--compact dd--right">
+      <button type="button" class="dd__btn" aria-label="Accent color">
+        <i class="dd__swatch" aria-hidden="true"></i>
+        <span id="accent-name" lang="en">Ember</span>
+        <i class="dd__caret" aria-hidden="true"></i>
+      </button>
+      <div class="dd__menu" role="menu">
+        <div class="dd__box">
+          <button type="button" class="dd__item is-on" data-accent-choice="ember" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff5a36"></i><span lang="en">Ember</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="acid" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#c8ff2e"></i><span lang="en">Acid</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="amber" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ffb224"></i><span lang="en">Amber</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="ice" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#5ad8ff"></i><span lang="en">Ice</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="signal" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#ff2e4d"></i><span lang="en">Signal</span></span><i class="dd__check" aria-hidden="true"></i></button>
+          <button type="button" class="dd__item" data-accent-choice="mono" role="menuitem"><span class="dd__item-left"><i class="dd__dot" style="--c:#f2f5f7"></i><span lang="en">Mono</span></span><i class="dd__check" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top" tabindex="-1" class="guide">
+  <div class="deep">
+    <section class="sec" aria-labelledby="g-title" style="padding-top:140px;padding-bottom:0;">
+      <div class="wrap">
+        <header class="sec__head g-head">
+          <nav aria-label="Breadcrumb">
+            <p class="g-crumbs"><a href="/" lang="en">Lexi Apps</a><span aria-hidden="true">/</span><a href="/lexi-game-translator/" lang="en">Lexi Game Translator</a><span aria-hidden="true">/</span><span><span data-lang="en">Supported engines</span></span></p>
+          </nav>
+          <p class="eyebrow"><span data-lang="en">Lexi Game Translator <span>/</span> 18 engines <span>/</span> Compatibility</span></p>
+          <h1 id="g-title"><span data-lang="en">Does Lexi work with my game<em>?</em></span></h1>
+          <p class="sec__lede" data-lang="en"><strong>Lexi Game Translator</strong> supports 18 game engines. Below, each one is listed with the files that identify it in a game folder, what Lexi translates and the limits you should know about — so you can check your game before you download anything.</p>
+          <div class="eng-facts">
+            <div>
+              <b><span data-lang="en">Detected automatically</span></b>
+              <p data-lang="en">Drop the game folder: Lexi recognises the engine from its files and runs a read-only scan first. Nothing changes until you press Translate.</p>
+            </div>
+            <div>
+              <b><span data-lang="en">Backed up first</span></b>
+              <p data-lang="en">Before Lexi writes into game files, it copies what it changes into a backup folder inside the game folder and locks your first backup.</p>
+            </div>
+            <div>
+              <b><span data-lang="en">Codes stay intact</span></b>
+              <p data-lang="en">Every engine has its own list of control codes, tags and variables. A translated line in which one of them went missing is not written.</p>
+            </div>
+          </div>
+        </header>
+
+        <section class="g-block" aria-labelledby="list-title" style="max-width:none;">
+          <h2 id="list-title"><span data-lang="en">All 18 supported engines</span></h2>
+          <div class="eng-tools" data-eng-tools hidden>
+            <input class="eng-filter" id="eng-filter" type="search" autocomplete="off" spellcheck="false" placeholder="Filter: engine, file or folder (e.g. .pak, www/data)" aria-label="Filter the engine list">
+            <p class="eng-count" aria-live="polite"><span data-lang="en"><b data-eng-n>18</b> of 18 engines</span></p>
+          </div>
+          <div class="eng-cols" aria-hidden="true">
+            <span><span data-lang="en">Engine</span></span>
+            <span><span data-lang="en">How to recognise it</span></span>
+            <span><span data-lang="en">What Lexi translates</span></span>
+            <span><span data-lang="en">Limits</span></span>
+          </div>
+          <ol class="eng-list">
+          <li class="eng" id="renpy" data-k="renpy ren'py visual novel rpy rpyc rpa">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">01</span>
+              <h3 lang="en">Ren'Py</h3>
+              <a class="eng__guide" href="/renpy-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>game/</code> folder with <code>.rpy</code>, <code>.rpyc</code> or <code>.rpa</code> files, usually next to a <code>renpy/</code> folder.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Dialogue, choices and interface text, also from compiled <code>.rpyc</code> scripts inside <code>.rpa</code> archives. Written as a separate translation into <code>game/tl/&lt;language&gt;/</code> with an in-game language switch.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">The game's own scripts are not edited. In free Basic the in-game language menu shows a small “Translated with Lexi” line.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-mz" data-k="rpg maker mz rmmz json data plugins package.nw nwjs">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">02</span>
+              <h3 lang="en">RPG Maker MZ</h3>
+              <a class="eng__guide" href="/rpg-maker-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en"><code>data/System.json</code> together with <code>js/rmmz_core.js</code> — or the same files packed into <code>package.nw</code> or into the <code>.exe</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Dialogue, choices, speaker names, database names and descriptions, menu terms and text-like plugin parameters — written into the JSON files and <code>js/plugins.js</code> after a backup.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Text inside plugin <code>.js</code> code, plugin commands and script calls is skipped on purpose. No in-game language switch.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-mv" data-k="rpg maker mv www data json plugins package.nw nwjs">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">03</span>
+              <h3 lang="en">RPG Maker MV</h3>
+              <a class="eng__guide" href="/rpg-maker-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en"><code>www/data/System.json</code> (or <code>data/</code> with <code>js/rpg_core.js</code>) — or packed into <code>package.nw</code> or the <code>.exe</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Dialogue, choices, database names and descriptions, menu terms and text-like plugin parameters — written into the JSON files and <code>js/plugins.js</code> after a backup. Control codes like <code>\C[1]</code> stay intact.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Text inside plugin <code>.js</code> code, plugin commands and script calls is skipped on purpose. No in-game language switch.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-vxace" data-k="rpg maker vx ace rgss3a rvdata2 ruby">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">04</span>
+              <h3 lang="en">RPG Maker VX Ace</h3>
+              <a class="eng__guide" href="/rpg-maker-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>.rgss3a</code> archive next to <code>Game.exe</code>, or <code>.rvdata2</code> files in <code>Data/</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Dialogue, choices, database names and descriptions and the built-in <code>Vocab</code> messages — read from and written back into the archive or the <code>Data</code> files.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Text inside custom Ruby scripts is code and is not translated (only <code>Vocab</code>). No in-game language switch.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-vx" data-k="rpg maker vx rgss2a rvdata ruby">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">05</span>
+              <h3 lang="en">RPG Maker VX</h3>
+              <a class="eng__guide" href="/rpg-maker-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>.rgss2a</code> archive, or <code>.rvdata</code> files in <code>Data/</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Dialogue, choices, database names and descriptions and the built-in <code>Vocab</code> messages — inside the archive or the <code>Data</code> files.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Text inside custom Ruby scripts is not translated. No in-game language switch.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-xp" data-k="rpg maker xp rgssad rxdata ruby">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">06</span>
+              <h3 lang="en">RPG Maker XP</h3>
+              <a class="eng__guide" href="/rpg-maker-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>.rgssad</code> archive, or <code>.rxdata</code> files in <code>Data/</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Dialogue, choices, database names and descriptions — inside the archive or the <code>Data</code> files.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Text inside custom Ruby scripts is not translated. No in-game language switch.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="rpgm-2k" data-k="rpg maker 2000 2003 2k rpg_rt ldb lmt lmu">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">07</span>
+              <h3 lang="en">RPG Maker 2000 / 2003</h3>
+              <a class="eng__guide" href="/rpg-maker-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en"><code>RPG_RT.ldb</code> together with <code>RPG_RT.lmt</code>, <code>RPG_RT.exe</code>, <code>RPG_RT.ini</code> or <code>Map*.lmu</code> maps.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Dialogue, choices and database terms in the <code>.ldb</code>, <code>.lmt</code> and <code>.lmu</code> files.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Old code pages (Shift-JIS, Windows-1252) cannot hold every letter: Lexi keeps the original encoding when the text fits, otherwise saves UTF-8 and records it in <code>RPG_RT.ini</code>; Autopilot can suggest Smart Deaccent.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="unity-mono" data-k="unity mono assembly-csharp bepinex xunity assets _data">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">08</span>
+              <h3 lang="en">Unity (Mono)</h3>
+              <a class="eng__guide" href="/unity-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>&lt;Game&gt;_Data</code> folder with <code>Managed/Assembly-CSharp.dll</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Readable language files (<code>.po</code>, <code>.csv</code>, <code>.json</code>) directly. Otherwise, with your approval, Autopilot installs BepInEx and XUnity.AutoTranslator, pre-extracts packed text from <code>.assets</code> and <code>Assembly-CSharp.dll</code> read-only, and Live Bridge translates new lines while you play.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Setup is blocked for games with anti-cheat. TextMeshPro games need a font asset with your letters; Lexi does not download fonts for Unity.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="unity-il2cpp" data-k="unity il2cpp gameassembly global-metadata bepinex xunity">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">09</span>
+              <h3 lang="en">Unity (IL2CPP)</h3>
+              <a class="eng__guide" href="/unity-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en"><code>GameAssembly.dll</code> next to the <code>.exe</code>, or an <code>il2cpp_data</code> folder inside <code>&lt;Game&gt;_Data</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Same as Mono: language files directly, or Autopilot with BepInEx and XUnity.AutoTranslator; packed text is pre-extracted read-only from <code>.assets</code> and <code>global-metadata.dat</code>, plus Live Bridge.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Setup is blocked for games with anti-cheat. The game's <code>.assets</code>, <code>.dll</code> and metadata files are only read, never written.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="unreal" data-k="unreal engine ue4 ue5 pak locres ue4ss iostore utoc ucas">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">10</span>
+              <h3 lang="en">Unreal Engine 4 / 5</h3>
+              <a class="eng__guide" href="/unreal-engine-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>Content/Paks</code> folder with <code>.pak</code> files, a <code>Content/Localization</code> folder, or <code>Engine/Binaries</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Open <code>.locres</code>/<code>.po</code> tables (loose or in an unencrypted <code>.pak</code>), written into a separate <code>~mods/</code> patch. Closed games: Autopilot installs UE4SS, collects text while the game runs and swaps it in on screen. Optional font patch.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Anti-cheat (EasyAntiCheat, BattlEye) blocks the UE4SS route. AES-encrypted or Oodle-compressed data cannot be read directly. UE4SS needs a 64-bit <code>*-Win64-Shipping.exe</code>.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="godot" data-k="godot pck project.godot tscn tres dialogic dialogue manager po csv">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">11</span>
+              <h3 lang="en">Godot 3 / 4</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>project.godot</code> file, a <code>.pck</code> file, or a game <code>.exe</code> with the <code>.pck</code> embedded.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en"><code>.po</code> and localization <code>.csv</code> files, text in <code>.tscn</code>/<code>.tres</code> scenes, JSON, Dialogic timelines and Dialogue Manager <code>.dialogue</code> files — loose or inside the <code>.pck</code>, which is patched after a backup.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Encrypted <code>.pck</code> entries are skipped. With per-language <code>.po</code> files, Lexi adds your language and leaves the others untouched.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="tyrano" data-k="tyrano tyranoscript tyranobuilder ks scenario electron app.asar">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">12</span>
+              <h3 lang="en">TyranoScript / TyranoBuilder</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>tyrano/</code> folder (also under <code>resources/app/</code>), a <code>resources/app.asar</code> containing Tyrano, or <code>data/scenario/</code> next to an <code>index.html</code> that loads Tyrano.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Scenario <code>.ks</code> scripts: dialogue, choice buttons and text in tags such as <code>[glink]</code> or <code>[ptext]</code> — loose or inside the Electron <code>app.asar</code>.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Tyrano tags stay as they are; a line in which a tag went missing is not written.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="wolf-rpg" data-k="wolf rpg editor wolf data.wolf mps dat commonevent database">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">13</span>
+              <h3 lang="en">WOLF RPG Editor</h3>
+              <a class="eng__guide" href="/wolf-rpg-translation-guide/"><span data-lang="en">Step-by-step guide</span> <span aria-hidden="true">&rarr;</span></a>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>Data.wolf</code> (or other <code>.wolf</code>) archive, or <code>Data/BasicData</code> and <code>Data/MapData</code> folders.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Messages and choices from map and common events, text from string operations and event calls, and database text fields — in the <code>Data</code> folder or inside the <code>.wolf</code> archive.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Password-protected <code>.wolf</code> archives and WOLF RPG Editor Pro files are skipped. Editor 2 games use Shift-JIS; Autopilot can suggest Smart Deaccent.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="kirikiri" data-k="kirikiri krkr kag xp3 ks tjs visual novel">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">14</span>
+              <h3 lang="en">KiriKiri (KAG)</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en"><code>.xp3</code> archives, <code>startup.tjs</code>, a <code>krkr*.exe</code>, or <code>data/system/Config.tjs</code> with <code>.ks</code> scripts.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">KAG <code>.ks</code> scenario scripts — dialogue, speaker names and <code>[link]</code> choices — loose or inside readable <code>.xp3</code> archives, respecting <code>patch.xp3</code> layers.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Encrypted <code>.xp3</code> entries cannot be read. The original encoding is kept; a Shift-JIS script that cannot hold your letters is saved as UTF-16.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="qsp" data-k="qsp quest soft player gam qsps text adventure">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">15</span>
+              <h3 lang="en">QSP</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>.qsp</code>, <code>.gam</code> or <code>.qsps</code> game file.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Text printed by commands such as <code>*pl</code>, <code>pl</code> or <code>msg</code>, plain printed strings and action names, written back into the game file.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Location names, image paths, jumps, conditions and variables are never changed. An old Windows-1251 file that cannot hold your letters is saved in the newer UTF-16 QSP format.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="html-twine" data-k="html twine sugarcube harlowe interactive fiction">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">16</span>
+              <h3 lang="en">HTML / Twine</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A Twine story <code>.html</code> file (Twine 2 story data or a Twine 1 store area), in the game folder, <code>www/</code> or <code>resources/app/</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Passages, links and macro text of SugarCube and Harlowe stories, plus SugarCube's built-in interface strings — written into the <code>.html</code> file.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Macros, links and code keep working; a line in which a macro or link went missing is not written.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="gamemaker" data-k="gamemaker game maker data.win game.unx yoyo studio">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">17</span>
+              <h3 lang="en">GameMaker</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>data.win</code> (or <code>game.unx</code>, <code>game.ios</code>, <code>game.droid</code>), or a single-file GameMaker: Studio 1.4 <code>.exe</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en">Natural-language strings in the game's string table (asset and symbol names excluded) and external JSON, CSV, TXT or INI language files — patched after a backup.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">Fonts are built into the game; Lexi checks them for your letters and Autopilot can suggest Smart Deaccent when letters are missing.</span></dd></div>
+            </dl>
+          </li>
+          <li class="eng" id="srpg-studio" data-k="srpg studio data.dts project.dat localization srpgs tactics">
+            <div class="eng__head">
+              <span class="eng__n" aria-hidden="true">18</span>
+              <h3 lang="en">SRPG Studio</h3>
+            </div>
+            <dl class="eng__fields">
+              <div><dt><span data-lang="en">How to recognise it</span></dt><dd><span data-lang="en">A <code>data.dts</code> archive, a <code>.srpgs</code> project file, <code>runtime.rts</code>, or <code>project.dat</code> with folders such as <code>Localization</code> or <code>Script</code>.</span></dd></div>
+              <div><dt><span data-lang="en">What Lexi translates</span></dt><dd><span data-lang="en"><code>Localization/</code> files, interface text in <code>Plugin</code>/<code>Script</code> <code>.js</code> files, text in <code>Material</code>, and the story and database in <code>project.dat</code> when it can be read — loose or inside <code>data.dts</code>.</span></dd></div>
+              <div><dt><span data-lang="en">Limits</span></dt><dd><span data-lang="en">If <code>project.dat</code> uses a custom encryption and there is no <code>Localization</code> folder, only the interface text from scripts can be translated — Lexi tells you so.</span></dd></div>
+            </dl>
+          </li>
+          </ol>
+          <p class="eng-empty" data-eng-empty hidden><span data-lang="en">No engine matches. Try a file name from your game folder, such as <code>.exe</code>, <code>.pak</code> or <code>data</code>.</span></p>
+        </section>
+
+        <section class="g-block g-prose eng-notes" aria-labelledby="notes-title">
+          <h2 id="notes-title"><span data-lang="en">Good to know for every engine</span></h2>
+          <ul class="notes">
+            <li><span data-lang="en"><strong>Pictures are not text.</strong> The scan collects text the game stores as text. Words drawn into images — title screens, signs, buttons painted into the artwork — are pixels and are not part of it.</span></li>
+            <li><span data-lang="en"><strong>No protection is broken.</strong> Lexi reads what a game stores openly or with the engine's standard key. Encrypted or password-protected data is skipped, and Lexi tells you why when it finds nothing to translate.</span></li>
+            <li><span data-lang="en"><strong>Single-player only.</strong> For Unity and Unreal, plugin setup is blocked when anti-cheat (EasyAntiCheat or BattlEye) is found in the game folder.</span></li>
+            <li><span data-lang="en"><strong>Missing letters.</strong> Where a game's fonts or text encoding cannot show your letters, Autopilot says so: Unreal games can get a font patch, Ren'Py games get a bundled fallback font, and several other engines get a Smart Deaccent suggestion.</span></li>
+            <li><span data-lang="en"><strong>Your translation, your use.</strong> A game's text belongs to its developer. Translate for your own use, and ask the developer before you share a translated patch publicly.</span></li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <!-- FAQ (same text as the FAQPage JSON-LD above) -->
+    <section class="sec faq" id="faq" aria-labelledby="faq-title">
+      <div class="wrap faq__grid">
+        <header class="sec__head">
+          <p class="eyebrow"><span data-lang="en">FAQ <span>/</span> Compatibility</span></p>
+          <h2 id="faq-title"><span data-lang="en">Short answers<em>.</em></span></h2>
+        </header>
+        <div class="faq__list">
+          <details>
+            <summary><span data-lang="en">How do I know if Lexi works with my game?</span></summary>
+            <p data-lang="en">Drop the game folder onto Lexi. It recognises the engine from the game's files, shows it on the overview screen and runs a read-only scan that counts the lines it can translate. Nothing in the game is changed until you press Translate.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">What if my game's engine is not on the list?</span></summary>
+            <p data-lang="en">If Lexi does not recognise one of the 18 supported engines in the folder, it shows the game as not supported and does not write a translation into it.</p>
+          </details>
+          <details>
+            <summary><span data-lang="en">Does Lexi work with encrypted games?</span></summary>
+            <p data-lang="en">Lexi reads what a game stores openly or with the engine's standard key. Encrypted or password-protected data, such as AES-encrypted Unreal .pak files, encrypted KiriKiri .xp3 entries, password-protected WOLF RPG archives or encrypted Godot .pck entries, cannot be read directly. Lexi does not try to break such protection; for Unreal games it can use the UE4SS route instead.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. CTA -->
+    <section class="sec g-cta" aria-labelledby="cta-title">
+      <div class="wrap">
+        <div class="g-cta__box">
+          <h2 id="cta-title"><span data-lang="en">Ready to play in your language<em>?</em></span></h2>
+          <p data-lang="en">Lexi Game Translator is free to download for Windows 10 and 11 — 18 engines, keyless free translation, automatic backups, no account required for Basic.</p>
+          <div class="g-cta__actions">
+            <a class="btn btn--solid" href="https://github.com/lexi-apps/lexi-renpy-translator/releases/latest" rel="noopener">
+              <span data-lang="en">Download for Windows</span>
+              <span aria-hidden="true">&nearr;</span>
+            </a>
+            <a class="btn" href="/lexi-game-translator/">
+              <span data-lang="en">About <span lang="en">Lexi Game Translator</span></span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="more" href="/install-help/">
+              <span data-lang="en">Install help</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+          <p class="g-subhead"><span data-lang="en">More translation guides</span></p>
+          <div class="g-engine-grid">
+            <div class="g-mini-engine">
+              <h3><a href="/renpy-translation-guide/"><span data-lang="en">How to translate a Ren'Py game</span></a></h3>
+              <p data-lang="en">Visual novels: tags, variables and fonts, with an in-game language switch.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h3><a href="/rpg-maker-translation-guide/"><span data-lang="en">How to translate an RPG Maker game</span></a></h3>
+              <p data-lang="en">MV, MZ, VX Ace, VX, XP and 2000/2003: control codes, plugins and encodings.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h3><a href="/unity-translation-guide/"><span data-lang="en">How to translate a Unity game</span></a></h3>
+              <p data-lang="en">Mono and IL2CPP games with Autopilot, BepInEx, XUnity.AutoTranslator and Live Bridge.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h3><a href="/unreal-engine-translation-guide/"><span data-lang="en">How to translate an Unreal Engine game</span></a></h3>
+              <p data-lang="en">UE4 and UE5: .locres tables, a separate ~mods patch, UE4SS Autopilot and a font patch.</p>
+            </div>
+            <div class="g-mini-engine">
+              <h3><a href="/wolf-rpg-translation-guide/"><span data-lang="en">How to translate a WOLF RPG Editor game</span></a></h3>
+              <p data-lang="en">Data.wolf, maps, common events and databases, with a Shift-JIS check.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="foot">
+  <a class="brand" href="/" aria-label="Lexi Apps" lang="en">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+      <path class="mark__l" d="M5 3h5v21h17v5H5z"/>
+      <path class="mark__d" d="M21 3l6.5 8L21 19l-6.5-8z"/>
+    </svg>
+    <span>Lexi Apps</span>
+  </a>
+  <ul>
+    <li><a href="/"><span data-lang="en">Main Site</span></a></li>
+    <li><a href="/lexi-game-translator/" lang="en">Lexi Game Translator</a></li>
+    <li><a href="/install-help/"><span data-lang="en">Install help</span></a></li>
+    <li><a href="/supported-engines/"><span data-lang="en">Supported engines</span></a></li>
+    <li><a href="/renpy-translation-guide/"><span data-lang="en">Ren'Py guide</span></a></li>
+    <li><a href="/rpg-maker-translation-guide/"><span data-lang="en">RPG Maker guide</span></a></li>
+    <li><a href="/unity-translation-guide/"><span data-lang="en">Unity guide</span></a></li>
+    <li><a href="/unreal-engine-translation-guide/"><span data-lang="en">Unreal Engine guide</span></a></li>
+    <li><a href="/wolf-rpg-translation-guide/"><span data-lang="en">WOLF RPG guide</span></a></li>
+    <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" lang="en">Discord</a></li>
+    <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener" lang="en">Patreon</a></li>
+    <li><a href="mailto:lexiapps@protonmail.com" lang="en">lexiapps@protonmail.com</a></li>
+  </ul>
+  <p lang="en">&copy; 2026 Lexi Apps</p>
+</footer>
+
+<script>
+  /* Generated by build_site.py: this is the EN version of the page.
+     The EN/TR menu saves the choice and opens the other language's URL (same #hash).
+     A stored preference is NOT applied on load: each URL always shows its own language. */
+  function setLang(lang, save) {
+    var page = 'en';
+    var urls = { en: '/supported-engines/', tr: '/tr/supported-engines/' };
+    if (!urls[lang]) lang = page;
+    if (save) {
+      try { localStorage.setItem('lexi-user-lang', lang); } catch (e) {}
+      if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    }
+    if (lang !== page) {
+      window.location.href = urls[lang] + window.location.search + window.location.hash;
+      return;
+    }
+    document.documentElement.setAttribute('lang', page);
+    var enBtn = document.getElementById('lang-en');
+    var trBtn = document.getElementById('lang-tr');
+    var cur = document.getElementById('lang-cur');
+    if (enBtn) enBtn.classList.toggle('is-on', page === 'en');
+    if (trBtn) trBtn.classList.toggle('is-on', page === 'tr');
+    if (cur) cur.textContent = page.toUpperCase();
+  }
+  setLang('en', false);
+  /* EN/TR buttons: listeners, not onclick="" attributes (the CSP blocks inline handlers). */
+  Array.from(document.querySelectorAll('[data-set-lang]')).forEach(function (btn) {
+    btn.addEventListener('click', function () { setLang(btn.getAttribute('data-set-lang'), true); });
+  });
+</script>
+<script>
+  (function () {
+    var A = window.__lexiAccents;
+    var root = document.documentElement;
+    var current = root.getAttribute('data-accent') || 'ember';
+    var out = document.getElementById('accent-name');
+    function apply(key, save) {
+      var a = A[key] || A.ember;
+      root.style.setProperty('--accent', a[0]);
+      root.style.setProperty('--on-accent', a[1]);
+      root.setAttribute('data-accent', key);
+      if (out) out.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+      Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+        btn.classList.toggle('is-on', btn.getAttribute('data-accent-choice') === key);
+      });
+      if (save) { try { localStorage.setItem('lexi-accent', key); } catch (e) {} }
+    }
+    Array.from(document.querySelectorAll('[data-accent-choice]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        apply(btn.getAttribute('data-accent-choice'), true);
+        if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+      });
+    });
+    apply(current, false);
+  })();
+</script>
+<script type="module" src="/renpy-translation-guide/page.js"></script>
+<script src="/supported-engines/page.js" defer></script>
+</body>
+</html>

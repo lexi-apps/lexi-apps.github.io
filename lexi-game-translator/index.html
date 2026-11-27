@@ -83,6 +83,26 @@
   ]
 }
 </script>
+<script type="application/ld+json" data-lang="en">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Lexi Apps",
+      "item": "https://lexiapps.dev/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Lexi Game Translator",
+      "item": "https://lexiapps.dev/lexi-game-translator/"
+    }
+  ]
+}
+</script>
 <link rel="icon" type="image/svg+xml" href="/logo.svg">
 <link rel="preload" href="/fonts/anybody-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -186,6 +206,18 @@
               <span class="dd__item-left"><span class="dd__num">03</span><span><span data-lang="en">Unity guide</span></span></span>
               <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
             </a>
+            <a class="dd__item" href="/unreal-engine-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">04</span><span><span data-lang="en">Unreal Engine guide</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/wolf-rpg-translation-guide/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">05</span><span><span data-lang="en">WOLF RPG guide</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
+            <a class="dd__item" href="/supported-engines/" role="menuitem">
+              <span class="dd__item-left"><span class="dd__num">06</span><span><span data-lang="en">All 18 engines</span></span></span>
+              <span class="dd__ext dd__ext--in" aria-hidden="true">&rarr;</span>
+            </a>
           </div>
         </div>
       </div>
@@ -283,6 +315,7 @@
           <span aria-hidden="true">&nearr;</span>
         </a>
       </div>
+      <p class="dl-note r" style="--i:5" data-lang="en">Windows may show a SmartScreen warning the first time, which is normal for new indie apps that are not code-signed yet. <a href="/install-help/">Here&rsquo;s why and how to continue safely&nbsp;&rarr;</a> <span aria-hidden="true">&middot;</span> <a href="privacy.html">Privacy</a></p>
     </div>
     <p class="hero__scroll r" style="--i:6" aria-hidden="true">
       <span data-lang="en">Scroll to enter the core</span>
@@ -409,7 +442,7 @@
           <h4>
             <span data-lang="en">Drop the game folder or .exe</span>
           </h4>
-          <p data-lang="en">Lexi auto-detects 18 engines — Ren'Py, RPG Maker 2000–MZ, Unity, Unreal 4/5, Godot 3/4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio.</p>
+          <p data-lang="en">Lexi auto-detects 18 engines — Ren'Py, RPG Maker 2000–MZ, Unity, Unreal 4/5, Godot 3/4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio. <a href="/supported-engines/">See all supported engines</a>.</p>
         </li>
         <li class="step">
           <span class="step__n" aria-hidden="true">02</span>
@@ -697,7 +730,7 @@
       <div class="faq__list reveal">
         <details>
           <summary><span data-lang="en">Which game engines are supported?</span></summary>
-          <p data-lang="en">18 engines: Ren'Py, RPG Maker (2000/2003, XP, VX, VX Ace, MV, MZ), Unity (Mono &amp; IL2CPP), Unreal Engine 4 &amp; 5, Godot 3 &amp; 4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio.</p>
+          <p data-lang="en">18 engines: Ren'Py, RPG Maker (2000/2003, XP, VX, VX Ace, MV, MZ), Unity (Mono &amp; IL2CPP), Unreal Engine 4 &amp; 5, Godot 3 &amp; 4, Tyrano, WOLF RPG, KiriKiri, QSP, HTML/Twine, GameMaker, and SRPG Studio. How each one is recognised, what gets translated and the limits: <a href="/supported-engines/">see all supported engines</a>.</p>
         </details>
         <details>
           <summary><span data-lang="en">How do I translate a Ren'Py game, step by step?</span></summary>
@@ -705,7 +738,7 @@
         </details>
         <details>
           <summary><span data-lang="en">How do I translate an RPG Maker or Unity game?</span></summary>
-          <p data-lang="en">The workflow is the same: drop the game folder, choose your language, press Translate. RPG Maker games are translated directly in their data files after a backup; Unity games get one-click BepInEx + XUnity setup through Autopilot. See the step-by-step <a href="/rpg-maker-translation-guide/">RPG Maker translation guide</a> and <a href="/unity-translation-guide/">Unity translation guide</a>.</p>
+          <p data-lang="en">The workflow is the same: drop the game folder, choose your language, press Translate. RPG Maker games are translated directly in their data files after a backup; Unity games get one-click BepInEx + XUnity setup through Autopilot. See the step-by-step <a href="/rpg-maker-translation-guide/">RPG Maker translation guide</a> and <a href="/unity-translation-guide/">Unity translation guide</a> — and for other engines the <a href="/unreal-engine-translation-guide/">Unreal Engine</a> and <a href="/wolf-rpg-translation-guide/">WOLF RPG</a> guides.</p>
         </details>
         <details>
           <summary><span data-lang="en">Where do translations go, and can I undo them?</span></summary>
@@ -776,6 +809,9 @@
       <li><a href="/renpy-translation-guide/"><span data-lang="en">Ren'Py guide</span></a></li>
       <li><a href="/rpg-maker-translation-guide/"><span data-lang="en">RPG Maker guide</span></a></li>
       <li><a href="/unity-translation-guide/"><span data-lang="en">Unity guide</span></a></li>
+      <li><a href="/unreal-engine-translation-guide/"><span data-lang="en">Unreal Engine guide</span></a></li>
+      <li><a href="/wolf-rpg-translation-guide/"><span data-lang="en">WOLF RPG guide</span></a></li>
+      <li><a href="/supported-engines/"><span data-lang="en">Supported engines</span></a></li>
       <li><a href="https://discord.gg/HN9eWThUn2" target="_blank" rel="noopener" lang="en">Discord</a></li>
       <li><a href="https://www.patreon.com/cw/LexiApps" rel="noopener" lang="en">Patreon</a></li>
       <li><a href="https://buymeacoffee.com/lexiapps" rel="noopener" lang="en">Buy Me a Coffee</a></li>
