@@ -664,6 +664,8 @@ html[lang="tr"] [data-lang="tr"] { display: revert !important; }
 .dd__num { color: var(--accent); font-weight: 500; }
 .dd__ext { color: var(--dim); font-size: 11px; transition: transform 0.2s, color 0.2s; }
 .dd__item:hover .dd__ext { color: var(--accent); transform: translate(2px, -2px); }
+/* same-tab items (guides): the arrow points right, so it moves right */
+.dd__item:hover .dd__ext--in { transform: translateX(3px); }
 .dd__dot { width: 8px; height: 8px; background: var(--c, var(--accent)); transform: rotate(45deg); flex: none; }
 .dd__item.is-on { color: #fff; background: rgba(223, 234, 241, 0.04); }
 .dd__item.is-on .dd__check { width: 6px; height: 6px; background: var(--accent); transform: rotate(45deg); }
@@ -738,3 +740,35 @@ html[lang="tr"] [data-lang="tr"] { display: revert !important; }
 .app__shot:hover, .app__shot:focus-visible { border-color: var(--accent); }
 .app__shot:hover img, .app__shot:focus-visible img { opacity: 1; }
 @media (max-width: 1120px) { .app__shot { max-width: 560px; } }
+
+/* Home: Game Translator card, one-line links to the three translation guides */
+.app__guides { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 18px; margin-top: 14px; font: 500 12px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; }
+.app__guides-k { color: var(--dim); }
+.app__guides a { display: inline-flex; align-items: center; min-height: 40px; border-bottom: 1px solid var(--line); transition: border-color 0.25s, color 0.25s; }
+.app__guides a:hover { border-color: var(--accent); color: #fff; }
+
+/* Home: translation guides section (three link cards) */
+.sec.guides { padding-top: clamp(70px, 11vh, 130px); padding-bottom: clamp(20px, 4vh, 50px); }
+.guides .sec__head { margin-bottom: clamp(28px, 5vh, 52px); }
+.guides h2 { font-size: clamp(1.9rem, 3.8vw, 3.6rem); }
+.guides .sec__lede { margin-top: 20px; }
+.guides__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 28px); }
+.guide-card {
+  display: flex; flex-direction: column; height: 100%; padding: 22px 24px 18px;
+  background: rgba(5, 7, 10, 0.78); border: 1px solid var(--line); border-top: 2px solid var(--accent);
+  transition: border-color 0.25s, background 0.25s;
+}
+.guide-card__n { font: 500 12px/1 var(--mono); letter-spacing: 0.14em; color: var(--accent); }
+.guide-card__name { margin: 18px 0 12px; font: 620 clamp(1.35rem, 2.1vw, 1.9rem)/1.05 var(--display); font-stretch: 112%; text-transform: uppercase; color: #fff; }
+.guide-card__what { margin-bottom: 22px; font-size: 15.5px; color: #c9d5dd; }
+.guide-card__go {
+  display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; margin-top: auto; min-height: 40px;
+  font: 500 12px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase;
+  border-bottom: 1px solid var(--line); transition: border-color 0.25s, color 0.25s;
+}
+.guide-card__go > span:last-child { transition: transform 0.25s; }
+.guide-card:hover, .guide-card:focus-visible { border-color: var(--accent); background: rgba(5, 7, 10, 0.9); }
+.guide-card:hover .guide-card__go { border-color: var(--accent); color: #fff; }
+.guide-card:hover .guide-card__go > span:last-child { transform: translateX(3px); }
+.guide-card:focus-visible { outline-offset: 3px; }
+@media (max-width: 900px) { .guides__grid { grid-template-columns: 1fr; } }
