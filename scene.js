@@ -19,7 +19,11 @@ const FOV = 35;
 const CAM_DIST = 11; // camera-to-formation distance at both ends of the flight
 const B_Z = -17; // depth of the second formation
 
-function buildAtlas(size) {
+// Give the browser a turn between setup steps, so building the scene is several short tasks
+// instead of one long one that would hold up taps and scrolling.
+const nextTask = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+async function buildAtlas(size) {
   const cell = size / GRID;
   const c = document.createElement('canvas');
   c.width = c.height = size;
@@ -34,9 +38,10 @@ function buildAtlas(size) {
   const src = Array.from(FOREIGN);
   const glyphs = latin.slice();
   for (let i = 0; i < N_FOREIGN; i++) glyphs.push(src[i % src.length]);
-  glyphs.forEach((g, i) => {
-    ctx.fillText(g, ((i % GRID) + 0.5) * cell, (Math.floor(i / GRID) + 0.54) * cell);
-  });
+  for (let i = 0; i < glyphs.length; i++) {
+    if (i && i % 64 === 0) await nextTask(); // glyph drawing (font fallback for many scripts) in four parts
+    ctx.fillText(glyphs[i], ((i % GRID) + 0.5) * cell, (Math.floor(i / GRID) + 0.54) * cell);
+  }
   const tex = new THREE.CanvasTexture(c);
   tex.minFilter = THREE.LinearMipmapLinearFilter;
   tex.magFilter = THREE.LinearFilter;
@@ -310,7 +315,7 @@ function pickTier(gl, small) {
   return { tier: why.length ? 'low' : 'high', forced: false, why: why.join(', ') || 'auto' };
 }
 
-export function createScene(canvas) {
+export async function createScene(canvas) {
   const vmin = Math.min(window.innerWidth, window.innerHeight);
   const small = (vmin > 0 && vmin < 720) || window.matchMedia('(pointer: coarse)').matches;
   const density = small ? 1.45 : 1.0;
@@ -327,6 +332,7 @@ export function createScene(canvas) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(FOV, 1, 0.1, 80);
 
+  await nextTask();
   const { A, solid, nDust } = buildA(density);
   const count = solid + nDust;
   // a page opened in a background tab can report a 0x0 viewport: never let that reach the layout maths
@@ -336,7 +342,9 @@ export function createScene(canvas) {
   };
   let aspect = viewAspect();
   let builtAspect = aspect;
+  await nextTask();
   let { B, type, conv, sweep } = buildB(count, solid, density, aspect);
+  await nextTask();
 
   // Instances are drawn in a shuffled order (perm[slot] = formation index). With additive blending and no depth
   // test the draw order does not change the image, but it lets a lower tier draw only the first N instances and
@@ -383,7 +391,8 @@ export function createScene(canvas) {
   };
   applyParticles();
 
-  const atlas = buildAtlas(small || low ? 1024 : 2048);
+  await nextTask();
+  const atlas = await buildAtlas(small || low ? 1024 : 2048);
   const uniforms = {
     uTime: { value: 0 },
     uMorph: { value: 0 },
@@ -634,6 +643,16 @@ export function createScene(canvas) {
     cancelAnimationFrame(raf);
     raf = 0;
   }
+  // upload the glyph atlas and compile the shaders as separate tasks before the first frame
+  await nextTask();
+  renderer.initTexture(atlas);
+  await nextTask();
+  try {
+    await renderer.compileAsync(scene, camera);
+  } catch (e) {
+    /* the first frame compiles the shaders instead */
+  }
+  await nextTask();
   document.addEventListener('visibilitychange', () => (document.hidden ? pause() : play()));
   play();
 

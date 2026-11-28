@@ -335,6 +335,9 @@ h1 .line > span { display: inline-block; }
 /* intro reveals (only when JS is running) */
 .js .r { opacity: 0; transform: translateY(26px); transition: opacity 0.9s ease, transform 1.1s cubic-bezier(0.16, 1, 0.3, 1); transition-delay: calc(0.25s + var(--i, 0) * 0.09s); }
 .js h1 .r { opacity: 1; transform: translateY(105%); }
+/* the hero paragraph is the page's largest text: it is painted at once (under the intro loader) and only
+   slides up; the loader fading out over it gives the fade-in */
+.js .lede.r { opacity: 1; }
 .js.is-ready .r { opacity: 1; transform: none; }
 .js .hero__scroll.r { transform: translateX(-50%); }
 

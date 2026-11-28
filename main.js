@@ -8,11 +8,42 @@ const forceNoGl = new URLSearchParams(window.location.search).has('nogl'); // ?n
 const t0 = performance.now();
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
+// The 3D scene and the scroll libraries are not needed for the first paint: they load once the page has
+// loaded and the browser is idle, so the text is on screen at once (the scene assembles behind it when ready).
+const SCROLL_LIBS = ['/vendor/gsap-3.12.5/gsap.min.js', '/vendor/gsap-3.12.5/ScrollTrigger.min.js', '/vendor/lenis-1.1.14/lenis.min.js'];
+function loadScript(src) {
+  return new Promise((resolve) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = false; // run in list order: ScrollTrigger needs gsap
+    s.onload = () => resolve(true);
+    s.onerror = () => resolve(false); // a missing library: setupScroll falls back to native scrolling
+    document.head.appendChild(s);
+  });
+}
+function afterLoadIdle() {
+  return new Promise((resolve) => {
+    let started = false;
+    const go = () => {
+      if (started) return;
+      started = true;
+      if ('requestIdleCallback' in window) window.requestIdleCallback(() => resolve(), { timeout: 1000 });
+      else setTimeout(resolve, 50);
+    };
+    if (document.readyState === 'complete') go();
+    else {
+      window.addEventListener('load', go, { once: true });
+      setTimeout(go, 4000); // a slow image must not hold the scene back for long
+    }
+  });
+}
+
 async function loadScene() {
   if (reduced || forceNoGl) return null;
+  await afterLoadIdle();
   try {
-    const mod = await import('./scene.js');
-    return mod.createScene($('#gl'));
+    const [mod] = await Promise.all([import('./scene.js'), Promise.all(SCROLL_LIBS.map(loadScript))]);
+    return await mod.createScene($('#gl'));
   } catch (err) {
     console.info('Lexi Apps: 3D scene unavailable, showing the static version.', err && err.message);
     return null;
@@ -267,10 +298,11 @@ function setupScroll(scene, updateProgress) {
 }
 
 // in-page anchors: let the smooth scroller fly there (native jump when it is not running)
-function setupAnchors(lenis) {
+function setupAnchors() {
   $$('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', (e) => {
       closeMenu();
+      const lenis = lenisRef; // null until the smooth scroller runs (or when it never does)
       const target = document.querySelector(a.getAttribute('href'));
       if (!target || !lenis) return;
       e.preventDefault();
@@ -309,34 +341,40 @@ async function boot() {
   setupDropdowns();
   setupViewer();
   const updateProgress = setupProgress();
-  const scene = await loadScene();
   setupReveals();
+  setupAnchors();
+  // scroll-linked details follow native scrolling until (or unless) the smooth scroller takes over
+  let queued = false;
+  const onNativeScroll = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; updateProgress(); });
+  };
+  window.addEventListener('scroll', onNativeScroll, { passive: true });
 
-  if (!scene) {
+  if (reduced || forceNoGl) {
     root.classList.add('no-gl', 'is-ready');
-    setupAnchors(null);
-    let queued = false;
-    window.addEventListener('scroll', () => {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(() => { queued = false; updateProgress(); });
-    }, { passive: true });
     return;
   }
+  // first page view of a session keeps the intro a moment; later views skip the wait.
+  // The intro no longer waits for the 3D scene, which loads after the page (see loadScene).
+  let seen = false;
+  try { seen = sessionStorage.getItem('lexi-seen') === '1'; sessionStorage.setItem('lexi-seen', '1'); } catch (e) { /* storage unavailable: treat as first view */ }
+  const wait = Math.max(0, (seen ? 0 : 700) - (performance.now() - t0));
+  const introDone = new Promise((resolve) => setTimeout(() => { root.classList.add('is-ready'); resolve(); }, wait));
+
+  const scene = await loadScene();
+  if (!scene) {
+    root.classList.add('no-gl', 'is-ready');
+    return;
+  }
+  window.removeEventListener('scroll', onNativeScroll);
   sceneRef = scene;
   scene.setAccent((ACCENTS[root.getAttribute('data-accent')] || ACCENTS.ember)[0]);
   setupHud(scene);
   lenisRef = setupScroll(scene, updateProgress);
-  setupAnchors(lenisRef);
-
-  // first page view of a session keeps the intro a moment; later views skip the wait
-  let seen = false;
-  try { seen = sessionStorage.getItem('lexi-seen') === '1'; sessionStorage.setItem('lexi-seen', '1'); } catch (e) { /* storage unavailable: treat as first view */ }
-  const wait = Math.max(0, (seen ? 0 : 700) - (performance.now() - t0));
-  setTimeout(() => {
-    root.classList.add('is-ready');
-    scene.start();
-  }, wait);
+  await introDone; // the crystal assembles as the loader fades, or at once when the page is already shown
+  scene.start();
 }
 
 /* Lightbox: kart ve ekran goruntulerini sayfadan ayrilmadan buyutur (kendi icinde kapali). */
